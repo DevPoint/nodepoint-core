@@ -71,7 +71,7 @@ class BaseEntity implements EntityInterface {
 	 * @param $fieldName string 
 	 * @return mixed field value
 	 */
-	protected function _getMagicStaticFieldCall($fieldName)
+	protected function _getMagicFieldStaticCall($fieldName)
 	{
 		return $this->type->getFieldStaticValue($fieldName);
 	}
@@ -111,7 +111,7 @@ class BaseEntity implements EntityInterface {
 	 * @param $args array[1] string language
 	 * @return mixed field value
 	 */
-	protected function _getMagicStaticFieldCallI18n($fieldName, &$args)
+	protected function _getMagicFieldStaticCallI18n($fieldName, &$args)
 	{
 		return $this->type->getFieldStaticValueI18n($fieldName, $args[0]);
 	}

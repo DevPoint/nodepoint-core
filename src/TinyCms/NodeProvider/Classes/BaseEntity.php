@@ -69,6 +69,15 @@ class BaseEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string 
+	 * @return mixed field value
+	 */
+	protected function _getMagicStaticFieldCall($fieldName)
+	{
+		return $this->type->getFieldStaticValue($fieldName);
+	}
+
+	/*
+	 * @param $fieldName string 
 	 * @param $args array[2] string language, string fieldName
 	 * @return TinyCms\NodeProvider\Library\EntityInstance
 	 */
@@ -95,6 +104,16 @@ class BaseEntity implements EntityInterface {
 			return null;
 		}
 		return $this->fields[$fieldName][$lang];
+	}
+
+	/*
+	 * @param $fieldName string 
+	 * @param $args array[1] string language
+	 * @return mixed field value
+	 */
+	protected function _getMagicStaticFieldCallI18n($fieldName, &$args)
+	{
+		return $this->type->getFieldStaticValueI18n($fieldName, $args[0]);
 	}
 
 	/*

@@ -80,10 +80,28 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
+	 * @param $value mixed
+	 */
+	public function setFieldStaticValue($fieldName, $value);
+
+	/*
+	 * @param $fieldName string
+	 * @return mixed
+	 */
+	public function getFieldStaticValue($fieldName);
+
+	/*
+	 * @param $fieldName string
+	 * @param $lang string with language code or null
+	 * @param $value mixed
+	 */
+	public function setFieldStaticValueI18n($fieldName, $lang, $value);
+	/*
+	 * @param $fieldName string
 	 * @param $lang string with language code or null
 	 * @return mixed
 	 */
-	public function getFieldStaticValue($fieldName, $lang);
+	public function getFieldStaticValueI18n($fieldName, $lang);
 
 	/*
 	 * Base field names are used for constructed
@@ -127,10 +145,9 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $lang string with language code or null
 	 * @return array with associative array[option => name]
 	 */
-	public function getFieldStaticOptions($fieldName, $lang);
+	public function getFieldStaticOptions($fieldName);
 
 	/*
 	 * @param $callName string

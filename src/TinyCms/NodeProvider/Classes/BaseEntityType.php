@@ -34,6 +34,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $fields;
 
 	/*
+	 * @var array indexed by fieldName
+	 */
+	protected $staticFieldValues;
+
+	/*
 	 * @var array of TinyCms\NodeProvider\Library\MagicFieldCallInfo indexed by callName
 	 */
 	protected $magicFieldCallInfos;
@@ -52,6 +57,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->i18nState = false;
 		$this->defaultLanguage = 'en';
 		$this->fields = array();
+		$this->staticFieldValues = array();
 		$this->magicFieldCallInfos = array();
 	}
 
@@ -215,6 +221,10 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		{ 
 			return false;
 		}
+		if (!isset($this->fields[$fieldName]['desc']['i18n']))
+		{
+			return false;
+		}
 		return $this->fields[$fieldName]['desc']['i18n'];
 	}
 
@@ -228,15 +238,18 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		{ 
 			return false;
 		}
+		if (!isset($this->fields[$fieldName]['desc']['isStatic']))
+		{
+			return false;
+		}
 		return $this->fields[$fieldName]['desc']['isStatic'];
 	}
 
 	/*
 	 * @param $fieldName string
-	 * @param $lang string with language code or null
-	 * @return mixed
+	 * @param $value mixed
 	 */
-	public function getFieldStaticValue($fieldName, $lang)
+	public function setFieldStaticValue($fieldName, $value)
 	{
 		if (!$this->isFieldStatic($fieldName))
 		{
@@ -244,9 +257,74 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		}
 		if ($this->hasFieldI18n($fieldName))
 		{
-			return $this->fields[$fieldName]['desc']['staticValue'][$lang];
+			// TODO: Exception: use i18n version of function to access
+			return null;
 		}
-		return $this->fields[$fieldName]['desc']['staticValue'];
+		$this->staticFieldValues[$fieldName] = $value;
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return mixed
+	 */
+	public function getFieldStaticValue($fieldName)
+	{
+		if (!$this->isFieldStatic($fieldName))
+		{
+			return null;
+		}
+		if ($this->hasFieldI18n($fieldName))
+		{
+			// TODO: Exception use i18n version of function to access
+			return null;
+		}
+		return $this->staticFieldValues[$fieldName];
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @param $lang string with language code or null
+	 * @param $value mixed
+	 */
+	public function setFieldStaticValueI18n($fieldName, $lang, $value)
+	{
+		if (!$this->isFieldStatic($fieldName))
+		{
+			return null;
+		}
+		if (!$this->hasFieldI18n($fieldName))
+		{
+			if (false !== $lang)
+			{
+				// TODO: Exception accessing no i18n field with language
+				return;
+			}
+			$this->staticFieldValues[$fieldName] = $value;
+		}
+		$this->staticFieldValues[$fieldName][$lang] = $value;
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @param $lang string with language code or null
+	 * @return mixed
+	 */
+	public function getFieldStaticValueI18n($fieldName, $lang)
+	{
+		if (!$this->isFieldStatic($fieldName))
+		{
+			return null;
+		}
+		if (!$this->hasFieldI18n($fieldName))
+		{
+			if (false !== $lang)
+			{
+				// TODO: Exception accessing no i18n field with language
+				return null;
+			}
+			return $this->staticFieldValues[$fieldName];
+		}
+		return $this->staticFieldValues[$fieldName][$lang];
 	}
 
 	/*
@@ -346,10 +424,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $lang string with language code or null
 	 * @return array with associative array[option => name]
 	 */
-	public function getFieldStaticOptions($fieldName, $lang)
+	public function getFieldStaticOptions($fieldName)
 	{
 		if (!$this->hasFieldOptions())
 		{
@@ -358,16 +435,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		if (!isset($this->fields[$fieldName]['desc']['staticOptions']))
 		{
 			return false;
-		}
-		$optionNames = $this->getFieldOptionNames($fieldName, $lang);
-		if ($optionNames)
-		{
-			$result = array();
-			foreach ($this->fields[$fieldName]['desc']['staticOptions'] as $option)
-			{
-				$result[$option] = $optionNames[$option];
-			}
-			return $result;
 		}
 		return $this->fields[$fieldName]['desc']['staticOptions'];
 	}

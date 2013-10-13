@@ -132,10 +132,17 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $lang string with language code or null
+	 * @param $lang string with language code
 	 * @return array of string indexed by field option value
 	 */
-	public function getFieldOptionNames($fieldName, $lang);
+	public function setFieldOptionReferences($fieldName, $lang, $references);
+
+	/*
+	 * @param $fieldName string
+	 * @param $lang string with language code
+	 * @return array of string indexed by field option value
+	 */
+	public function getFieldOptionReferences($fieldName, $lang);
 
 	/*
 	 * @param $fieldName string

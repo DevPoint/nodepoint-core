@@ -258,7 +258,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		if ($this->hasFieldI18n($fieldName))
 		{
 			// TODO: Exception: use i18n version of function to access
-			return null;
+			return;
 		}
 		$this->staticFieldValues[$fieldName] = $value;
 	}
@@ -278,6 +278,10 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception use i18n version of function to access
 			return null;
 		}
+		if (!isset($this->staticFieldValues[$fieldName]))
+		{
+			return null;
+		}
 		return $this->staticFieldValues[$fieldName];
 	}
 
@@ -294,12 +298,12 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		}
 		if (!$this->hasFieldI18n($fieldName))
 		{
-			if (false !== $lang)
-			{
-				// TODO: Exception accessing no i18n field with language
-				return;
-			}
-			$this->staticFieldValues[$fieldName] = $value;
+			// TODO: Exception accessing no i18n field with language
+			return;
+		}
+		if (!isset($this->staticFieldValues[$fieldName]))
+		{
+			$this->staticFieldValues[$fieldName] = array();
 		}
 		$this->staticFieldValues[$fieldName][$lang] = $value;
 	}
@@ -317,12 +321,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		}
 		if (!$this->hasFieldI18n($fieldName))
 		{
-			if (false !== $lang)
-			{
-				// TODO: Exception accessing no i18n field with language
-				return null;
-			}
 			return $this->staticFieldValues[$fieldName];
+		}
+		if (!isset($this->staticFieldValues[$fieldName][$lang]))
+		{
+			return null;
 		}
 		return $this->staticFieldValues[$fieldName][$lang];
 	}

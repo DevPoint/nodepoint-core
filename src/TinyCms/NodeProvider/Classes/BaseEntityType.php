@@ -62,6 +62,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->i18nState = false;
 		$this->defaultLanguage = 'en';
 		$this->fields = array();
+		$this->fieldsOptionRefs = array();
 		$this->staticFieldsValues = array();
 		$this->magicFieldCallInfos = array();
 	}

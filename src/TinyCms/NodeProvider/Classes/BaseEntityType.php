@@ -258,7 +258,8 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		if (!$this->isFieldStatic($fieldName))
 		{
-			return null;
+			// TODO: Exception: field isn't static
+			return;
 		}
 		if ($this->hasFieldI18n($fieldName))
 		{
@@ -299,7 +300,8 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		if (!$this->isFieldStatic($fieldName))
 		{
-			return null;
+			// TODO: Exception: field isn't static
+			return;
 		}
 		if (!$this->hasFieldI18n($fieldName))
 		{
@@ -433,7 +435,8 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		if (!$this->hasFieldOptions($fieldName))
 		{
-			return false;
+			// TODO: Exception: field has no options
+			return;
 		}
 		if (!isset($this->fieldsOptionRefs[$fieldName]))
 		{

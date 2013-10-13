@@ -405,13 +405,17 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		{
 			return false;
 		}
+		if ($this->hasI18n())
+		{
+			if (!isset($this->fields[$fieldName]['desc']['optionNames'][$lang]))
+			{
+				return false;
+			}
+			return $this->fields[$fieldName]['desc']['optionNames'][$lang];
+		}
 		if (!isset($this->fields[$fieldName]['desc']['optionNames']))
 		{
 			return false;
-		}
-		if ($this->hasI18n())
-		{
-			return $this->fields[$fieldName]['desc']['optionNames'][$lang];
 		}
 		return $this->fields[$fieldName]['desc']['optionNames'];
 	}
@@ -431,7 +435,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return array with associative array[option => name]
+	 * @return array
 	 */
 	public function getFieldStaticOptions($fieldName)
 	{

@@ -145,7 +145,7 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return array with associative array[option => name]
+	 * @return array
 	 */
 	public function getFieldStaticOptions($fieldName);
 

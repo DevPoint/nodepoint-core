@@ -15,6 +15,11 @@ class MagicFieldCallInfo {
 	public $functionCall;
 
 	/*
+	 * @var array
+	 */
+	public $options;
+
+	/*
 	 * @param $field string
 	 * @param $functionCall string
 	 * @param $options array

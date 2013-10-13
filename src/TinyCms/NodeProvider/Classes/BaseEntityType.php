@@ -321,6 +321,10 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		}
 		if (!$this->hasFieldI18n($fieldName))
 		{
+			if (!isset($this->staticFieldValues[$fieldName]))
+			{
+				return null;
+			}
 			return $this->staticFieldValues[$fieldName];
 		}
 		if (!isset($this->staticFieldValues[$fieldName][$lang]))

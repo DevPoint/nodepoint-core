@@ -383,6 +383,10 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		{ 
 			return false;
 		}
+		if (!isset($this->fields[$fieldName]['desc']['isConstructed']))
+		{
+			return false;
+		}
 		return $this->fields[$fieldName]['desc']['isConstructed'];
 	}
 
@@ -396,7 +400,28 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		{ 
 			return false;
 		}
+		if (!isset($this->fields[$fieldName]['desc']['hasOptions']))
+		{
+			return false;
+		}
 		return $this->fields[$fieldName]['desc']['hasOptions'];
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldOptionReferenceType($fieldName)
+	{
+		if (!$this->hasFieldOptions($fieldName))
+		{
+			return false;
+		}
+		if (!isset($this->fields[$fieldName]['desc']['optionRefType']))
+		{
+			return false;
+		}
+		return $this->fields[$fieldName]['desc']['optionRefType'];
 	}
 
 	/*

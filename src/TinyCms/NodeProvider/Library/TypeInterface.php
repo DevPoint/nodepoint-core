@@ -45,4 +45,16 @@ interface TypeInterface {
 	 * @return string
 	 */
 	public function getReferenceTypeName();
+
+	/*
+	 * @param $object mixed
+	 * @return mixed - array or input parameter type
+	 */
+	public function objectToValue($object, $options);
+
+	/*
+	 * @param $value mixed
+	 * @return mixed - object or input parameter type
+	 */
+	public function objectFromValue($value);
 }

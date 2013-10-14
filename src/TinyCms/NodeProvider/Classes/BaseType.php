@@ -76,4 +76,22 @@ abstract class BaseType implements TypeInterface {
 	{
 		return false;
 	}
+
+	/*
+	 * @param $object mixed
+	 * @return mixed - array or input parameter type
+	 */
+	public function objectToValue(&$object, $options)
+	{
+		return $object;
+	}
+
+	/*
+	 * @param $value mixed
+	 * @return mixed - object or input parameter type
+	 */
+	public function objectFromValue(&$value)
+	{
+		return $value;
+	}
 }

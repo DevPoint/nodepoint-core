@@ -29,16 +29,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $fields;
 
 	/*
-	 * @var array indexed by fieldName
-	 */
-	protected $fieldsOptionRefs;
-
-	/*
-	 * @var array indexed by fieldName
-	 */
-	protected $staticFieldsValues;
-
-	/*
 	 * @var array of TinyCms\NodeProvider\Library\MagicFieldCallInfo indexed by callName
 	 */
 	protected $magicFieldCallInfos;
@@ -58,8 +48,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->defaultLanguage = isset($description['defLang']) ? $description['defLang'] : 'en';
 		$this->finalState = false;
 		$this->fields = array();
-		$this->fieldsOptionRefs = array();
-		$this->staticFieldsValues = array();
 		$this->magicFieldCallInfos = array();
 	}
 
@@ -242,7 +230,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception: use i18n version of function to access
 			return;
 		}
-		$this->staticFieldsValues[$fieldName] = $value;
+		$this->fields['staticValues'][$fieldName] = $value;
 	}
 
 	/*
@@ -260,11 +248,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception use i18n version of function to access
 			return null;
 		}
-		if (!isset($this->staticFieldsValues[$fieldName]))
+		if (!isset($this->fields['staticValues'][$fieldName]))
 		{
 			return null;
 		}
-		return $this->staticFieldsValues[$fieldName];
+		return $this->fields['staticValues'][$fieldName];
 	}
 
 	/*
@@ -284,11 +272,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception accessing no i18n field with language
 			return;
 		}
-		if (!isset($this->staticFieldsValues[$fieldName]))
+		if (!isset($this->fields['staticValues'][$fieldName]))
 		{
-			$this->staticFieldsValues[$fieldName] = array();
+			$this->fields['staticValues'][$fieldName] = array();
 		}
-		$this->staticFieldsValues[$fieldName][$lang] = $value;
+		$this->fields['staticValues'][$fieldName][$lang] = $value;
 	}
 
 	/*
@@ -304,17 +292,17 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		}
 		if (!$this->hasFieldI18n($fieldName))
 		{
-			if (!isset($this->staticFieldsValues[$fieldName]))
+			if (!isset($this->fields['staticValues'][$fieldName]))
 			{
 				return null;
 			}
-			return $this->staticFieldsValues[$fieldName];
+			return $this->fields['staticValues'][$fieldName];
 		}
-		if (!isset($this->staticFieldsValues[$fieldName][$lang]))
+		if (!isset($this->fields['staticValues'][$fieldName][$lang]))
 		{
 			return null;
 		}
-		return $this->staticFieldsValues[$fieldName][$lang];
+		return $this->fields['staticValues'][$fieldName][$lang];
 	}
 
 	/*
@@ -398,11 +386,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception: field has no options
 			return;
 		}
-		if (!isset($this->fieldsOptionRefs[$fieldName]))
+		if (!isset($this->fields['optionRefs'][$fieldName]))
 		{
-			$this->fieldsOptionRefs[$fieldName] = array();
+			$this->fields['optionRefs'][$fieldName] = array();
 		}
-		$this->fieldsOptionRefs[$fieldName][$lang] = $references;
+		$this->fields['optionRefs'][$fieldName][$lang] = $references;
 	}
 
 	/*
@@ -416,7 +404,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		{
 			return false;
 		}
-		if (!isset($this->fieldsOptionRefs[$fieldName][$lang]))
+		if (!isset($this->fields['optionRefs'][$fieldName][$lang]))
 		{
 			if (!isset($this->fields[$fieldName]['desc']['staticOptions']))
 			{
@@ -429,7 +417,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			}
 			return $result;
 		}
-		return $this->fieldsOptionRefs[$fieldName][$lang];
+		return $this->fields['optionRefs'][$fieldName][$lang];
 	}
 
 	/*

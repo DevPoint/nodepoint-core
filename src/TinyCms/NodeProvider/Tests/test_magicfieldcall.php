@@ -88,7 +88,7 @@ foreach ($arrObjects as $object)
 	echo "Meine Eltern heißen " . $object->getParent()->getName() . "\n";
 	echo "Validate Field 'Name': " . $object->validateName("Carmen") . "\n";
 	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";
-	echo "Static Value: " . $object->getParent()->_getType()->isTypeName('TinyCmsNodeProvider/Entity') . "\n";
+	echo "Static Value: " . $object->getParent()->getInfo($langA) . "\n";
 	echo "Option references: " . implode(', ', $entityType->getFieldOptionReferences('name', $langA)) . "\n";
 	echo "\n";
 }

@@ -28,7 +28,7 @@ class BaseEntity implements EntityInterface {
 	/*
 	 * @return TinyCms\NodeProvider\Library\EntityTypeInterface
 	 */
-	final public function _getType()
+	final public function _type()
 	{
 		return $this->type;
 	}

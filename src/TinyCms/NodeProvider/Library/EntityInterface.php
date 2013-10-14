@@ -7,6 +7,6 @@ interface EntityInterface {
 	/*
 	 * @return TinyCms\NodeProvider\Library\EntityTypeInterface
 	 */
-	public function _getType();
+	public function _type();
 
 }

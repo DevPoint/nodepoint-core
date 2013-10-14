@@ -50,11 +50,11 @@ interface TypeInterface {
 	 * @param $object mixed
 	 * @return mixed - array or input parameter type
 	 */
-	public function objectToValue($object, $options);
+	public function objectToValue($object, $options=null);
 
 	/*
 	 * @param $value mixed
 	 * @return mixed - object or input parameter type
 	 */
-	public function objectFromValue($value);
+	public function objectFromValue(&$value);
 }

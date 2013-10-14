@@ -5,15 +5,18 @@ header("Content-Type:text/plain; charset=utf-8");
 use TinyCms\NodeProvider\Library\MagicFieldCallInfo;
 use TinyCms\NodeProvider\Type\Entity\Entity;
 use TinyCms\NodeProvider\Type\Node\Node;
+use TinyCms\NodeProvider\Type\Position2d\Position2d;
 
 // create types
 $parentType = new TinyCms\NodeProvider\Type\Entity\EntityType();
 $stringType = new TinyCms\NodeProvider\Type\String\StringType();
+$position2dType = new TinyCms\NodeProvider\Type\Position2d\Position2dType();
 $entityType = new TinyCms\NodeProvider\Type\Node\NodeType($parentType);
 $entityType->setFieldType('alias', $stringType);
 $entityType->setFieldDescription('name', array('hasOptions'=>true,'staticOptions'=>array('wilfried','carmen','david','julian','milena')));
 $entityType->setFieldType('name', $stringType);
 $entityType->setFieldType('body', $stringType);
+$entityType->setFieldType('geolocation', $position2dType);
 $entityType->setFieldDescription('body', array('i18n'=>true));
 $entityType->setFieldType('parent', $entityType);
 $entityType->setFieldType('info', $stringType);
@@ -24,6 +27,8 @@ $entityType->setMagicFieldCallInfo('setAlias', new MagicFieldCallInfo('alias', '
 $entityType->setMagicFieldCallInfo('getAlias', new MagicFieldCallInfo('alias', '_getMagicFieldCall'));
 $entityType->setMagicFieldCallInfo('setName', new MagicFieldCallInfo('name', '_setMagicFieldCall'));
 $entityType->setMagicFieldCallInfo('getName', new MagicFieldCallInfo('name', '_getMagicFieldCall'));
+$entityType->setMagicFieldCallInfo('setGeolocation', new MagicFieldCallInfo('geolocation', '_setMagicFieldCall'));
+$entityType->setMagicFieldCallInfo('getGeolocation', new MagicFieldCallInfo('geolocation', '_getMagicFieldCall'));
 $entityType->setMagicFieldCallInfo('validateName', new MagicFieldCallInfo('name', '_validateMagicFieldCall'));
 $entityType->setMagicFieldCallInfo('setBody', new MagicFieldCallInfo('body', '_setMagicFieldCallI18n'));
 $entityType->setMagicFieldCallInfo('getBody', new MagicFieldCallInfo('body', '_getMagicFieldCallI18n'));
@@ -62,21 +67,13 @@ $object->setParent($parent);
 $object->setAlias("julian-brabsche");
 $object->setName("Julian Brabsche");
 $object->setBody($langA, "Here comes Julian, our mathe genious!");
+$geolocation = new Position2d();
+$geolocation->set(43.0, 15.0);
+$object->setGeolocation($geolocation);
 $arrObjects[] = $object;
 
-$object = new Node($entityType);
-$object->setParent($parent);
-$object->setAlias("david-brabsche");
-$object->setName("David Brabsche");
-$object->setBody($langA, "Here comes our cute David!");
-$arrObjects[] = $object;
+$arrGeolocation = $object->_type()->getFieldType('geolocation')->objectToValue($object->getGeolocation());
 
-$object = new Node($entityType);
-$object->setParent($parent);
-$object->setAlias("milena-brabsche");
-$object->setName("Milena Brabsche");
-$object->setBody($langA, "We are proudly present our litte Princess Milena!");
-$arrObjects[] = $object;
 
 // output test result
 echo "Test succeeded\n";
@@ -89,6 +86,7 @@ foreach ($arrObjects as $object)
 	echo "Validate Field 'Name': " . $object->validateName("Carmen") . "\n";
 	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";
 	echo "Static Value: " . $object->getParent()->getInfo($langA) . "\n";
+	echo "Geolocation: " . $arrGeolocation['x'] . ', ' . $arrGeolocation['y'] . "\n";
 	echo "Option references: " . implode(', ', $entityType->getFieldOptionReferences('name', $langA)) . "\n";
 	echo "\n";
 }

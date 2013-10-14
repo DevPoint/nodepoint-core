@@ -9,7 +9,6 @@ class AssetType extends BaseNodeType {
 	/*
 	 * Constructor
 	 *
-	 * @param $typeName string
 	 * @param $parentType TinyCms\NodeProvider\Library\EntityTypeInterface
 	 * @param $description array
 	 */

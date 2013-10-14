@@ -230,7 +230,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception: use i18n version of function to access
 			return;
 		}
-		$this->fields['staticValues'][$fieldName] = $value;
+		$this->fields[$fieldName]['staticValues'] = $value;
 	}
 
 	/*
@@ -248,11 +248,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception use i18n version of function to access
 			return null;
 		}
-		if (!isset($this->fields['staticValues'][$fieldName]))
+		if (!isset($this->fields[$fieldName]['staticValues']))
 		{
 			return null;
 		}
-		return $this->fields['staticValues'][$fieldName];
+		return $this->fields[$fieldName]['staticValues'];
 	}
 
 	/*
@@ -272,11 +272,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception accessing no i18n field with language
 			return;
 		}
-		if (!isset($this->fields['staticValues'][$fieldName]))
+		if (!isset($this->fields[$fieldName]['staticValues']))
 		{
-			$this->fields['staticValues'][$fieldName] = array();
+			$this->fields[$fieldName]['staticValues'] = array();
 		}
-		$this->fields['staticValues'][$fieldName][$lang] = $value;
+		$this->fields[$fieldName]['staticValues'][$lang] = $value;
 	}
 
 	/*
@@ -292,17 +292,17 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		}
 		if (!$this->hasFieldI18n($fieldName))
 		{
-			if (!isset($this->fields['staticValues'][$fieldName]))
+			if (!isset($this->fields[$fieldName]['staticValues']))
 			{
 				return null;
 			}
-			return $this->fields['staticValues'][$fieldName];
+			return $this->fields[$fieldName]['staticValues'];
 		}
-		if (!isset($this->fields['staticValues'][$fieldName][$lang]))
+		if (!isset($this->fields[$fieldName]['staticValues'][$lang]))
 		{
 			return null;
 		}
-		return $this->fields['staticValues'][$fieldName][$lang];
+		return $this->fields[$fieldName]['staticValues'][$lang];
 	}
 
 	/*
@@ -386,11 +386,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception: field has no options
 			return;
 		}
-		if (!isset($this->fields['optionRefs'][$fieldName]))
+		if (!isset($this->fields[$fieldName]['optionRefs']))
 		{
-			$this->fields['optionRefs'][$fieldName] = array();
+			$this->fields[$fieldName]['optionRefs'] = array();
 		}
-		$this->fields['optionRefs'][$fieldName][$lang] = $references;
+		$this->fields[$fieldName]['optionRefs'][$lang] = $references;
 	}
 
 	/*
@@ -404,7 +404,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		{
 			return false;
 		}
-		if (!isset($this->fields['optionRefs'][$fieldName][$lang]))
+		if (!isset($this->fields[$fieldName]['optionRefs'][$lang]))
 		{
 			if (!isset($this->fields[$fieldName]['desc']['staticOptions']))
 			{
@@ -417,7 +417,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			}
 			return $result;
 		}
-		return $this->fields['optionRefs'][$fieldName][$lang];
+		return $this->fields[$fieldName]['optionRefs'][$lang];
 	}
 
 	/*

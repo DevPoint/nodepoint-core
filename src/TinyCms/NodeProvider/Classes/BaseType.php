@@ -28,6 +28,24 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
+	 * @param $type string
+	 * @return boolean true if type or any of the parent types matches
+	 */
+	public function isTypeName($typeName)
+	{
+		return ($typeName === $this->getTypeName());
+	}
+
+	/*
+	 * @param $type string
+	 * @return boolean true if type matches
+	 */
+	public function isTypeNameExact($typeName)
+	{
+		return ($typeName === $this->getTypeName());
+	}
+
+	/*
 	 * @return boolean
 	 */
 	public function isEntity()

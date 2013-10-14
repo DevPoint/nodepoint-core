@@ -68,6 +68,28 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
+	 * @param $type string
+	 * @return boolean true if type or any of the parent types matches
+	 */
+	final public function isTypeName($typeName)
+	{
+		if ($typeName == $this->getTypeName())
+		{
+			return true;
+		}
+		$parentType = $this->getParentType();
+		while (null !== $parentType)
+		{
+			if ($typeName === $parentType->getTypeName())
+			{
+				return true;
+			}
+			$parentType = $parentType->getParentType();
+		}
+		return false;
+	}
+
+	/*
 	 * @return boolean
 	 */
 	final public function isEntity()
@@ -105,24 +127,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	final public function getParentType()
 	{
 		return $this->parentType;
-	}
-
-	/*
-	 * @param $type string
-	 * @return boolean true if any of the parent types matches
-	 */
-	public function hasParentType($type)
-	{
-		$parentType = $this->getParentType();
-		while (null !== $parentType)
-		{
-			if ($type == $parentType->getType())
-			{
-				return true;
-			}
-			$parentType = $parentType->getParentType();
-		}
-		return false;
 	}
 
 	/*

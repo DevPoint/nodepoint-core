@@ -5,6 +5,12 @@ namespace TinyCms\NodeProvider\Library;
 interface EntityTypeInterface extends TypeInterface {
 
 	/*
+	 * @param $type string
+	 * @return boolean true if any of the parent types matches type
+	 */
+	public function isTypeName($typeName);
+
+	/*
 	 * @return boolean true if entity has I18n
 	 */
 	public function hasI18n();
@@ -23,12 +29,6 @@ interface EntityTypeInterface extends TypeInterface {
 	 * @return TinyCms\NodeProvider\Library\EntityTypeInterface
 	 */
 	public function getParentType();
-
-	/*
-	 * @param $type string
-	 * @return boolean true if any of the parent types matches type
-	 */
-	public function hasParentType($type);
 
 	/*
 	 * @param $fieldName string

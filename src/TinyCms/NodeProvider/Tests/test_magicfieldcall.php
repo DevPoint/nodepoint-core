@@ -59,20 +59,22 @@ $entityType->setFieldOptionReferences('name', $langB, array(
 $parent = new Node($entityType);
 $parent->setAlias("carmen-und-wilfried");
 $parent->setName("Carmen und Wilfried");
+$geoLocation = new Position2d();
+$geoLocation->set(41.501, 14.502);
+$parent->setGeoLocation($geoLocation);
 
 $arrObjects = array();
-
 $object = new Node($entityType);
 $object->setParent($parent);
 $object->setAlias("julian-brabsche");
 $object->setName("Julian Brabsche");
 $object->setBody($langA, "Here comes Julian, our mathe genious!");
 $geoLocation = new Position2d();
-$geoLocation->set(43.0, 15.0);
+$geoLocation->set(43.001, 15.002);
 $object->setGeoLocation($geoLocation);
 $arrObjects[] = $object;
 
-$arrGeoLocation = $object->_fieldType('geoLocation')->objectToValue($object->getGeoLocation());
+$arrGeoLocation = $object->_fieldType('geoLocation')->objectToValue($object->getParent()->getGeoLocation());
 
 
 // output test result

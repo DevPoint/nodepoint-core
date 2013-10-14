@@ -16,7 +16,7 @@ abstract class BaseEntityMultiRefType extends BaseType {
 	 * @param $type string
 	 * @param $referenceTypeName string
 	 */
-	public function __construct($typeName, $referenceTypeName)
+	protected function __construct($typeName, $referenceTypeName)
 	{
 		$this->typeName = $typeName;
 		$this->referenceTypeName = $referenceTypeName;

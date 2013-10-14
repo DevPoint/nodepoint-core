@@ -53,14 +53,16 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 * Constructor
 	 *
 	 * @param $typeName string
-	 * @param $nodeState boolean
+	 * @param $parentType TinyCms\NodeProvider\Library\EntityTypeInterface
+	 * @param $description array
 	 */
-	public function __construct($typeName)
+	protected function __construct($typeName, $parentType, $description)
 	{
 		$this->typeName = $typeName;
-		$this->finalState = false;
-		$this->i18nState = false;
-		$this->defaultLanguage = 'en';
+		$this->parentType = $parentType;
+		$this->finalState = !empty($description['final']);
+		$this->i18nState = !empty($description['i18n']);
+		$this->defaultLanguage = isset($description['defLang']) ? $description['defLang'] : 'en';
 		$this->fields = array();
 		$this->fieldsOptionRefs = array();
 		$this->staticFieldsValues = array();

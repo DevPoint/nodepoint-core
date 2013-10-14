@@ -8,10 +8,14 @@ class EntityType extends BaseEntityType {
 
 	/*
 	 * Constructor
+	 *
+	 * @param $typeName string
+	 * @param $parentType TinyCms\NodeProvider\Library\EntityTypeInterface
+	 * @param $description array
 	 */
-	public function __construct()
+	public function __construct($parentType=null, $description=array())
 	{
-		parent::__construct('TinyCmsNodeProvider/Entity');
+		parent::__construct('TinyCmsNodeProvider/Entity', $parentType, $description);
 	}
 }
 

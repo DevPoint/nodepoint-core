@@ -9,9 +9,9 @@ abstract class BaseNodeType extends BaseEntityType {
 	 *
 	 * @param $typeName string
 	 */
-	public function __construct($typeName)
+	protected function __construct($typeName, $parentType, $description)
 	{
-		parent::__construct($typeName);
+		parent::__construct($typeName, $parentType, $description);
 	}
 
 

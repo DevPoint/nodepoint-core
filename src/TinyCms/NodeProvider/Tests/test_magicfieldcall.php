@@ -7,8 +7,9 @@ use TinyCms\NodeProvider\Type\Entity\Entity;
 use TinyCms\NodeProvider\Type\Node\Node;
 
 // create types
+$parentType = new TinyCms\NodeProvider\Type\Entity\EntityType();
 $stringType = new TinyCms\NodeProvider\Type\String\StringType();
-$entityType = new TinyCms\NodeProvider\Type\Node\NodeType();
+$entityType = new TinyCms\NodeProvider\Type\Node\NodeType($parentType);
 $entityType->setFieldType('alias', $stringType);
 $entityType->setFieldDescription('name', array('hasOptions'=>true,'staticOptions'=>array('wilfried','carmen','david','julian','milena')));
 $entityType->setFieldType('name', $stringType);
@@ -87,7 +88,7 @@ foreach ($arrObjects as $object)
 	echo "Meine Eltern heißen " . $object->getParent()->getName() . "\n";
 	echo "Validate Field 'Name': " . $object->validateName("Carmen") . "\n";
 	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";
-	echo "Static Value: " . $object->getParent()->_getType()->isFieldReadOnly('name') . "\n";
+	echo "Static Value: " . $object->getParent()->_getType()->isTypeName('TinyCmsNodeProvider/Entity') . "\n";
 	echo "Option references: " . implode(', ', $entityType->getFieldOptionReferences('name', $langA)) . "\n";
 	echo "\n";
 }

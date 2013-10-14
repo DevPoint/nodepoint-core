@@ -140,7 +140,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldType($fieldName)
 	{
-		if (!isset($this->fields[$fieldName]) || (!isset($this->fields[$fieldName]['type'])))
+		if (!isset($this->fields[$fieldName]['type']))
 		{ 
 			return null;
 		}
@@ -153,7 +153,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	final protected function hasFieldDescription($fieldName)
 	{
-		return (isset($this->fields[$fieldName]) && isset($this->fields[$fieldName]['desc']));
+		return (isset($this->fields[$fieldName]['desc']));
 	}
 
 	/*
@@ -171,7 +171,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldDescription($fieldName)
 	{
-		if (!$this->hasFieldDescription($fieldName))
+		if (!isset($this->fields[$fieldName]['desc']))
 		{ 
 			return null;
 		}
@@ -184,11 +184,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function isFieldArray($fieldName)
 	{
-		if (!$this->hasFieldDescription($fieldName))
+		if (empty($this->fields[$fieldName]['desc']['isArray']))
 		{ 
 			return false;
 		}
-		return $this->fields[$fieldName]['desc']['isArray'];
+		return true;
 	}
 	
 	/*
@@ -201,10 +201,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		{ 
 			return false;
 		}
-		$readOnly = $this->fields[$fieldName]['desc']['readOnly'];
-		if (isset($readOnly))
+		if (isset($this->fields[$fieldName]['desc']['readOnly']))
 		{
-			return $readOnly;
+			return $this->fields[$fieldName]['desc']['readOnly'];
 		}
 		if (!empty($this->fields[$fieldName]['desc']['isStatic']))
 		{
@@ -223,15 +222,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function hasFieldI18n($fieldName)
 	{
-		if (!$this->hasFieldDescription($fieldName))
-		{ 
-			return false;
-		}
-		if (!isset($this->fields[$fieldName]['desc']['i18n']))
-		{
-			return false;
-		}
-		return $this->fields[$fieldName]['desc']['i18n'];
+		return (!empty($this->fields[$fieldName]['desc']['i18n']));
 	}
 
 	/*
@@ -240,15 +231,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function isFieldStatic($fieldName)
 	{
-		if (!$this->hasFieldDescription($fieldName))
-		{ 
-			return false;
-		}
-		if (!isset($this->fields[$fieldName]['desc']['isStatic']))
-		{
-			return false;
-		}
-		return $this->fields[$fieldName]['desc']['isStatic'];
+		return (!empty($this->fields[$fieldName]['desc']['isStatic']));
 	}
 
 	/*
@@ -382,15 +365,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function isFieldConstructed($fieldName)
 	{
-		if (!$this->hasFieldDescription($fieldName))
-		{ 
-			return false;
-		}
-		if (!isset($this->fields[$fieldName]['desc']['isConstructed']))
-		{
-			return false;
-		}
-		return $this->fields[$fieldName]['desc']['isConstructed'];
+		return (!empty($this->fields[$fieldName]['desc']['isConstructed']));
 	}
 
 	/*
@@ -399,15 +374,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function hasFieldOptions($fieldName)
 	{
-		if (!$this->hasFieldDescription($fieldName))
-		{ 
-			return false;
-		}
-		if (!isset($this->fields[$fieldName]['desc']['hasOptions']))
-		{
-			return false;
-		}
-		return $this->fields[$fieldName]['desc']['hasOptions'];
+		return (!empty($this->fields[$fieldName]['desc']['hasOptions']));
 	}
 
 	/*

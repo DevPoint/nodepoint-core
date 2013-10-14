@@ -34,6 +34,14 @@ class BaseEntity implements EntityInterface {
 	}
 
 	/*
+	 * @return TinyCms\NodeProvider\Library\EntityTypeInterface
+	 */
+	final public function _fieldType($fieldName)
+	{
+		return $this->type->getFieldType($fieldName);
+	}
+
+	/*
 	 * @param $fieldName string 
 	 * @param $args array[1] string fieldName
 	 * @return boolean

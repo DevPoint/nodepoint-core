@@ -16,7 +16,7 @@ $entityType->setFieldType('alias', $stringType);
 $entityType->setFieldDescription('name', array('hasOptions'=>true,'staticOptions'=>array('wilfried','carmen','david','julian','milena')));
 $entityType->setFieldType('name', $stringType);
 $entityType->setFieldType('body', $stringType);
-$entityType->setFieldType('geolocation', $position2dType);
+$entityType->setFieldType('geoLocation', $position2dType);
 $entityType->setFieldDescription('body', array('i18n'=>true));
 $entityType->setFieldType('parent', $entityType);
 $entityType->setFieldType('info', $stringType);
@@ -27,8 +27,8 @@ $entityType->setMagicFieldCallInfo('setAlias', new MagicFieldCallInfo('alias', '
 $entityType->setMagicFieldCallInfo('getAlias', new MagicFieldCallInfo('alias', '_getMagicFieldCall'));
 $entityType->setMagicFieldCallInfo('setName', new MagicFieldCallInfo('name', '_setMagicFieldCall'));
 $entityType->setMagicFieldCallInfo('getName', new MagicFieldCallInfo('name', '_getMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('setGeolocation', new MagicFieldCallInfo('geolocation', '_setMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('getGeolocation', new MagicFieldCallInfo('geolocation', '_getMagicFieldCall'));
+$entityType->setMagicFieldCallInfo('setGeoLocation', new MagicFieldCallInfo('geoLocation', '_setMagicFieldCall'));
+$entityType->setMagicFieldCallInfo('getGeoLocation', new MagicFieldCallInfo('geoLocation', '_getMagicFieldCall'));
 $entityType->setMagicFieldCallInfo('validateName', new MagicFieldCallInfo('name', '_validateMagicFieldCall'));
 $entityType->setMagicFieldCallInfo('setBody', new MagicFieldCallInfo('body', '_setMagicFieldCallI18n'));
 $entityType->setMagicFieldCallInfo('getBody', new MagicFieldCallInfo('body', '_getMagicFieldCallI18n'));
@@ -67,12 +67,12 @@ $object->setParent($parent);
 $object->setAlias("julian-brabsche");
 $object->setName("Julian Brabsche");
 $object->setBody($langA, "Here comes Julian, our mathe genious!");
-$geolocation = new Position2d();
-$geolocation->set(43.0, 15.0);
-$object->setGeolocation($geolocation);
+$geoLocation = new Position2d();
+$geoLocation->set(43.0, 15.0);
+$object->setGeoLocation($geoLocation);
 $arrObjects[] = $object;
 
-$arrGeolocation = $object->_type()->getFieldType('geolocation')->objectToValue($object->getGeolocation());
+$arrGeoLocation = $object->_fieldType('geoLocation')->objectToValue($object->getGeoLocation());
 
 
 // output test result
@@ -86,7 +86,7 @@ foreach ($arrObjects as $object)
 	echo "Validate Field 'Name': " . $object->validateName("Carmen") . "\n";
 	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";
 	echo "Static Value: " . $object->getParent()->getInfo($langA) . "\n";
-	echo "Geolocation: " . $arrGeolocation['x'] . ', ' . $arrGeolocation['y'] . "\n";
+	echo "GeoLocation: " . $arrGeoLocation['x'] . ', ' . $arrGeoLocation['y'] . "\n";
 	echo "Option references: " . implode(', ', $entityType->getFieldOptionReferences('name', $langA)) . "\n";
 	echo "\n";
 }

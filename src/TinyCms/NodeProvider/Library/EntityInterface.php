@@ -9,4 +9,8 @@ interface EntityInterface {
 	 */
 	public function _type();
 
+	/*
+	 * @return TinyCms\NodeProvider\Library\EntityTypeInterface
+	 */
+	public function _fieldType($fieldName);
 }

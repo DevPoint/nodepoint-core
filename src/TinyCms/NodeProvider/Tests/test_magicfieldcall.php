@@ -74,7 +74,7 @@ $geoLocation->set(43.001, 15.002);
 $object->setGeoLocation($geoLocation);
 $arrObjects[] = $object;
 
-$arrGeoLocation = $object->_fieldType('geoLocation')->objectToValue($object->getParent()->getGeoLocation());
+$arrGeoLocation = $object->_fieldType('geoLocation')->objectToValue($object->getGeoLocation());
 
 
 // output test result
@@ -88,7 +88,7 @@ foreach ($arrObjects as $object)
 	echo "Validate Field 'Name': " . $object->validateName("Carmen") . "\n";
 	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";
 	echo "Static Value: " . $object->getParent()->getInfo($langA) . "\n";
-	echo "GeoLocation: " . $arrGeoLocation['x'] . ', ' . $arrGeoLocation['y'] . "\n";
+	echo "Du findest mich an folgenden Geokoordination: " . $arrGeoLocation['x'] . ', ' . $arrGeoLocation['y'] . "\n";
 	echo "Option references: " . implode(', ', $entityType->getFieldOptionReferences('name', $langA)) . "\n";
 	echo "\n";
 }

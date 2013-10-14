@@ -5,16 +5,6 @@ namespace TinyCms\NodeProvider\Library;
 interface EntityTypeInterface extends TypeInterface {
 
 	/*
-	 * @return boolean true if entity has I18n
-	 */
-	public function hasI18n();
-
-	/*
-	 * @return string language code
-	 */
-	public function getDefaultLanguage();
-	
-	/*
 	 * @return boolean true if inheritance isn't possible
 	 */
 	public function isFinal();
@@ -24,6 +14,11 @@ interface EntityTypeInterface extends TypeInterface {
 	 */
 	public function getParentType();
 
+	/*
+	 * @return string language code
+	 */
+	public function getDefaultLanguage();
+	
 	/*
 	 * @param $fieldName string
 	 * @param $tType TinyCms\NodeProvider\Library\TypeInterface

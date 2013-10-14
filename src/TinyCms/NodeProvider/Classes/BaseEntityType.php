@@ -9,19 +9,14 @@ use TinyCms\NodeProvider\Library\EntityTypeInterface;
 abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
-	 * @var boolean true if inheritance isn't possible
-	 */
-	protected $finalState;
-
-	/*
 	 * @var TinyCms\NodeProvider\Library\EntityTypeInterface
 	 */
 	protected $parentType;
 
 	/*
-	 * @var boolean true if entity has I18n
+	 * @var boolean true if inheritance isn't possible
 	 */
-	protected $i18nState;
+	protected $finalState;
 
 	/*
 	 * @var string language code
@@ -60,7 +55,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		$this->typeName = $typeName;
 		$this->parentType = $parentType;
-		$this->i18nState = !empty($description['i18n']);
 		$this->defaultLanguage = isset($description['defLang']) ? $description['defLang'] : 'en';
 		$this->finalState = false;
 		$this->fields = array();
@@ -97,14 +91,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	final public function isEntity()
 	{
 		return true;
-	}
-
-	/*
-	 * @return boolean true if entity has I18n
-	 */
-	final public function hasI18n()
-	{
-		return $this->i18nState;
 	}
 
 	/*

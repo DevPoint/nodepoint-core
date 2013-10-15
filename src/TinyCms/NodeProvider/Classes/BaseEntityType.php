@@ -342,6 +342,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$type = $this->getFieldType($fieldName);
 		if (!$type)
 		{
+			// TODO: Exception: field has no type
 			return false;
 		}
 		return $type->isObject();
@@ -356,6 +357,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$type = $this->getFieldType($fieldName);
 		if (!$type)
 		{
+			// TODO: Exception: field has no type
 			return false;
 		}
 		return $type->isEntity();
@@ -450,6 +452,10 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		if (!$this->hasFieldOptions($fieldName))
 		{ 
+			return false;
+		}
+		if (!isset($this->fields[$fieldName]['desc']['hasConstructedOptions']))
+		{
 			return false;
 		}
 		return $this->fields[$fieldName]['desc']['hasConstructedOptions'];

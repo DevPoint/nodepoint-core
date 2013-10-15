@@ -51,14 +51,6 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
-	 * @return boolean
-	 */
-	public function isObject()
-	{
-		return (null !== $this->className);
-	}
-
-	/*
 	 * @param $className string
 	 */
 	final public function setClassName($className)
@@ -104,6 +96,14 @@ abstract class BaseType implements TypeInterface {
 	public function getReferenceTypeName()
 	{
 		return false;
+	}
+
+	/*
+	 * @return boolean
+	 */
+	public function isObject()
+	{
+		return (null !== $this->className);
 	}
 
 	/*

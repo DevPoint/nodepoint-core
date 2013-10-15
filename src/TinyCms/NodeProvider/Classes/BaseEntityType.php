@@ -228,11 +228,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function setFieldStaticValue($fieldName, $value)
 	{
-		if (!$this->isFieldStatic($fieldName))
-		{
-			// TODO: Exception: field isn't static
-			return;
-		}
 		if ($this->hasFieldI18n($fieldName))
 		{
 			// TODO: Exception: use i18n version of function to access
@@ -247,10 +242,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldStaticValue($fieldName)
 	{
-		if (!$this->isFieldStatic($fieldName))
-		{
-			return null;
-		}
 		if ($this->hasFieldI18n($fieldName))
 		{
 			// TODO: Exception use i18n version of function to access
@@ -270,11 +261,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function setFieldStaticValueI18n($fieldName, $lang, $value)
 	{
-		if (!$this->isFieldStatic($fieldName))
-		{
-			// TODO: Exception: field isn't static
-			return;
-		}
 		if (!$this->hasFieldI18n($fieldName))
 		{
 			// TODO: Exception accessing no i18n field with language
@@ -294,10 +280,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldStaticValueI18n($fieldName, $lang)
 	{
-		if (!$this->isFieldStatic($fieldName))
-		{
-			return null;
-		}
 		if (!$this->hasFieldI18n($fieldName))
 		{
 			if (!isset($this->fields[$fieldName]['staticValues']))
@@ -387,10 +369,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldOptionReferenceType($fieldName)
 	{
-		if (!$this->hasFieldOptions($fieldName))
-		{
-			return false;
-		}
 		if (!isset($this->fields[$fieldName]['desc']['optionRefType']))
 		{
 			return false;
@@ -405,11 +383,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function setFieldOptionReferences($fieldName, $lang, $references)
 	{
-		if (!$this->hasFieldOptions($fieldName))
-		{
-			// TODO: Exception: field has no options
-			return;
-		}
 		if (!isset($this->fields[$fieldName]['optionRefs']))
 		{
 			$this->fields[$fieldName]['optionRefs'] = array();
@@ -424,10 +397,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldOptionReferences($fieldName, $lang)
 	{
-		if (!$this->hasFieldOptions($fieldName))
-		{
-			return false;
-		}
 		if (!isset($this->fields[$fieldName]['optionRefs'][$lang]))
 		{
 			if (!isset($this->fields[$fieldName]['desc']['staticOptions']))
@@ -445,20 +414,23 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
+	 * Check if options are independent from any 
+	 * other sources or the entities state
+	 *
 	 * @param $fieldName string
-	 * @return boolean true if options are depending on the values of other fields
+	 * @return boolean true 
 	 */
-	public function hasFieldConstructedOptions($fieldName)
+	public function hasFieldStaticOptions($fieldName)
 	{
 		if (!$this->hasFieldOptions($fieldName))
 		{ 
 			return false;
 		}
-		if (!isset($this->fields[$fieldName]['desc']['hasConstructedOptions']))
+		if (!isset($this->fields[$fieldName]['desc']['hasStaticOptions']))
 		{
 			return false;
 		}
-		return $this->fields[$fieldName]['desc']['hasConstructedOptions'];
+		return $this->fields[$fieldName]['desc']['hasStaticOptions'];
 	}
 
 	/*

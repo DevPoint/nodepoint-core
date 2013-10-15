@@ -34,6 +34,7 @@ class BaseEntity implements EntityInterface {
 	}
 
 	/*
+	 * @param $fieldName string
 	 * @return TinyCms\NodeProvider\Library\EntityTypeInterface
 	 */
 	final public function _fieldType($fieldName)
@@ -43,7 +44,17 @@ class BaseEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string 
-	 * @param $args array[1] string fieldName
+	 * @param $args array[1] 0 => language
+	 * @return array
+	 */
+	protected function _getMagicFieldOptionsCall($fieldName, &$args)
+	{
+		return false;
+	}
+
+	/*
+	 * @param $fieldName string 
+	 * @param $args array[1] 0 => value
 	 * @return boolean
 	 */
 	protected function _validateMagicFieldCall($fieldName, &$args)
@@ -53,7 +64,7 @@ class BaseEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string 
-	 * @param $args array[1] string fieldName
+	 * @param $args array[1] 0 => value
 	 * @return TinyCms\NodeProvider\Library\EntityInstance
 	 */
 	protected function _setMagicFieldCall($fieldName, &$args)
@@ -86,7 +97,7 @@ class BaseEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string 
-	 * @param $args array[2] string language, string fieldName
+	 * @param $args array[2] 0 => language, 1 => value
 	 * @return TinyCms\NodeProvider\Library\EntityInstance
 	 */
 	protected function _setMagicFieldCallI18n($fieldName, &$args)
@@ -101,7 +112,7 @@ class BaseEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string 
-	 * @param $args array[1] string language
+	 * @param $args array[1] 0 => llanguage
 	 * @return mixed field value
 	 */
 	protected function _getMagicFieldCallI18n($fieldName, &$args)
@@ -116,7 +127,7 @@ class BaseEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string 
-	 * @param $args array[1] string language
+	 * @param $args array[1] language
 	 * @return mixed field value
 	 */
 	protected function _getMagicFieldStaticCallI18n($fieldName, &$args)

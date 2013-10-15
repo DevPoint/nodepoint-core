@@ -414,30 +414,12 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * Check if options are independent from any 
-	 * other sources or the entities state
-	 *
 	 * @param $fieldName string
-	 * @return boolean true 
+	 * @param $lang string with language code
+	 * @return array(values=>array of options,
+	 			refs=>array of references indexed by options)
 	 */
-	public function hasFieldStaticOptions($fieldName)
-	{
-		if (!$this->hasFieldOptions($fieldName))
-		{ 
-			return false;
-		}
-		if (!isset($this->fields[$fieldName]['desc']['hasStaticOptions']))
-		{
-			return false;
-		}
-		return $this->fields[$fieldName]['desc']['hasStaticOptions'];
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return array
-	 */
-	public function getFieldStaticOptions($fieldName)
+	public function getFieldStaticOptions($fieldName, $lang)
 	{
 		if (!$this->hasFieldOptions($fieldName))
 		{
@@ -447,7 +429,12 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		{
 			return false;
 		}
-		return $this->fields[$fieldName]['desc']['staticOptions'];
+		$result = array('values' => $this->fields[$fieldName]['desc']['staticOptions']);
+		if (false !== $lang && isset($this->fields[$fieldName]['optionRefs'][$lang]))
+		{
+			$result['refs'] = $this->fields[$fieldName]['optionRefs'][$lang];
+		}
+		return $result;
 	}
 
 	/*

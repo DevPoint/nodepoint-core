@@ -146,19 +146,12 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getFieldOptionReferences($fieldName, $lang);
 
 	/*
-	 * Check if options are independent from any 
-	 * other sources or the entities state
-	 *
 	 * @param $fieldName string
-	 * @return boolean true 
+	 * @param $lang string with language code
+	 * @return array(values=>array of options,
+	 			refs=>array of references indexed by options)
 	 */
-	public function hasFieldStaticOptions($fieldName);
-
-	/*
-	 * @param $fieldName string
-	 * @return array
-	 */
-	public function getFieldStaticOptions($fieldName);
+	public function getFieldStaticOptions($fieldName, $lang);
 
 	/*
 	 * @param $callName string

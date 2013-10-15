@@ -18,7 +18,7 @@ $entityType->setFieldType('name', $stringType);
 $entityType->setFieldDescription('name', array('hasOptions'=>true,'staticOptions'=>array('wilfried','carmen','david','julian','milena')));
 $entityType->setFieldType('body', $stringType);
 $entityType->setFieldDescription('body', array('i18n'=>true));
-$entityType->setFieldType('geoLocation', $position2dType);
+$entityType->setFieldType('geolocation', $position2dType);
 $entityType->setFieldType('info', $stringType);
 $entityType->setFieldDescription('info', array('isStatic'=>true, 'i18n'=>true));
 $entityType->setMagicFieldCallInfo('setParent', new MagicFieldCallInfo('parent', '_setMagicFieldCall'));
@@ -31,8 +31,8 @@ $entityType->setMagicFieldCallInfo('validateName', new MagicFieldCallInfo('name'
 $entityType->setMagicFieldCallInfo('setBody', new MagicFieldCallInfo('body', '_setMagicFieldCallI18n'));
 $entityType->setMagicFieldCallInfo('getBody', new MagicFieldCallInfo('body', '_getMagicFieldCallI18n'));
 $entityType->setMagicFieldCallInfo('validateBody', new MagicFieldCallInfo('body', '_validateMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('setGeoLocation', new MagicFieldCallInfo('geoLocation', '_setMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('getGeoLocation', new MagicFieldCallInfo('geoLocation', '_getMagicFieldCall'));
+$entityType->setMagicFieldCallInfo('setGeolocation', new MagicFieldCallInfo('geolocation', '_setMagicFieldCall'));
+$entityType->setMagicFieldCallInfo('getGeolocation', new MagicFieldCallInfo('geolocation', '_getMagicFieldCall'));
 $entityType->setMagicFieldCallInfo('getInfo', new MagicFieldCallInfo('info', '_getMagicFieldStaticCallI18n'));
 
 // language codes
@@ -59,9 +59,9 @@ $entityType->setFieldOptionReferences('name', $langB, array(
 $parent = new Node($entityType);
 $parent->setAlias("carmen-und-wilfried");
 $parent->setName("Carmen und Wilfried");
-$geoLocation = new Position2d();
-$geoLocation->set(41.501, 14.502);
-$parent->setGeoLocation($geoLocation);
+$geolocation = new Position2d();
+$geolocation->set(41.501, 14.502);
+$parent->setGeolocation($geolocation);
 
 $arrObjects = array();
 $object = new Node($entityType);
@@ -69,10 +69,10 @@ $object->setParent($parent);
 $object->setAlias("julian-brabsche");
 $object->setName("Julian Brabsche");
 $object->setBody($langA, "Hier kommt Julian, unser Mathe-Genie!");
-$object->setBody($langB, "Here comes Julian, our mathe genious!");
-$geoLocation = new Position2d();
-$geoLocation->set(43.001, 15.002);
-$object->setGeoLocation($geoLocation);
+$object->setBody($langB, "Here comes Julian, our mathematics genious!");
+$geolocation = new Position2d();
+$geolocation->set(43.001, 15.002);
+$object->setGeolocation($geolocation);
 $arrObjects[] = $object;
 
 $object = new Node($entityType);
@@ -81,12 +81,12 @@ $object->setAlias("david-brabsche");
 $object->setName("David Brabsche");
 $object->setBody($langA, "Hier kommt unser lieber David!");
 $object->setBody($langB, "Here comes our cute David!");
-$geoLocation = new Position2d();
-$geoLocation->set(43.001, 15.002);
-$object->setGeoLocation($geoLocation);
+$geolocation = new Position2d();
+$geolocation->set(43.001, 15.002);
+$object->setGeolocation($geolocation);
 $arrObjects[] = $object;
 
-$arrGeoLocation = $object->_fieldType('geoLocation')->objectToValue($object->getGeoLocation());
+$arrGeolocation = $object->_fieldType('geolocation')->objectToValue($object->getGeolocation());
 
 
 // output test result
@@ -100,8 +100,8 @@ foreach ($arrObjects as $object)
 	echo "Meine Eltern heißen " . $object->getParent()->getName() . "\n";
 	echo "Validate Field 'Name': " . $object->validateName("Carmen") . "\n";
 	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";
-	echo "Static Value: " . $object->getParent()->getInfo($langOut) . "\n";
-	echo "Du findest mich an folgenden Geokoordination: " . $arrGeoLocation['x'] . ', ' . $arrGeoLocation['y'] . "\n";
+	echo "Static Value: " . $object->getInfo($langOut) . "\n";
+	echo "Du findest mich an folgenden Geokoordination: " . $arrGeolocation['x'] . ', ' . $arrGeolocation['y'] . "\n";
 	echo "Option references: " . implode(', ', $entityType->getFieldOptionReferences('name', $langOut)) . "\n";
 	echo "\n";
 }

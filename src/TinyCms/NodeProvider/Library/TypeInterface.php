@@ -27,11 +27,6 @@ interface TypeInterface {
 	public function isTypeNameExact($typeName);
 	
 	/*
-	 * @return boolean
-	 */
-	public function isObject();
-
-	/*
 	 * @param $className string
 	 */
 	public function setClassName($className);
@@ -60,6 +55,11 @@ interface TypeInterface {
 	 * @return string
 	 */
 	public function getReferenceTypeName();
+
+	/*
+	 * @return boolean
+	 */
+	public function isObject();
 
 	/*
 	 * @param $object mixed

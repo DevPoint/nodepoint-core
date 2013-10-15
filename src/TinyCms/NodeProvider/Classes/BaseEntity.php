@@ -42,14 +42,6 @@ class BaseEntity implements EntityInterface {
 	}
 
 	/*
-	 * @return boolean true if field is an object
-	 */
-	final public function _isFieldObject($fieldName)
-	{
-		return $this->type->isFieldObject($fieldName);
-	}
-
-	/*
 	 * @param $fieldName string 
 	 * @param $args array[1] string fieldName
 	 * @return boolean

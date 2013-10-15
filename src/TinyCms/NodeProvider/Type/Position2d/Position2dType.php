@@ -16,6 +16,14 @@ class Position2dType extends BaseType {
 	}
 
 	/*
+	 * @return boolean
+	 */
+	public function isObject()
+	{
+		return true;
+	}
+
+	/*
 	 * @param $object mixed
 	 * @return mixed - array or input parameter type
 	 */

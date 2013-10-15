@@ -12,7 +12,12 @@ abstract class BaseType implements TypeInterface {
 	protected $typeName;
 
 	/*
-	 * @param $type string
+	 * @var string
+	 */
+	protected $className;
+
+	/*
+	 * @param $typeName string
 	 */
 	public function setTypeName($typeName)
 	{
@@ -28,7 +33,7 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
-	 * @param $type string
+	 * @param $typeName string
 	 * @return boolean true if type or any of the parent types matches
 	 */
 	public function isTypeName($typeName)
@@ -37,12 +42,36 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
-	 * @param $type string
+	 * @param $typeName string
 	 * @return boolean true if type matches
 	 */
 	public function isTypeNameExact($typeName)
 	{
 		return ($typeName === $this->getTypeName());
+	}
+
+	/*
+	 * @return boolean
+	 */
+	public function isObject()
+	{
+		return (null !== $this->className);
+	}
+
+	/*
+	 * @param $className string
+	 */
+	final public function setClassName($className)
+	{
+		$this->className = $className;
+	}
+
+	/*
+	 * @return string
+	 */
+	final public function getClassName()
+	{
+		return $this->className;
 	}
 
 	/*

@@ -103,7 +103,13 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return boolean true if object is an Entity
+	 * @return boolean true if field is an Object
+	 */
+	public function isFieldObject($fieldName);
+	
+	/*
+	 * @param $fieldName string
+	 * @return boolean true if field is an Entity
 	 */
 	public function isFieldEntity($fieldName);
 	

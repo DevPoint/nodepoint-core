@@ -76,6 +76,14 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	/*
 	 * @return boolean
 	 */
+	final public function isObject()
+	{
+		return true;
+	}
+
+	/*
+	 * @return boolean
+	 */
 	final public function isEntity()
 	{
 		return true;
@@ -327,7 +335,21 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return boolean true if object is an Entity
+	 * @return boolean true if field is an Object
+	 */
+	public function isFieldObject($fieldName)
+	{
+		$type = $this->getFieldType($fieldName);
+		if (!$type)
+		{
+			return false;
+		}
+		return $type->isObject();
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return boolean true if field is an Entity
 	 */
 	public function isFieldEntity($fieldName)
 	{

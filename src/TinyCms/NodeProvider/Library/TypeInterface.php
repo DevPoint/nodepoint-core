@@ -29,6 +29,21 @@ interface TypeInterface {
 	/*
 	 * @return boolean
 	 */
+	public function isObject();
+
+	/*
+	 * @param $className string
+	 */
+	public function setClassName($className);
+
+	/*
+	 * @return string
+	 */
+	public function getClassName();
+
+	/*
+	 * @return boolean
+	 */
 	public function isEntity();
 
 	/*

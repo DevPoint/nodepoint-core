@@ -415,11 +415,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $lang string with language code
-	 * @return array(values=>array of options,
-	 			refs=>array of references indexed by options)
+	 * @return array
 	 */
-	public function getFieldStaticOptions($fieldName, $lang)
+	public function getFieldStaticOptions($fieldName)
 	{
 		if (!$this->hasFieldOptions($fieldName))
 		{
@@ -429,12 +427,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		{
 			return false;
 		}
-		$result = array('values' => $this->fields[$fieldName]['desc']['staticOptions']);
-		if (false !== $lang && isset($this->fields[$fieldName]['optionRefs'][$lang]))
-		{
-			$result['refs'] = $this->fields[$fieldName]['optionRefs'][$lang];
-		}
-		return $result;
+		return $this->fields[$fieldName]['desc']['staticOptions'];
 	}
 
 	/*

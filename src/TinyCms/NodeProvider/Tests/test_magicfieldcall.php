@@ -15,7 +15,7 @@ $entityType = new TinyCms\NodeProvider\Type\Node\NodeType($parentType);
 $entityType->setFieldType('alias', $stringType);
 $entityType->setFieldType('parent', $entityType);
 $entityType->setFieldType('name', $stringType);
-$entityType->setFieldDescription('name', array('hasOptions'=>true,'staticOptions'=>array('wilfried','carmen','david','julian','milena')));
+$entityType->setFieldDescription('name', array('hasOptions'=>true,'options'=>array('wilfried','carmen','david','julian','milena')));
 $entityType->setFieldType('body', $stringType);
 $entityType->setFieldDescription('body', array('i18n'=>true));
 $entityType->setFieldType('geolocation', $position2dType);
@@ -42,18 +42,6 @@ $langB = "en";
 // set static values
 $entityType->setFieldStaticValueI18n('info', $langA, "Informationsunterlagen");
 $entityType->setFieldStaticValueI18n('info', $langB, "Information material");
-$entityType->setFieldOptionReferences('name', $langA, array(
-				'wilfried' => 'Wilfried',
-				'carmen' => 'Carmen',
-				'david' => 'David',
-				'julian' => 'Julian',
-				'milena' => 'Milena'));
-$entityType->setFieldOptionReferences('name', $langB, array(
-				'wilfried' => 'Wilfred',
-				'carmen' => 'Carmen',
-				'david' => 'David',
-				'julian' => 'Julian',
-				'milena' => 'Milena'));
 
 // create object instance
 $parent = new Node($entityType);
@@ -102,6 +90,6 @@ foreach ($arrObjects as $object)
 	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";
 	echo "Static Value: " . $object->getInfo($langOut) . "\n";
 	echo "Du findest mich an folgenden Geokoordination: " . $arrGeolocation['x'] . ', ' . $arrGeolocation['y'] . "\n";
-	echo "Option references: " . implode(', ', $entityType->getFieldOptionReferences('name', $langOut)) . "\n";
+	echo "Name Options: " . implode(', ', $entityType->getFieldOptions('name')) . "\n";
 	echo "\n";
 }

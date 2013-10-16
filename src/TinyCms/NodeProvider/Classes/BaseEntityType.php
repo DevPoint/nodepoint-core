@@ -365,69 +365,19 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return string
-	 */
-	public function getFieldOptionReferenceType($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['desc']['optionRefType']))
-		{
-			return false;
-		}
-		return $this->fields[$fieldName]['desc']['optionRefType'];
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @param $lang string with language code
-	 * @return array of string indexed by field option value
-	 */
-	public function setFieldOptionReferences($fieldName, $lang, $references)
-	{
-		if (!isset($this->fields[$fieldName]['optionRefs']))
-		{
-			$this->fields[$fieldName]['optionRefs'] = array();
-		}
-		$this->fields[$fieldName]['optionRefs'][$lang] = $references;
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @param $lang string with language code
-	 * @return array of string indexed by field option value
-	 */
-	public function getFieldOptionReferences($fieldName, $lang)
-	{
-		if (!isset($this->fields[$fieldName]['optionRefs'][$lang]))
-		{
-			if (!isset($this->fields[$fieldName]['desc']['staticOptions']))
-			{
-				return false;
-			}
-			$result = array();
-			foreach ($this->fields[$fieldName]['desc']['staticOptions'] as $option)
-			{
-				$result[$option] = $option;
-			}
-			return $result;
-		}
-		return $this->fields[$fieldName]['optionRefs'][$lang];
-	}
-
-	/*
-	 * @param $fieldName string
 	 * @return array
 	 */
-	public function getFieldStaticOptions($fieldName)
+	public function getFieldOptions($fieldName)
 	{
 		if (!$this->hasFieldOptions($fieldName))
 		{
 			return false;
 		}
-		if (!isset($this->fields[$fieldName]['desc']['staticOptions']))
+		if (!isset($this->fields[$fieldName]['desc']['options']))
 		{
 			return false;
 		}
-		return $this->fields[$fieldName]['desc']['staticOptions'];
+		return $this->fields[$fieldName]['desc']['options'];
 	}
 
 	/*

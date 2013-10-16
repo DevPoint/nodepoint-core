@@ -12,6 +12,6 @@ class UserRefType extends BaseEntityRefType {
 	 */
 	public function __construct($referenceTypeName)
 	{
-		parent::__construct('TinyCmsNodeProvider/UserRef', $referenceTypeName);
+		parent::__construct('TinyCmsCore/UserRef', $referenceTypeName);
 	}
 }

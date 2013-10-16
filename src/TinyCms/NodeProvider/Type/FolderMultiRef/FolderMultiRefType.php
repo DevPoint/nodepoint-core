@@ -13,6 +13,6 @@ class FolderMultiRefType extends BaseEntityMultiRefType {
 	 */
 	public function __construct($referenceTypeName)
 	{
-		parent::__construct('TinyCmsNodeProvider/FolderMultiRef', $referenceTypeName);
+		parent::__construct('TinyCmsCore/FolderMultiRef', $referenceTypeName);
 	}
 }

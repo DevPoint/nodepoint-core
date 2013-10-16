@@ -25,7 +25,7 @@ class StringSelectorI18n extends BaseSelector {
 
 	public function getReferenceType()
 	{
-		return 'TinyCmsNodeProvider/String';
+		return 'TinyCmsCore/String';
 	}
 
 	public function setReferencesI18n($lang, $references)

@@ -12,6 +12,6 @@ class ImageRefType extends BaseEntityRefType {
 	 */
 	public function __construct($referenceTypeName)
 	{
-		parent::__construct('TinyCmsNodeProvider/ImageRef', $referenceTypeName);
+		parent::__construct('TinyCmsCore/ImageRef', $referenceTypeName);
 	}
 }

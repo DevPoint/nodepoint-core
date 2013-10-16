@@ -12,6 +12,6 @@ class AssetRefType extends BaseEntityRefType {
 	 */
 	public function __construct($referenceTypeName)
 	{
-		parent::__construct('TinyCmsNodeProvider/AssetRef', $referenceTypeName);
+		parent::__construct('TinyCmsCore/AssetRef', $referenceTypeName);
 	}
 }

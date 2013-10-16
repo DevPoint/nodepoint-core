@@ -12,6 +12,6 @@ class UserMultiRefType extends BaseEntityMultiRefType {
 	 */
 	public function __construct($referenceTypeName)
 	{
-		parent::__construct('TinyCmsNodeProvider/UserMultiRef', $referenceTypeName);
+		parent::__construct('TinyCmsCore/UserMultiRef', $referenceTypeName);
 	}
 }

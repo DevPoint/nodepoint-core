@@ -11,6 +11,6 @@ class AliasType extends BaseType {
 	 */
 	public function __construct()
 	{
-		$this->typeName = 'TinyCmsNodeProvider/Alias';
+		$this->typeName = 'TinyCmsCore/Alias';
 	}
 }

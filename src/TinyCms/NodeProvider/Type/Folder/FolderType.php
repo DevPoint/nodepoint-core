@@ -14,7 +14,7 @@ class FolderType extends BaseNodeType {
 	 */
 	public function __construct($parentType=null, $description=array())
 	{
-		parent::__construct('TinyCmsNodeProvider/Folder', $parentType, $description);
+		parent::__construct('TinyCmsCore/Folder', $parentType, $description);
 	}
 }
 

@@ -11,6 +11,6 @@ class StringType extends BaseType {
 	 */
 	public function __construct()
 	{
-		$this->typeName = 'TinyCmsNodeProvider/String';
+		$this->typeName = 'TinyCmsCore/String';
 	}
 }

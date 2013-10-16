@@ -12,6 +12,6 @@ class AssetMultiRefType extends BaseEntityMultiRefType {
 	 */
 	public function __construct($referenceTypeName)
 	{
-		parent::__construct('TinyCmsNodeProvider/AssetMultiRef', $referenceTypeName);
+		parent::__construct('TinyCmsCore/AssetMultiRef', $referenceTypeName);
 	}
 }

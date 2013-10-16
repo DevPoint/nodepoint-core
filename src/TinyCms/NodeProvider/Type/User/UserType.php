@@ -14,6 +14,6 @@ class UserType extends BaseNodeType {
 	 */
 	public function __construct($parentType=null, $description=array())
 	{
-		parent::__construct('TinyCmsNodeProvider/User', $parentType, $description);
+		parent::__construct('TinyCmsCore/User', $parentType, $description);
 	}
 }

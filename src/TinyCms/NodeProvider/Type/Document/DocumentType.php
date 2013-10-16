@@ -14,6 +14,6 @@ class DocumentType extends BaseNodeType {
 	 */
 	public function __construct($parentType=null, $description=array())
 	{
-		parent::__construct('TinyCmsNodeProvider/Document', $parentType, $description);
+		parent::__construct('TinyCmsCore/Document', $parentType, $description);
 	}
 }

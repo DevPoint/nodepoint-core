@@ -11,7 +11,7 @@ class Position2dType extends BaseType {
 	 */
 	public function __construct()
 	{
-		$this->typeName = 'TinyCmsNodeProvider/Position2d';
+		$this->typeName = 'TinyCmsCore/Position2d';
 		$this->className = 'TinyCms\NodeProvider\Type\Position2d\Position2d';
 	}
 

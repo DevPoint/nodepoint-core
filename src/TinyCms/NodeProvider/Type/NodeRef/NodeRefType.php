@@ -13,6 +13,6 @@ class NodeRefType extends BaseEntityRefType {
 	 */
 	public function __construct($referenceTypeName)
 	{
-		parent::__construct('TinyCmsNodeProvider/NodeRef', $referenceTypeName);
+		parent::__construct('TinyCmsCore/NodeRef', $referenceTypeName);
 	}
 }

@@ -12,6 +12,6 @@ class DocumentMultiRefType extends BaseEntityMultiRefType {
 	 */
 	public function __construct($referenceTypeName)
 	{
-		parent::__construct('TinyCmsNodeProvider/DocumentMultiRef', $referenceTypeName);
+		parent::__construct('TinyCmsCore/DocumentMultiRef', $referenceTypeName);
 	}
 }

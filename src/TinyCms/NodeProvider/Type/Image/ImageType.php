@@ -14,6 +14,6 @@ class ImageType extends BaseNodeType {
 	 */
 	public function __construct($parentType=null, $description=array())
 	{
-		parent::__construct('TinyCmsNodeProvider/Image', $parentType, $description);
+		parent::__construct('TinyCmsCore/Image', $parentType, $description);
 	}
 }

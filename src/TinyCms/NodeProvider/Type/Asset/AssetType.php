@@ -14,6 +14,6 @@ class AssetType extends BaseNodeType {
 	 */
 	public function __construct($parentType=null, $description=array())
 	{
-		parent::__construct('TinyCmsNodeProvider/Asset', $parentType, $description);
+		parent::__construct('TinyCmsCore/Asset', $parentType, $description);
 	}
 }

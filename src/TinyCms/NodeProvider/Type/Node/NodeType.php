@@ -14,7 +14,7 @@ class NodeType extends BaseNodeType {
 	 */
 	public function __construct($parentType=null, $description=array())
 	{
-		parent::__construct('TinyCmsNodeProvider/Node', $parentType, $description);
+		parent::__construct('TinyCmsCore/Node', $parentType, $description);
 	}
 }
 

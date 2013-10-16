@@ -12,6 +12,6 @@ class DocumentRefType extends BaseEntityRefType {
 	 */
 	public function __construct(EntityTypeInterface $referenceTypeName)
 	{
-		parent::__construct('TinyCmsNodeProvider/DocumentRef', $referenceTypeName);
+		parent::__construct('TinyCmsCore/DocumentRef', $referenceTypeName);
 	}
 }

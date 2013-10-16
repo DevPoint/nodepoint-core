@@ -13,6 +13,6 @@ class EntityMultiRefType extends BaseEntityMultiRefType {
 	 */
 	public function __construct($referenceTypeName)
 	{
-		parent::__construct('TinyCmsNodeProvider/EntityMultiRef', $referenceTypeName);
+		parent::__construct('TinyCmsCore/EntityMultiRef', $referenceTypeName);
 	}
 }

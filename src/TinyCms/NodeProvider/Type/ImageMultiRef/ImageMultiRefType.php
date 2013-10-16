@@ -12,6 +12,6 @@ class ImageMultiRefType extends BaseEntityMultiRefType {
 	 */
 	public function __construct($referenceTypeName)
 	{
-		parent::__construct('TinyCmsNodeProvider/ImageMultiRef', $referenceTypeName);
+		parent::__construct('TinyCmsCore/ImageMultiRef', $referenceTypeName);
 	}
 }

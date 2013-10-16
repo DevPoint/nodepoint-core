@@ -230,7 +230,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		if ($this->hasFieldI18n($fieldName))
 		{
-			// TODO: Exception: use i18n version of function to access
+			// TODO: Exception: use i18n version of function
 			return;
 		}
 		$this->fields[$fieldName]['staticValues'] = $value;
@@ -244,7 +244,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		if ($this->hasFieldI18n($fieldName))
 		{
-			// TODO: Exception use i18n version of function to access
+			// TODO: Exception use i18n version of function
 			return null;
 		}
 		if (!isset($this->fields[$fieldName]['staticValues']))
@@ -256,7 +256,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $lang string with language code or null
+	 * @param $lang string with language code
 	 * @param $value mixed
 	 */
 	public function setFieldStaticValueI18n($fieldName, $lang, $value)
@@ -275,7 +275,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $lang string with language code or null
+	 * @param $lang string with language code or false
 	 * @return mixed
 	 */
 	public function getFieldStaticValueI18n($fieldName, $lang)
@@ -296,11 +296,20 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
+	 * @param $fieldName string
+	 * @return boolean if field is constructed by the values of other fields
+	 */
+	public function isFieldConstructed($fieldName)
+	{
+		return (!empty($this->fields[$fieldName]['desc']['isConstructed']));
+	}
+
+	/*
 	 * Base field names are used for constructed
 	 * fields and for fields which have dynamic options
 	 *
 	 * @param $fieldName string
-	 * @return mixed - string or array of string with field names
+	 * @return mixed - string or array of string with fieldNames
 	 */
 	public function getFieldBaseField($fieldName)
 	{
@@ -347,15 +356,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return boolean if field is constructed by the values of other fields
-	 */
-	public function isFieldConstructed($fieldName)
-	{
-		return (!empty($this->fields[$fieldName]['desc']['isConstructed']));
-	}
-
-	/*
-	 * @param $fieldName string
 	 * @return boolean
 	 */
 	public function hasFieldOptions($fieldName)
@@ -369,10 +369,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldOptions($fieldName)
 	{
-		if (!$this->hasFieldOptions($fieldName))
-		{
-			return false;
-		}
 		if (!isset($this->fields[$fieldName]['desc']['options']))
 		{
 			return false;

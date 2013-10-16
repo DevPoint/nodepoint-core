@@ -5,7 +5,6 @@ header("Content-Type:text/plain; charset=utf-8");
 use TinyCms\NodeProvider\Library\MagicFieldCallInfo;
 use TinyCms\NodeProvider\Type\Entity\Entity;
 use TinyCms\NodeProvider\Type\Node\Node;
-use TinyCms\NodeProvider\Type\Folder\Folder;
 use TinyCms\NodeProvider\Type\Position2d\Position2d;
 
 // create types
@@ -45,7 +44,7 @@ $entityType->setFieldStaticValueI18n('info', $langA, "Informationsunterlagen");
 $entityType->setFieldStaticValueI18n('info', $langB, "Information material");
 
 // create object instance
-$parent = new Folder($entityType);
+$parent = new Node($entityType);
 $parent->setAlias("carmen-und-wilfried");
 $parent->setName("Carmen und Wilfried");
 $geolocation = new Position2d();
@@ -91,6 +90,6 @@ foreach ($arrObjects as $object)
 	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";
 	echo "Static Value: " . $object->getInfo($langOut) . "\n";
 	echo "Du findest mich an folgenden Geokoordination: " . $arrGeolocation['x'] . ', ' . $arrGeolocation['y'] . "\n";
-	echo "Name Options: " . implode(', ', $entityType->getFieldOptions('name')) . "\n";
+	echo "Name Options: " . implode(', ', $object->_type()->getFieldOptions('name')) . "\n";
 	echo "\n";
 }

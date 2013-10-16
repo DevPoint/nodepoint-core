@@ -5,13 +5,14 @@ header("Content-Type:text/plain; charset=utf-8");
 use TinyCms\NodeProvider\Library\MagicFieldCallInfo;
 use TinyCms\NodeProvider\Type\Entity\Entity;
 use TinyCms\NodeProvider\Type\Node\Node;
+use TinyCms\NodeProvider\Type\Folder\Folder;
 use TinyCms\NodeProvider\Type\Position2d\Position2d;
 
 // create types
 $parentType = new TinyCms\NodeProvider\Type\Entity\EntityType();
 $stringType = new TinyCms\NodeProvider\Type\String\StringType();
 $position2dType = new TinyCms\NodeProvider\Type\Position2d\Position2dType();
-$entityType = new TinyCms\NodeProvider\Type\Node\NodeType($parentType);
+$entityType = new TinyCms\NodeProvider\Type\Folder\FolderType($parentType);
 $entityType->setFieldType('alias', $stringType);
 $entityType->setFieldType('parent', $entityType);
 $entityType->setFieldType('name', $stringType);
@@ -44,7 +45,7 @@ $entityType->setFieldStaticValueI18n('info', $langA, "Informationsunterlagen");
 $entityType->setFieldStaticValueI18n('info', $langB, "Information material");
 
 // create object instance
-$parent = new Node($entityType);
+$parent = new Folder($entityType);
 $parent->setAlias("carmen-und-wilfried");
 $parent->setName("Carmen und Wilfried");
 $geolocation = new Position2d();

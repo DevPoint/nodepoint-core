@@ -1,8 +1,8 @@
 <?php
 
-namespace TinyCms\NodeProvider\Value\NodeMultiRef;
+namespace TinyCms\NodeProvider\Type\NodeMultiRef;
 
-use TinyCms\NodeProvider\Classes\BaseNodeMultiRefType;
+use TinyCms\NodeProvider\Classes\BaseEntityMultiRefType;
 
 class NodeMultiRefType extends BaseEntityMultiRefType {
 

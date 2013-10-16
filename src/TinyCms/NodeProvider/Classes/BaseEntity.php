@@ -44,16 +44,6 @@ class BaseEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string 
-	 * @param $args array(0=>language)
-	 * @return array
-	 */
-	protected function _getMagicFieldStaticOptionsCall($fieldName, &$args)
-	{
-		return $this->type->getFieldStaticOptions($fieldName, $args[0]);
-	}
-
-	/*
-	 * @param $fieldName string 
 	 * @param $args array(0=>value)
 	 * @return boolean
 	 */

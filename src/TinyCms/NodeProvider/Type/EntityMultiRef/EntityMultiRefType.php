@@ -1,6 +1,6 @@
 <?php
 
-namespace TinyCms\NodeProvider\Value\EntityMultiRef;
+namespace TinyCms\NodeProvider\Type\EntityMultiRef;
 
 use TinyCms\NodeProvider\Classes\BaseEntityMultiRefType;
 

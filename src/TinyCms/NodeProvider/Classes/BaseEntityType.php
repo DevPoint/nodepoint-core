@@ -231,7 +231,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		if ($this->hasFieldI18n($fieldName))
 		{
-			// TODO: Exception use i18n version of function
+			// TODO: Exception: use i18n version of function
 			return null;
 		}
 		if (!isset($this->fields[$fieldName]['staticValues']))
@@ -316,7 +316,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$type = $this->getFieldType($fieldName);
 		if (!$type)
 		{
-			// TODO: Exception: field has no type
+			// TODO: Exception: no type provided for field
 			return false;
 		}
 		return $type->isObject();
@@ -331,7 +331,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$type = $this->getFieldType($fieldName);
 		if (!$type)
 		{
-			// TODO: Exception: field has no type
+			// TODO: Exception: no type provided for field
 			return false;
 		}
 		return $type->isEntity();

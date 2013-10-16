@@ -137,15 +137,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return boolean
-	 */
-	final protected function hasFieldDescription($fieldName)
-	{
-		return (isset($this->fields[$fieldName]['desc']));
-	}
-
-	/*
-	 * @param $fieldName string
 	 * @param $description array
 	 */
 	public function setFieldDescription($fieldName, $description)
@@ -185,10 +176,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function isFieldReadOnly($fieldName)
 	{
-		if (!$this->hasFieldDescription($fieldName))
-		{ 
-			return false;
-		}
 		if (isset($this->fields[$fieldName]['desc']['readOnly']))
 		{
 			return $this->fields[$fieldName]['desc']['readOnly'];
@@ -263,7 +250,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		if (!$this->hasFieldI18n($fieldName))
 		{
-			// TODO: Exception accessing no i18n field with language
+			// TODO: Exception: language access to field, which hasn't i18n
 			return;
 		}
 		if (!isset($this->fields[$fieldName]['staticValues']))
@@ -313,10 +300,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldBaseField($fieldName)
 	{
-		if (!$this->hasFieldDescription($fieldName))
-		{ 
-			return false;
-		}
 		if (!isset($this->fields[$fieldName]['desc']['baseField']))
 		{
 			return false;

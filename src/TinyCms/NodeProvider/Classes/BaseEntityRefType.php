@@ -13,7 +13,7 @@ abstract class BaseEntityRefType extends BaseType {
 	/*
 	 * Constructor
 	 *
-	 * @param $type string
+	 * @param $typeName string
 	 * @param $referenceTypeName string
 	 */
 	protected function __construct($typeName, $referenceTypeName)

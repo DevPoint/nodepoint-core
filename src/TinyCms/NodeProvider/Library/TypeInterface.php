@@ -37,17 +37,17 @@ interface TypeInterface {
 	public function getClassName();
 
 	/*
-	 * @return boolean
+	 * @return boolean true for entity types
 	 */
 	public function isEntity();
 
 	/*
-	 * @return boolean
+	 * @return boolean true for node types
 	 */
 	public function isNode();
 
 	/*
-	 * @return boolean
+	 * @return boolean true if type is refering to an entity
 	 */
 	public function isReference();
 

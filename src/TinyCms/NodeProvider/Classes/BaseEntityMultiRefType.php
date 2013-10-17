@@ -23,7 +23,7 @@ abstract class BaseEntityMultiRefType extends BaseType {
 	}
 
 	/*
-	 * @return boolean true if value refering to an object
+	 * @return boolean true if value refering to an entity
 	 */
 	public function isReference()
 	{

@@ -74,17 +74,17 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * @return boolean
+	 * @return boolean true for entity types
 	 */
-	final public function isObject()
+	final public function isEntity()
 	{
 		return true;
 	}
 
 	/*
-	 * @return boolean
+	 * @return boolean true for object types
 	 */
-	final public function isEntity()
+	final public function isObject()
 	{
 		return true;
 	}
@@ -159,15 +159,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return boolean
+	 * @return boolean if field is array
 	 */
 	public function isFieldArray($fieldName)
 	{
-		if (empty($this->fields[$fieldName]['desc']['isArray']))
-		{ 
-			return false;
-		}
-		return true;
+		return (!empty($this->fields[$fieldName]['desc']['isArray']));
 	}
 	
 	/*
@@ -262,7 +258,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $lang string with language code or false
+	 * @param $lang string with language code or null
 	 * @return mixed
 	 */
 	public function getFieldStaticValueI18n($fieldName, $lang)

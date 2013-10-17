@@ -16,7 +16,7 @@ class Position2dType extends BaseType {
 	}
 
 	/*
-	 * @return boolean
+	 * @return boolean true for object types
 	 */
 	public function isObject()
 	{

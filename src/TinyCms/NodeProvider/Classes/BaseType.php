@@ -67,7 +67,7 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
-	 * @return boolean
+	 * @return boolean true for entity types
 	 */
 	public function isEntity()
 	{
@@ -75,7 +75,7 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
-	 * @return boolean
+	 * @return boolean true for node types
 	 */
 	public function isNode()
 	{
@@ -83,7 +83,7 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
-	 * @return boolean
+	 * @return boolean true if type is refering to an entity
 	 */
 	public function isReference()
 	{
@@ -99,7 +99,7 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
-	 * @return boolean
+	 * @return boolean true for object types
 	 */
 	public function isObject()
 	{

@@ -93,7 +93,7 @@ class EntityManager implements EntityManagerInterface {
 		{
 			foreach ($this->entitiesToUpdate as $entity)
 			{
-				$entity->_resetUpdate();
+				$entity->_getStorageProxy()->resetUpdate();
 			}
 			$this->entitiesToUpdate = array();
 		}

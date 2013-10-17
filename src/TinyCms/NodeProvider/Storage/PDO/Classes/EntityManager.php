@@ -35,6 +35,7 @@ class EntityManager implements EntityManagerInterface {
 		$this->conn = $conn;
 		$this->repositories = array();
 		$this->entitiesToInsert = array();
+		$this->entitiesToUpdate = array();
 	}
 
 	/*
@@ -58,26 +59,24 @@ class EntityManager implements EntityManagerInterface {
 	 */
 	public function persist(EntityInterface $entity)
 	{
-		$repository = $entity->_getRepository();
-		if (!$repository)
+		$storageProxy = $entity->_getStorageProxy();
+		if (!$storageProxy)
 		{
 			$type = $entity->_type();
 			$typeName = $type->getTypeName();
 			if (!isset($this->repositories[$typeName]))
 			{
 				$repositoryClass = $type->getRepositoryClass();
-				if ($repositoryClass)
+				if (!$repositoryClass)
 				{
-					$repository = new $repositoryClass($this->conn, $this, $type);
+					$repositoryClass = 'TinyCms\NodeProvider\Storage\PDO\Classes\EntityRepository';
 				}
-				else
-				{
-					$repository = new EntityRepository($this->conn, $this, $type);
-				}
+				$repository = new $repositoryClass($this->conn, $this, $type);
 				$this->repositories[$typeName] = $repository;
 			}
 			$repository = $this->repositories[$typeName];
-			$entity->_setRepository($repository);
+			$storageProxy = new EntityStorageProxy($repository, $entity);
+			$entity->_setStorageProxy($storageProxy);
 			$this->entitiesToInsert[] = $entity;
 		}
 	}

@@ -2,7 +2,7 @@
 
 namespace TinyCms\NodeProvider\Library;
 
-use TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface;
+use TinyCms\NodeProvider\Storage\Library\EntityStorageProxyInterface;
 
 interface EntityInterface {
 
@@ -17,27 +17,12 @@ interface EntityInterface {
 	public function _fieldType($fieldName);
 
 	/*
-	 * @return boolean true if entity has been updated
-	 */
-	public function _hasUpdate();
-
-	/*
-	 * Reset any update flags
-	 */
-	public function _resetUpdate();
-
-	/*
-	 * @return array of string
-	 */
-	public function _getUpdateFieldNames();
-
-	/*
 	 * @param $repository TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
 	 */
-	public function _setRepository(EntityRepositoryInterface $repository);
+	public function _setStorageProxy(EntityStorageProxyInterface $storageProxy);
 
 	/*
 	 * @return TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
 	 */
-	public function _getRepository();
+	public function _getStorageProxy();
 }

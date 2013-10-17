@@ -25,7 +25,7 @@ class EntityRepository implements EntityRepositoryInterface {
 	protected $type;
 
 	/*
-	 * @param $conn (\PDO
+	 * @param $conn \PDO
 	 * @param $em TinyCms\NodeProvider\Storage\Library\EntityManagerInterface
 	 * @param $type TinyCms\NodeProvider\Library\EntityTypeInterface
 	 */

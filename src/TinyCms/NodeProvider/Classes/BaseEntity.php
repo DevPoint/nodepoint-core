@@ -3,7 +3,7 @@
 namespace TinyCms\NodeProvider\Classes;
 
 use TinyCms\NodeProvider\Library\EntityInterface;
-use TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface;
+use TinyCms\NodeProvider\Storage\Library\EntityStorageProxyInterface;
 
 class BaseEntity implements EntityInterface {
 
@@ -13,9 +13,9 @@ class BaseEntity implements EntityInterface {
 	protected $type;
 
 	/*
-	 * @var TinyCms\NodeProvider\Library\EntityRepositoryInterface
+	 * @var TinyCms\NodeProvider\Library\EntityStorageProxyInterface
 	 */
-	protected $repository;
+	protected $storageProxy;
 
 	/*
 	 * @var array of values indexed by fieldName
@@ -23,19 +23,13 @@ class BaseEntity implements EntityInterface {
 	protected $fields;
 
 	/*
-	 * @var array of string with fieldNames
-	 */
-	protected $updateFieldNames;
-
-	/*
 	 * Constructor
 	 */
 	public function __construct($type, $fields=array())
 	{
 		$this->type = $type;
-		$this->repository = null;
+		$this->storageProxy = null;
 		$this->fields = $fields;
-		$this->updateFieldNames = null;
 	}
 
 	/*
@@ -56,62 +50,19 @@ class BaseEntity implements EntityInterface {
 	}
 
 	/*
-	 * @return boolean true if entity has been updated
+	 * @param $repository TinyCms\NodeProvider\Storage\Library\EntityStorageProxyInterface
 	 */
-	final public function _hasUpdate()
+	public function _setStorageProxy(EntityStorageProxyInterface $storageProxy)
 	{
-		return (!empty($this->updateFieldNames));
-	}
-
-	/*
-	 * Reset any update flags
-	 */
-	final public function _resetUpdate()
-	{
-		$this->updateFieldNames = null;
-	}	
-
-	/*
-	 * @return array of string
-	 */
-	final public function _getUpdateFieldNames()
-	{
-		return array_keys($this->updateFieldNames);
-	}	
-
-	/*
-	 * @param $fieldName string
-	 */
-	protected function addUpdateField($fieldName)
-	{
-		if (isset($this->repository))
-		{
-			if (null == $this->updateFieldNames)
-			{
-				$this->updateFieldNames = array();
-				$this->repository->getEntityManager()->update($this);
-			}
-			if (empty($this->updateFieldNames[$fieldName]))
-			{
-				$this->updateFieldNames[$fieldName] = true;
-			}
-		}
-	}
-
-	/*
-	 * @param $repository TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
-	 */
-	final public function _setRepository(EntityRepositoryInterface $repository)
-	{
-		$this->repository = $repository;
+		$this->storageProxy = $storageProxy;
 	}
 
 	/*
 	 * @return TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
 	 */
-	final public function _getRepository()
+	final public function _getStorageProxy()
 	{
-		return $this->repository;
+		return $this->storageProxy;
 	}
 
 	/*
@@ -132,7 +83,10 @@ class BaseEntity implements EntityInterface {
 	protected function _setMagicFieldCall($fieldName, &$args)
 	{
 		$this->fields[$fieldName] = $args[0];
-		$this->addUpdateField($fieldName);
+		if (null !== $this->storageProxy)
+		{
+			$this->storageProxy->addUpdateField($fieldName);
+		}
 		return $this;
 	}
 
@@ -170,7 +124,10 @@ class BaseEntity implements EntityInterface {
 			$this->fields[$fieldName] = array();	
 		}
 		$this->fields[$fieldName][$args[0]] = $args[1];
-		$this->addUpdateField($fieldName);
+		if (null !== $this->storageProxy)
+		{
+			$this->storageProxy->addUpdateField($fieldName);
+		}
 		return $this;
 	}
 

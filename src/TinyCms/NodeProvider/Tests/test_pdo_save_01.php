@@ -13,53 +13,66 @@ $dbpass = '';
 $conn = new PDO('mysql:host=localhost;dbname=tinycms', $dbuser, $dbpass);
 
 // create types
-$parentType = new TinyCms\NodeProvider\Type\Node\NodeType();
 $integerType = new TinyCms\NodeProvider\Type\Integer\IntegerType();
 $aliasType = new TinyCms\NodeProvider\Type\Alias\AliasType();
 $stringType = new TinyCms\NodeProvider\Type\String\StringType();
-$entityType = new TinyCms\NodeProvider\Type\Document\DocumentType();
-$entityType->setFieldType('id', $integerType);
-$entityType->setFieldDescription('id', array('isPrimary'=>true));
-$entityType->setFieldType('parent', $parentType);
-$entityType->setFieldType('alias', $aliasType);
-$entityType->setFieldType('name', $stringType);
-$entityType->setFieldDescription('name', array('i18n'=>true));
-$entityType->setFieldType('body', $stringType);
-$entityType->setFieldDescription('body', array('i18n'=>true));
-$entityType->setMagicFieldCallInfo('setId', new MagicFieldCallInfo('id', '_setMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('getId', new MagicFieldCallInfo('id', '_getMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('setParent', new MagicFieldCallInfo('parent', '_setMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('getParent', new MagicFieldCallInfo('parent', '_getMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('setAlias', new MagicFieldCallInfo('alias', '_setMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('getAlias', new MagicFieldCallInfo('alias', '_getMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('setName', new MagicFieldCallInfo('name', '_setMagicFieldCallI18n'));
-$entityType->setMagicFieldCallInfo('getName', new MagicFieldCallInfo('name', '_getMagicFieldCallI18n'));
-$entityType->setMagicFieldCallInfo('setBody', new MagicFieldCallInfo('body', '_setMagicFieldCallI18n'));
-$entityType->setMagicFieldCallInfo('getBody', new MagicFieldCallInfo('body', '_getMagicFieldCallI18n'));
+
+$nodeType = new TinyCms\NodeProvider\Type\Node\NodeType();
+$nodeType->setFieldType('alias', $aliasType);
+$nodeType->setFieldType('name', $stringType);
+$nodeType->setFieldDescription('name', array('i18n'=>true));
+
+$documentType = new TinyCms\NodeProvider\Type\Document\DocumentType();
+$documentType->setFieldType('id', $integerType);
+$documentType->setFieldDescription('id', array('isPrimary'=>true));
+$documentType->setFieldType('parent', $nodeType);
+$documentType->setFieldType('alias', $aliasType);
+$documentType->setFieldType('name', $stringType);
+$documentType->setFieldDescription('name', array('i18n'=>true));
+$documentType->setFieldType('body', $stringType);
+$documentType->setFieldDescription('body', array('i18n'=>true));
+$documentType->setMagicFieldCallInfo('setId', new MagicFieldCallInfo('id', '_setMagicFieldCall'));
+$documentType->setMagicFieldCallInfo('getId', new MagicFieldCallInfo('id', '_getMagicFieldCall'));
+$documentType->setMagicFieldCallInfo('setParent', new MagicFieldCallInfo('parent', '_setMagicFieldCall'));
+$documentType->setMagicFieldCallInfo('getParent', new MagicFieldCallInfo('parent', '_getMagicFieldCall'));
+$documentType->setMagicFieldCallInfo('setAlias', new MagicFieldCallInfo('alias', '_setMagicFieldCall'));
+$documentType->setMagicFieldCallInfo('getAlias', new MagicFieldCallInfo('alias', '_getMagicFieldCall'));
+$documentType->setMagicFieldCallInfo('setName', new MagicFieldCallInfo('name', '_setMagicFieldCallI18n'));
+$documentType->setMagicFieldCallInfo('getName', new MagicFieldCallInfo('name', '_getMagicFieldCallI18n'));
+$documentType->setMagicFieldCallInfo('setBody', new MagicFieldCallInfo('body', '_setMagicFieldCallI18n'));
+$documentType->setMagicFieldCallInfo('getBody', new MagicFieldCallInfo('body', '_getMagicFieldCallI18n'));
+
+// create node and document repository
+$em = new TinyCms\NodeProvider\Storage\PDO\EntityManager($conn);
 
 // language codes
 $langA = "de";
 $langB = "en";
 
 // create object instance
-$parent = new Node($parentType);
+$parent = new Node($nodeType);
 $parent->setAlias("root");
-$parent->setName("Root");
+$parent->setName($langA, "Root");
+$em->persist($parent);
 
 $arrObjects = array();
-$object = new Document($entityType);
+$object = new Document($documentType);
 $object->setParent($parent);
 $object->setAlias("julian-brabsche");
 $object->setName($langA, "Julian Brabsche");
 $object->setBody($langA, "Hier kommt Julian, unser Mathe-Genie!");
 $arrObjects[] = $object;
+$em->persist($object);
 
-$object = new Node($entityType);
+$object = new Node($documentType);
 $object->setParent($parent);
 $object->setAlias("david-brabsche");
 $object->setName($langA, "David Brabsche");
 $object->setBody($langA, "Hier kommt unser lieber David!");
 $arrObjects[] = $object;
+$em->persist($object);
+
+$em->flush();
 
 // output test result
 echo "Test succeeded\n";

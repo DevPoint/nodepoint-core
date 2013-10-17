@@ -24,6 +24,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $defaultLanguage;
 
 	/*
+	 * @var string repositories class name
+	 */
+	protected $repositoryClass;
+
+	/*
 	 * @var array indexed by fieldName
 	 */
 	protected $fields;
@@ -46,6 +51,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->typeName = $typeName;
 		$this->parentType = $parentType;
 		$this->defaultLanguage = isset($description['defLang']) ? $description['defLang'] : 'en';
+		$this->repositoryClass = isset($description['repository']) ? $description['repository'] : null;
 		$this->finalState = false;
 		$this->fields = array();
 		$this->magicFieldCallInfos = array();
@@ -95,6 +101,14 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	final public function getDefaultLanguage()
 	{
 		return $this->defaultLanguage;
+	}
+
+	/*
+	 * @return string
+	 */
+	public function getRepositoryClass()
+	{
+		return $this->repositoryClass;
 	}
 
 	/*

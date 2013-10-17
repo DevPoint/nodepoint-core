@@ -20,6 +20,11 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getDefaultLanguage();
 	
 	/*
+	 * @return string
+	 */
+	public function getRepositoryClass();
+
+	/*
 	 * @param $fieldName string
 	 * @param $tType TinyCms\NodeProvider\Library\TypeInterface
 	 */
@@ -48,7 +53,7 @@ interface EntityTypeInterface extends TypeInterface {
 	 * @return boolean if field is the one with primary id
 	 */
 	public function isFieldPrimaryId($fieldName);
-	
+
 	/*
 	 * @param $fieldName string
 	 * @return boolean

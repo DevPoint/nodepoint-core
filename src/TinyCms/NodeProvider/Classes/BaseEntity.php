@@ -3,6 +3,7 @@
 namespace TinyCms\NodeProvider\Classes;
 
 use TinyCms\NodeProvider\Library\EntityInterface;
+use TinyCms\NodeProvider\Library\EntityRepositoryInterface;
 
 class BaseEntity implements EntityInterface {
 
@@ -10,6 +11,11 @@ class BaseEntity implements EntityInterface {
 	 * @var TinyCms\NodeProvider\Library\EntityTypeInterface
 	 */
 	protected $type;
+
+	/*
+	 * @var TinyCms\NodeProvider\Library\EntityRepositoryInterface
+	 */
+	protected $repository;
 
 	/*
 	 * @var array of values indexed by fieldName
@@ -40,6 +46,22 @@ class BaseEntity implements EntityInterface {
 	final public function _fieldType($fieldName)
 	{
 		return $this->type->getFieldType($fieldName);
+	}
+
+	/*
+	 * @param $repository TinyCms\NodeProvider\Library\EntityRepositoryInterface
+	 */
+	final public function _setRepository(EntityRepositoryInterface $repository)
+	{
+		$this->repository = $repository;
+	}
+
+	/*
+	 * @return TinyCms\NodeProvider\Library\EntityRepositoryInterface
+	 */
+	final public function _getRepository()
+	{
+		return $this->repository;
 	}
 
 	/*

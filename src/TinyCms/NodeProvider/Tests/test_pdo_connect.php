@@ -26,4 +26,4 @@ $stmt->execute($params);
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 print_r($users);
 
-
+$conn = null;

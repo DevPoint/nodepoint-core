@@ -159,13 +159,22 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
+	 * @return boolean if field is the one with primary id
+	 */
+	public function isFieldPrimaryId($fieldName)
+	{
+		return (!empty($this->fields[$fieldName]['desc']['isPrimary']));
+	}	
+	
+	/*
+	 * @param $fieldName string
 	 * @return boolean if field is array
 	 */
 	public function isFieldArray($fieldName)
 	{
 		return (!empty($this->fields[$fieldName]['desc']['isArray']));
 	}
-	
+
 	/*
 	 * @param $fieldName string
 	 * @return boolean if field is readOnly

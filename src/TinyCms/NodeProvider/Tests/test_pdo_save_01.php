@@ -64,6 +64,8 @@ $object->setBody($langA, "Hier kommt Julian, unser Mathe-Genie!");
 $arrObjects[] = $object;
 $em->persist($object);
 
+$object->setName($langA, "J. Brabsche");
+
 $object = new Node($documentType);
 $object->setParent($parent);
 $object->setAlias("david-brabsche");

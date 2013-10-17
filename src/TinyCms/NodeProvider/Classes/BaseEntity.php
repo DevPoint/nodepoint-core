@@ -23,12 +23,19 @@ class BaseEntity implements EntityInterface {
 	protected $fields;
 
 	/*
+	 * @var array of string with fieldNames
+	 */
+	protected $updateFieldNames;
+
+	/*
 	 * Constructor
 	 */
 	public function __construct($type, $fields=array())
 	{
 		$this->type = $type;
+		$this->repository = null;
 		$this->fields = $fields;
+		$this->updateFieldNames = null;
 	}
 
 	/*
@@ -46,6 +53,49 @@ class BaseEntity implements EntityInterface {
 	final public function _fieldType($fieldName)
 	{
 		return $this->type->getFieldType($fieldName);
+	}
+
+	/*
+	 * @return boolean true if entity has been updated
+	 */
+	final public function _hasUpdate()
+	{
+		return (!empty($this->updateFieldNames));
+	}
+
+	/*
+	 * Reset any update flags
+	 */
+	final public function _resetUpdate()
+	{
+		$this->updateFieldNames = null;
+	}	
+
+	/*
+	 * @return array of string
+	 */
+	final public function _getUpdateFieldNames()
+	{
+		return array_keys($this->updateFieldNames);
+	}	
+
+	/*
+	 * @param $fieldName string
+	 */
+	protected function addUpdateField($fieldName)
+	{
+		if (isset($this->repository))
+		{
+			if (null == $this->updateFieldNames)
+			{
+				$this->updateFieldNames = array();
+				$this->repository->getEntityManager()->update($this);
+			}
+			if (empty($this->updateFieldNames[$fieldName]))
+			{
+				$this->updateFieldNames[$fieldName] = true;
+			}
+		}
 	}
 
 	/*
@@ -82,6 +132,7 @@ class BaseEntity implements EntityInterface {
 	protected function _setMagicFieldCall($fieldName, &$args)
 	{
 		$this->fields[$fieldName] = $args[0];
+		$this->addUpdateField($fieldName);
 		return $this;
 	}
 
@@ -119,6 +170,7 @@ class BaseEntity implements EntityInterface {
 			$this->fields[$fieldName] = array();	
 		}
 		$this->fields[$fieldName][$args[0]] = $args[1];
+		$this->addUpdateField($fieldName);
 		return $this;
 	}
 

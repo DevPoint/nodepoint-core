@@ -28,13 +28,29 @@ class EntityManager implements EntityManagerInterface {
 	protected $entitiesToUpdate;
 
 	/*
-	 * @param $type TinyCms\NodeProvider\Library\EntityTypeInterface
+	 * @param $conn \PDO
 	 */
 	public function __construct(\PDO $conn)
 	{
 		$this->conn = $conn;
 		$this->repositories = array();
 		$this->entitiesToInsert = array();
+	}
+
+	/*
+	 * @return \PDO
+	 */
+	public function getConnection()
+	{
+		return $this->conn;
+	}
+
+	/*
+	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
+	 */
+	public function update(EntityInterface $entity)
+	{
+		$this->entitiesToUpdate[] = $entity;
 	}
 
 	/*
@@ -52,11 +68,11 @@ class EntityManager implements EntityManagerInterface {
 				$repositoryClass = $type->getRepositoryClass();
 				if ($repositoryClass)
 				{
-					$repository = new $repositoryClass($this->conn, $type);
+					$repository = new $repositoryClass($this->conn, $this, $type);
 				}
 				else
 				{
-					$repository = new EntityRepository($this->conn, $type);
+					$repository = new EntityRepository($this->conn, $this, $type);
 				}
 				$this->repositories[$typeName] = $repository;
 			}
@@ -72,6 +88,15 @@ class EntityManager implements EntityManagerInterface {
 	public function flush()
 	{
 		$this->entitiesToInsert = array();
-		$this->entitiesToUpdate = array();
+		
+		// handle all entity updates
+		if (!empty($this->entitiesToUpdate))
+		{
+			foreach ($this->entitiesToUpdate as $entity)
+			{
+				$entity->_resetUpdate();
+			}
+			$this->entitiesToUpdate = array();
+		}
 	}
 }

@@ -43,7 +43,7 @@ $documentType->setMagicFieldCallInfo('setBody', new MagicFieldCallInfo('body', '
 $documentType->setMagicFieldCallInfo('getBody', new MagicFieldCallInfo('body', '_getMagicFieldCallI18n'));
 
 // create node and document repository
-$em = new TinyCms\NodeProvider\Storage\PDO\EntityManager($conn);
+$em = new TinyCms\NodeProvider\Storage\PDO\Classes\EntityManager($conn);
 
 // language codes
 $langA = "de";

@@ -1,9 +1,9 @@
 <?php
 
-namespace TinyCms\NodeProvider\Storage\PDO;
+namespace TinyCms\NodeProvider\Storage\PDO\Classes;
 
 use TinyCms\NodeProvider\Library\EntityInterface;
-use TinyCms\NodeProvider\Library\EntityManagerInterface;
+use TinyCms\NodeProvider\Storage\Library\EntityManagerInterface;
 
 class EntityManager implements EntityManagerInterface {
 
@@ -13,7 +13,7 @@ class EntityManager implements EntityManagerInterface {
 	protected $conn;
 
 	/*
-	 * @var array of TinyCms\NodeProvider\Library\EntityRepositoryInterface
+	 * @var array of TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
 	 */
 	protected $repositories;
 

@@ -3,7 +3,7 @@
 namespace TinyCms\NodeProvider\Classes;
 
 use TinyCms\NodeProvider\Library\EntityInterface;
-use TinyCms\NodeProvider\Library\EntityRepositoryInterface;
+use TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface;
 
 class BaseEntity implements EntityInterface {
 
@@ -99,7 +99,7 @@ class BaseEntity implements EntityInterface {
 	}
 
 	/*
-	 * @param $repository TinyCms\NodeProvider\Library\EntityRepositoryInterface
+	 * @param $repository TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
 	 */
 	final public function _setRepository(EntityRepositoryInterface $repository)
 	{
@@ -107,7 +107,7 @@ class BaseEntity implements EntityInterface {
 	}
 
 	/*
-	 * @return TinyCms\NodeProvider\Library\EntityRepositoryInterface
+	 * @return TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
 	 */
 	final public function _getRepository()
 	{

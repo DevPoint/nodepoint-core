@@ -2,6 +2,8 @@
 
 namespace TinyCms\NodeProvider\Library;
 
+use TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface;
+
 interface EntityInterface {
 
 	/*
@@ -30,12 +32,12 @@ interface EntityInterface {
 	public function _getUpdateFieldNames();
 
 	/*
-	 * @param $repository TinyCms\NodeProvider\Library\EntityRepositoryInterface
+	 * @param $repository TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
 	 */
 	public function _setRepository(EntityRepositoryInterface $repository);
 
 	/*
-	 * @return TinyCms\NodeProvider\Library\EntityRepositoryInterface
+	 * @return TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
 	 */
 	public function _getRepository();
 }

@@ -8,15 +8,9 @@ use TinyCms\NodeProvider\Type\Node\Node;
 use TinyCms\NodeProvider\Type\Position2d\Position2d;
 
 // establish connection to database
-$config = new \Doctrine\DBAL\Configuration();
-$connectionParams = array(
-    'dbname' => 'tinycms',
-    'user' => 'root',
-    'password' => '',
-    'host' => 'localhost',
-    'driver' => 'pdo_mysql'
-);
-$conn = \Doctrine\DBAL\DriverManager::getConnection($connectionParams, $config);
+$dbuser = 'root';
+$dbpass = '';
+$conn = new PDO('mysql:host=localhost;dbname=tinycms', $dbuser, $dbpass);
 
 // construct parameters
 $params = array();
@@ -29,7 +23,7 @@ $params = array_merge($params, $ids);// add array of id
 $sql = "SELECT * FROM tcm_entities WHERE id IN({$idsStrIin})";
 $stmt = $conn->prepare($sql);
 $stmt->execute($params);
-$users = $stmt->fetchAll();
+$users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 print_r($users);
 
 

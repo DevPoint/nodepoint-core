@@ -344,7 +344,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return array
+	 * @return mixed array or false
 	 */
 	public function getFieldOptions($fieldName)
 	{

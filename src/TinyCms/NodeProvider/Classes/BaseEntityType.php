@@ -128,6 +128,14 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
+	 * @return array of string with fieldNames
+	 */
+	public function getFieldNames()
+	{
+		return array_keys($this->fields);
+	}
+
+	/*
 	 * @param $fieldName string
 	 * @param $type TinyCms\NodeProvider\Library\TypeInterface
 	 */

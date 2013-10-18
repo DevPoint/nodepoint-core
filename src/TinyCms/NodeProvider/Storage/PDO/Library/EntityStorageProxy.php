@@ -89,4 +89,23 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 			$this->updateFieldNames[$fieldName] = true;
 		}
 	}
+
+	/*
+	 * All fields need an update
+	 */
+	public function updateAllFields()
+	{
+		$entityType = $this->entity->_type();
+		$fieldNames = $entityType->getFieldNames();
+		if (!empty($fieldNames))
+		{
+			foreach ($fieldNames as $fieldName)
+			{
+				if (!$entityType->isFieldReadOnly($fieldName))
+				{
+					$this->addUpdateField($fieldName);
+				}
+			}
+		}
+	}
 }

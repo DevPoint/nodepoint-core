@@ -25,6 +25,11 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getRepositoryClass();
 
 	/*
+	 * @return array of string with fieldNames
+	 */
+	public function getFieldNames();
+	
+	/*
 	 * @param $fieldName string
 	 * @param $tType TinyCms\NodeProvider\Library\TypeInterface
 	 */

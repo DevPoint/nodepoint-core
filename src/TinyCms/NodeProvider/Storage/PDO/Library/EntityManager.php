@@ -20,11 +20,6 @@ class EntityManager implements EntityManagerInterface {
 	/*
 	 * @var array of TinyCms\NodeProvider\Library\EntityInterface
 	 */
-	protected $entitiesToInsert;
-
-	/*
-	 * @var array of TinyCms\NodeProvider\Library\EntityInterface
-	 */
 	protected $entitiesToUpdate;
 
 	/*
@@ -34,7 +29,6 @@ class EntityManager implements EntityManagerInterface {
 	{
 		$this->conn = $conn;
 		$this->repositories = array();
-		$this->entitiesToInsert = array();
 		$this->entitiesToUpdate = array();
 	}
 
@@ -75,8 +69,9 @@ class EntityManager implements EntityManagerInterface {
 				$this->repositories[$typeName] = $repository;
 			}
 			$storageProxy = new EntityStorageProxy($this, $entity);
+			$storageProxy->updateAllFields();
 			$entity->_setStorageProxy($storageProxy);
-			$this->entitiesToInsert[] = $entity;
+			$this->entitiesToUpdate[] = $entity;
 		}
 	}
 
@@ -85,14 +80,15 @@ class EntityManager implements EntityManagerInterface {
 	 */
 	public function flush()
 	{
-		$this->entitiesToInsert = array();
-		
-		// handle all entity updates
 		if (!empty($this->entitiesToUpdate))
 		{
 			foreach ($this->entitiesToUpdate as $entity)
 			{
-				$entity->_getStorageProxy()->resetUpdate();
+				$storageProxy = $entity->_getStorageProxy();
+				if ($storageProxy->hasUpdate())
+				{
+					$storageProxy->resetUpdate();
+				}
 			}
 			$this->entitiesToUpdate = array();
 		}

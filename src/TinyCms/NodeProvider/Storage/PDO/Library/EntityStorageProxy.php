@@ -59,14 +59,6 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	}
 
 	/*
-	 * Reset any update flags
-	 */
-	public function resetUpdate()
-	{
-		$this->updateFieldNames = null;
-	}	
-
-	/*
 	 * @return array of string
 	 */
 	public function getUpdateFieldNames()
@@ -95,17 +87,25 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	 */
 	public function updateAllFields()
 	{
-		$entityType = $this->entity->_type();
-		$fieldNames = $entityType->getFieldNames();
+		$type = $this->entity->_type();
+		$fieldNames = $type->getFieldNames();
 		if (!empty($fieldNames))
 		{
 			foreach ($fieldNames as $fieldName)
 			{
-				if (!$entityType->isFieldReadOnly($fieldName))
+				if (!$type->isFieldReadOnly($fieldName))
 				{
 					$this->addUpdateField($fieldName);
 				}
 			}
 		}
 	}
+
+	/*
+	 * Reset any update flags
+	 */
+	public function resetUpdate()
+	{
+		$this->updateFieldNames = null;
+	}	
 }

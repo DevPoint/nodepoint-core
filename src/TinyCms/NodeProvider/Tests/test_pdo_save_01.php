@@ -11,18 +11,19 @@ use TinyCms\NodeProvider\Type\Document\Document;
 $dbuser = 'root';
 $dbpass = '';
 $conn = new PDO('mysql:host=localhost;dbname=tinycms', $dbuser, $dbpass);
+$em = new \TinyCms\NodeProvider\Storage\PDO\Library\EntityManager($conn);
 
 // create types
-$integerType = new TinyCms\NodeProvider\Type\Integer\IntegerType();
-$aliasType = new TinyCms\NodeProvider\Type\Alias\AliasType();
-$stringType = new TinyCms\NodeProvider\Type\String\StringType();
+$integerType = new \TinyCms\NodeProvider\Type\Integer\IntegerType();
+$aliasType = new \TinyCms\NodeProvider\Type\Alias\AliasType();
+$stringType = new \TinyCms\NodeProvider\Type\String\StringType();
 
-$nodeType = new TinyCms\NodeProvider\Type\Node\NodeType();
+$nodeType = new \TinyCms\NodeProvider\Type\Node\NodeType();
 $nodeType->setFieldType('alias', $aliasType);
 $nodeType->setFieldType('name', $stringType);
 $nodeType->setFieldDescription('name', array('i18n'=>true));
 
-$documentType = new TinyCms\NodeProvider\Type\Document\DocumentType();
+$documentType = new \TinyCms\NodeProvider\Type\Document\DocumentType();
 $documentType->setFieldType('id', $integerType);
 $documentType->setFieldDescription('id', array('isPrimary'=>true));
 $documentType->setFieldType('parent', $nodeType);
@@ -41,9 +42,6 @@ $documentType->setMagicFieldCallInfo('setName', new MagicFieldCallInfo('name', '
 $documentType->setMagicFieldCallInfo('getName', new MagicFieldCallInfo('name', '_getMagicFieldCallI18n'));
 $documentType->setMagicFieldCallInfo('setBody', new MagicFieldCallInfo('body', '_setMagicFieldCallI18n'));
 $documentType->setMagicFieldCallInfo('getBody', new MagicFieldCallInfo('body', '_getMagicFieldCallI18n'));
-
-// create node and document repository
-$em = new TinyCms\NodeProvider\Storage\PDO\Classes\EntityManager($conn);
 
 // language codes
 $langA = "de";

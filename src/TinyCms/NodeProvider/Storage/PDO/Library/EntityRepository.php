@@ -1,6 +1,6 @@
 <?php
 
-namespace TinyCms\NodeProvider\Storage\PDO\Classes;
+namespace TinyCms\NodeProvider\Storage\PDO\Library;
 
 use TinyCms\NodeProvider\Library\EntityInterface;
 use TinyCms\NodeProvider\Library\EntityTypeInterface;

@@ -10,7 +10,7 @@ use TinyCms\NodeProvider\Type\Position2d\Position2d;
 // establish connection to database
 $dbuser = 'root';
 $dbpass = '';
-$conn = new PDO('mysql:host=localhost;dbname=tinycms', $dbuser, $dbpass);
+$conn = new \PDO('mysql:host=localhost;dbname=tinycms', $dbuser, $dbpass);
 
 // construct parameters
 $params = array();

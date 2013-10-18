@@ -5,9 +5,9 @@ namespace TinyCms\NodeProvider\Storage\Library;
 interface EntityStorageProxyInterface {
 
 	/*
-	 * @return TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
+	 * @return TinyCms\NodeProvider\Storage\Library\EntityManagerInterface
 	 */
-	public function getRepository();
+	public function getEntityManager();
 
 	/*
 	 * @return TinyCms\NodeProvider\Library\EntityInterface

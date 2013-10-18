@@ -1,6 +1,6 @@
 <?php
 
-namespace TinyCms\NodeProvider\Storage\PDO\Classes;
+namespace TinyCms\NodeProvider\Storage\PDO\Library;
 
 use TinyCms\NodeProvider\Library\EntityInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityManagerInterface;
@@ -69,13 +69,12 @@ class EntityManager implements EntityManagerInterface {
 				$repositoryClass = $type->getRepositoryClass();
 				if (!$repositoryClass)
 				{
-					$repositoryClass = 'TinyCms\NodeProvider\Storage\PDO\Classes\EntityRepository';
+					$repositoryClass = "\\TinyCms\\NodeProvider\\Storage\\PDO\\Library\\EntityRepository";
 				}
 				$repository = new $repositoryClass($this->conn, $this, $type);
 				$this->repositories[$typeName] = $repository;
 			}
-			$repository = $this->repositories[$typeName];
-			$storageProxy = new EntityStorageProxy($repository, $entity);
+			$storageProxy = new EntityStorageProxy($this, $entity);
 			$entity->_setStorageProxy($storageProxy);
 			$this->entitiesToInsert[] = $entity;
 		}

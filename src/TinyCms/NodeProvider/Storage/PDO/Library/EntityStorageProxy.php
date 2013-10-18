@@ -1,19 +1,18 @@
 <?php
 
-namespace TinyCms\NodeProvider\Storage\PDO\Classes;
+namespace TinyCms\NodeProvider\Storage\PDO\Library;
 
 use TinyCms\NodeProvider\Library\EntityInterface;
 use TinyCms\NodeProvider\Library\EntityTypeInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityManagerInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityStorageProxyInterface;
-use TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface;
 
 class EntityStorageProxy implements EntityStorageProxyInterface {
 
 	/*
-	 * @var TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
+	 * @var TinyCms\NodeProvider\Storage\Library\EntityManagerInterface
 	 */
-	protected $repository;
+	protected $em;
 
 	/*
 	 * @var TinyCms\NodeProvider\Library\EntityInterface
@@ -28,19 +27,19 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	/*
 	 * Constructor
 	 */
-	public function __construct(EntityRepositoryInterface $repository, EntityInterface $entity)
+	public function __construct(EntityManagerInterface $em, EntityInterface $entity)
 	{
-		$this->repository = $repository;
+		$this->em = $em;
 		$this->entity = $entity;
 		$this->updateFieldNames = null;
 	}
 
 	/*
-	 * @return TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
+	 * @return TinyCms\NodeProvider\Storage\Library\EntityManagerInterface
 	 */
-	public function getRepository()
+	public function getEntityManager()
 	{
-		return $this->repository;
+		return $this->em;
 	}
 
 	/*
@@ -83,7 +82,7 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 		if (null == $this->updateFieldNames)
 		{
 			$this->updateFieldNames = array();
-			$this->repository->getEntityManager()->update($this->entity);
+			$this->em->update($this->entity);
 		}
 		if (empty($this->updateFieldNames[$fieldName]))
 		{

@@ -86,6 +86,9 @@ class EntityManager implements EntityManagerInterface {
 				$storageProxy = $entity->_getStorageProxy();
 				if ($storageProxy->hasUpdate())
 				{
+					$typeName = $entity->_type()->getTypeName();
+					$repository = $this->repositories[$typeName];
+					$repository->save($entity);
 					$storageProxy->resetUpdate();
 				}
 			}

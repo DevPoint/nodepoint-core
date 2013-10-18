@@ -69,9 +69,8 @@ class EntityManager implements EntityManagerInterface {
 				$this->repositories[$typeName] = $repository;
 			}
 			$storageProxy = new EntityStorageProxy($this, $entity);
-			$storageProxy->updateAllFields();
 			$entity->_setStorageProxy($storageProxy);
-			$this->entitiesToUpdate[] = $entity;
+			$storageProxy->updateAllFields();
 		}
 	}
 

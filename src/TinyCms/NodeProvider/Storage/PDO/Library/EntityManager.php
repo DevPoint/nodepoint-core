@@ -74,6 +74,14 @@ class EntityManager implements EntityManagerInterface {
 		}
 	}
 
+	protected function saveEntity(EntityInterface $entity)
+	{
+		$type = $entity->_type();
+		$typeName = $type->getTypeName();
+		$repository->save($entity);
+	}
+
+
 	/*
 	 * Writes all changes back to storage
 	 */
@@ -85,11 +93,9 @@ class EntityManager implements EntityManagerInterface {
 			{
 				$storageProxy = $entity->_getStorageProxy();
 				if ($storageProxy->hasUpdate())
-				{
-					$typeName = $entity->_type()->getTypeName();
-					$repository = $this->repositories[$typeName];
-					$repository->save($entity);
-					$storageProxy->resetUpdate();
+				{			
+					$this->saveEntity($entity);
+					$storageProxy->resetUpdate();					
 				}
 			}
 			$this->entitiesToUpdate = array();

@@ -39,14 +39,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $magicFieldCallInfos;
 
 	/*
-	 * @var array of TinyCms\NodeProvider\Library\MagicFieldCallInfo indexed by callName
-	 */
-	protected $magicFieldCallInfos;
-
-	/*
 	 * @var string
 	 */
-	protected $storageIdFieldName
+	protected $storageIdFieldName;
 
 	/*
 	 * Constructor

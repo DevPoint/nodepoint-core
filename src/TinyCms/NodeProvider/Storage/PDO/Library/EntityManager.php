@@ -78,6 +78,7 @@ class EntityManager implements EntityManagerInterface {
 	{
 		$type = $entity->_type();
 		$typeName = $type->getTypeName();
+		$repository = $this->repositories[$typeName];
 		$repository->save($entity);
 	}
 

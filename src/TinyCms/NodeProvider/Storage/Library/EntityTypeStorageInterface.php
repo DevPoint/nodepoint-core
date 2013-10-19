@@ -2,7 +2,7 @@
 
 namespace TinyCms\NodeProvider\Storage\Library;
 
-interface EntityTypeStorageProxyInterface {
+interface EntityTypeStorageInterface {
 
 	/*
 	 * @return TinyCms\NodeProvider\Library\EntityTypeInterface

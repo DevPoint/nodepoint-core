@@ -30,6 +30,11 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getFieldNames();
 	
 	/*
+	 * @return string with fieldName
+	 */
+	public function getStorageIdFieldName();
+
+	/*
 	 * @param $fieldName string
 	 * @param $tType TinyCms\NodeProvider\Library\TypeInterface
 	 */

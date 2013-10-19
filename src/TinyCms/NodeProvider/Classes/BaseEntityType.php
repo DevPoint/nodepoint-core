@@ -38,6 +38,15 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	protected $magicFieldCallInfos;
 
+	/*
+	 * @var array of TinyCms\NodeProvider\Library\MagicFieldCallInfo indexed by callName
+	 */
+	protected $magicFieldCallInfos;
+
+	/*
+	 * @var string
+	 */
+	protected $storageIdFieldName
 
 	/*
 	 * Constructor
@@ -55,6 +64,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->finalState = false;
 		$this->fields = array();
 		$this->magicFieldCallInfos = array();
+		$this->storageIdFieldName = 'id';
 	}
 
 	/*
@@ -137,6 +147,29 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
+	 */
+	protected function setStorageIdFieldName($fieldName)
+	{
+		if (!empty($this->storageIdFieldName))
+		{
+			if ($this->isFieldStorageId($this->storageIdFieldName))
+			{
+				// TODO: Exception: multiple storageIdFields not allowed
+			}
+		}
+		$this->storageIdFieldName = $fieldName;
+	}
+
+	/*
+	 * @return string with fieldName
+	 */
+	public function getStorageIdFieldName()
+	{
+		return $this->storageIdFieldName;
+	}
+
+	/*
+	 * @param $fieldName string
 	 * @param $type TinyCms\NodeProvider\Library\TypeInterface
 	 */
 	public function setFieldType($fieldName, TypeInterface $type)
@@ -163,7 +196,14 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function setFieldDescription($fieldName, $description)
 	{
+		// set description
 		$this->fields[$fieldName]['desc'] = $description;
+
+		// check for storageId field
+		if (!empty($this->fields[$fieldName]['isStorageId']))
+		{
+			$this->setStorageIdFieldName($fieldName);
+		}
 	}
 
 	/*

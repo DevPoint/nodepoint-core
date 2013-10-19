@@ -49,5 +49,8 @@ class EntityRepository implements EntityRepositoryInterface {
 	 */
 	public function save(EntityInterface $entity)
 	{
+
+
+		
 	}
 }

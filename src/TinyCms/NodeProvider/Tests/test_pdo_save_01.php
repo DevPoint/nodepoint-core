@@ -25,7 +25,7 @@ $nodeType->setFieldDescription('name', array('i18n'=>true));
 
 $documentType = new \TinyCms\NodeProvider\Type\Document\DocumentType();
 $documentType->setFieldType('id', $integerType);
-$documentType->setFieldDescription('id', array('isPrimary'=>true));
+$documentType->setFieldDescription('id', array('isStorageId'=>true));
 $documentType->setFieldType('parent', $nodeType);
 $documentType->setFieldType('alias', $aliasType);
 $documentType->setFieldType('name', $stringType);
@@ -64,7 +64,7 @@ $em->persist($object);
 
 $object->setName($langA, "J. Brabsche");
 
-$object = new Node($documentType);
+$object = new Document($documentType);
 $object->setParent($parent);
 $object->setAlias("david-brabsche");
 $object->setName($langA, "David Brabsche");

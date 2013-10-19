@@ -43,7 +43,7 @@ class EntityManager implements EntityManagerInterface {
 	/*
 	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
 	 */
-	public function update(EntityInterface $entity)
+	public function onUpdate(EntityInterface $entity)
 	{
 		$this->entitiesToUpdate[] = $entity;
 	}

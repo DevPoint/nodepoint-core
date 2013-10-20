@@ -24,11 +24,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $defaultLanguage;
 
 	/*
-	 * @var string repositories class name
-	 */
-	protected $repositoryClass;
-
-	/*
 	 * @var array indexed by fieldName
 	 */
 	protected $fields;
@@ -39,9 +34,19 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $magicFieldCallInfos;
 
 	/*
-	 * @var string
+	 * @var string repositories class name
+	 */
+	protected $storageRepositoryClass;
+
+	/*
+	 * @var mixed string or array of string
 	 */
 	protected $storageIdFieldName;
+
+	/*
+	 * @var string
+	 */
+	protected $storageTable;
 
 	/*
 	 * Constructor
@@ -109,14 +114,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * @return string
-	 */
-	public function getRepositoryClass()
-	{
-		return $this->repositoryClass;
-	}
-
-	/*
 	 * @return boolean true if inheritance isn't possible
 	 */
 	final public function isFinal()
@@ -141,22 +138,23 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * @param $fieldName string
+	 * @return string
 	 */
-	protected function setStorageIdFieldName($fieldName)
+	public function getStorageRepositoryClass()
 	{
-		if (!empty($this->storageIdFieldName))
-		{
-			if ($this->isFieldStorageId($this->storageIdFieldName))
-			{
-				// TODO: Exception: multiple storageIdFields not allowed
-			}
-		}
-		$this->storageIdFieldName = $fieldName;
+		return $this->storageRepositoryClass;
 	}
 
 	/*
-	 * @return string with fieldName
+	 * @return string with table name
+	 */
+	public function getStorageTable()
+	{
+		return $this->storageTable;
+	}
+
+	/*
+	 * @return mixd string or array of string with storage id fieldName(s)
 	 */
 	public function getStorageIdFieldName()
 	{
@@ -191,14 +189,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function setFieldDescription($fieldName, $description)
 	{
-		// set description
 		$this->fields[$fieldName]['desc'] = $description;
-
-		// check for storageId field
-		if (!empty($this->fields[$fieldName]['isStorageId']))
-		{
-			$this->setStorageIdFieldName($fieldName);
-		}
 	}
 
 	/*
@@ -419,6 +410,80 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			return false;
 		}
 		return $this->fields[$fieldName]['desc']['options'];
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @param array
+	 */
+	public function setFieldStorageDesc($fieldName, $storageDesc)
+	{
+		$this->fields[$fieldName]['storage'] = $storageDesc;
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return array
+	 */
+	public function getFieldStorageDesc($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]['storage']))
+		{ 
+			return null;
+		}
+		return $this->fields[$fieldName]['storage'];
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldStorageTable($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]['storage']['table']))
+		{ 
+			return null;
+		}
+		return $this->fields[$fieldName]['storage']['table'];
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldStorageColumn($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]['storage']['column']))
+		{ 
+			return null;
+		}
+		return $this->fields[$fieldName]['storage']['column'];
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return string - Int, Float, Text
+	 */
+	public function getFieldStorageType($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]['storage']['type']))
+		{ 
+			return null;
+		}
+		return $this->fields[$fieldName]['storage']['type'];
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldStorageSql($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]['storage']['sql']))
+		{ 
+			return null;
+		}
+		return $this->fields[$fieldName]['storage']['sql'];
 	}
 
 	/*

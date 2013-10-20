@@ -60,7 +60,7 @@ class EntityManager implements EntityManagerInterface {
 			$typeName = $type->getTypeName();
 			if (!isset($this->repositories[$typeName]))
 			{
-				$repositoryClass = $type->getRepositoryClass();
+				$repositoryClass = $type->getStorageRepositoryClass();
 				if (!$repositoryClass)
 				{
 					$repositoryClass = "\\TinyCms\\NodeProvider\\Storage\\PDO\\Library\\EntityRepository";

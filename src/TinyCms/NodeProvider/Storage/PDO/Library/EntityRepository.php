@@ -77,8 +77,15 @@ class EntityRepository implements EntityRepositoryInterface {
 	 */
 	protected function _insert(EntityInterface $entity)
 	{
+		$insertValues = array();
 		$type = $entity->_type();
 		$insertNames = $this->_getStorageFieldNames($type);
+		foreach ($insertNames as $fieldName)
+		{
+
+
+
+		}
 	}
 
 	/*

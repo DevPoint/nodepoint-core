@@ -87,33 +87,32 @@ class EntityManager implements EntityManagerInterface {
 		$callTypeGet = 'get';
 		$type = $entity->_type();
 		$fieldNames = $type->getFieldNames();
-		$relatedEntitiesCanditates = array();
+		$relatedEntityCanditates = array();
 		foreach ($fieldNames as $fieldName)
 		{
-			if ($entity->hasFieldStorageColumn($fieldName))
+			if ($type->isFieldEntity($fieldName) && $type->hasFieldStorageColumn($fieldName))
 			{
-				$fieldType = $entity->_fieldType($fieldName);
-				if ($fieldType->isEntity())
+				$magicCallGetField = $type->getFieldMagicCallName($fieldName, $callTypeGet);
+				if ($type->isFieldArray($fieldName))
 				{
-					$magicCallGetField = $type->getFieldMagicCallName($fieldName, $callTypeGet);
-					if ($type->isFieldArray($fieldName))
+					$relatedEntities = $entity->{$magicCallGetField}();
+					if (is_array($relatedEntities))
 					{
-						$relatedEntities = $entity->{$magicCallGetField}();
-						if (is_array($relatedEntities))
+						foreach ($relatedEntities as $relatedEntity)
 						{
-							foreach ($relatedEntities as $relatedEntity)
+							if (null !== $relatedEntity)
 							{
-								$relatedEntitiesCanditates[] = $relatedEntity;
+								$relatedEntityCanditates[] = $relatedEntity;
 							}
 						}
 					}
-					else
+				}
+				else
+				{
+					$relatedEntity = $entity->{$magicCallGetField}();
+					if (null !== $relatedEntity)
 					{
-						$relatedEntity = $entity->{$magicCallGetField}();
-						if (null !== $relatedEntity)
-						{
-							$relatedEntitiesCanditates[] = $relatedEntity;
-						}
+						$relatedEntityCanditates[] = $relatedEntity;
 					}
 				}
 			}
@@ -121,7 +120,7 @@ class EntityManager implements EntityManagerInterface {
 
 		// walk through canditates to check
 		// if the should have been saved before
-		foreach ($relatedEntitiesCanditates as $relatedEntity)
+		foreach ($relatedEntityCanditates as $relatedEntity)
 		{
 			$relatedType = $relatedEntity->_type();
 			$magicCallGetId = $relatedType->getFieldMagicCallName($relatedType->getIdFieldName(), $callTypeGet);
@@ -129,8 +128,11 @@ class EntityManager implements EntityManagerInterface {
 			if (null === $relatedEntityId)
 			{
 				$relatedStorageProxy = $relatedEntity->_getStorageProxy();
-				$relatedEntityManager = $relatedStorageProxy->getEntityManager();
-				$relatedEntityManager->save($relatedEntity);
+				if (null !== $relatedStorageProxy)
+				{
+					$relatedEntityManager = $relatedStorageProxy->getEntityManager();
+					$relatedEntityManager->save($relatedEntity);
+				}
 			}
 		}
 

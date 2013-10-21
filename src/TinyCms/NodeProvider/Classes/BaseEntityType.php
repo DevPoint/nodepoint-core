@@ -222,15 +222,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return boolean if field is the one with primary id
-	 */
-	public function isFieldPrimaryId($fieldName)
-	{
-		return (!empty($this->fields[$fieldName]['desc']['isPrimary']));
-	}	
-	
-	/*
-	 * @param $fieldName string
 	 * @return boolean if field is array
 	 */
 	public function isFieldArray($fieldName)
@@ -395,7 +386,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldPluralName($fieldName)
 	{
-		if (!isset($this->fields[$fieldName]['desc']['pluralName']))
+		if (!isset($this->fields[$fieldName]['desc']['plural']))
 		{
 			if ($this->isFieldArray($fieldName))
 			{
@@ -418,7 +409,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 				}
 			}
 		}
-		return $this->fields[$fieldName]['desc']['pluralName'];
+		return $this->fields[$fieldName]['desc']['plural'];
 	}
 
 	/*
@@ -447,7 +438,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldSingularName($fieldName)
 	{
-		if (!isset($this->fields[$fieldName]['desc']['singularName']))
+		if (!isset($this->fields[$fieldName]['desc']['singular']))
 		{
 			if (!$this->isFieldArray($fieldName))
 			{
@@ -470,7 +461,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 				}
 			}
 		}
-		return $this->fields[$fieldName]['desc']['singularName'];
+		return $this->fields[$fieldName]['desc']['singular'];
 	}
 
 	/*

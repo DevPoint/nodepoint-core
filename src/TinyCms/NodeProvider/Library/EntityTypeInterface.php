@@ -77,12 +77,6 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return boolean if field is the one with primary id
-	 */
-	public function isFieldPrimaryId($fieldName);
-
-	/*
-	 * @param $fieldName string
 	 * @return boolean
 	 */
 	public function isFieldArray($fieldName);

@@ -27,7 +27,7 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getDefaultLanguage();
 	
 	/*
-	 * @return string
+	 * @return string with repository class name
 	 */
 	public function getStorageRepositoryClass();
 
@@ -37,15 +37,20 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getStorageTable();
 
 	/*
-	 * @return mixed string or array of string with storage id fieldName(s)
-	 */
-	public function getStorageIdFieldName();
-
-	/*
 	 * @return array of string with fieldNames
 	 */
 	public function getFieldNames();
 	
+	/*
+	 * @return mixd string or array of string with id fieldName(s)
+	 */
+	public function getIdFieldName();
+
+	/*
+	 * @return string with alias fieldName(s)
+	 */
+	public function getAliasFieldName();
+
 	/*
 	 * @param $fieldName string
 	 * @param $tType TinyCms\NodeProvider\Library\TypeInterface
@@ -163,6 +168,42 @@ interface EntityTypeInterface extends TypeInterface {
 	 * @return array
 	 */
 	public function getFieldOptions($fieldName);
+
+	/*
+	 * @param $fieldName string
+	 * @param array
+	 */
+	public function setFieldStorageDesc($fieldName, $storageDesc);
+
+	/*
+	 * @param $fieldName string
+	 * @return array
+	 */
+	public function getFieldStorageDesc($fieldName);
+
+	/*
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldStorageTable($fieldName);
+
+	/*
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldStorageColumn($fieldName);
+
+	/*
+	 * @param $fieldName string
+	 * @return string - Int, Float, Text
+	 */
+	public function getFieldStorageType($fieldName);
+
+	/*
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldStorageSql($fieldName);
 
 	/*
 	 * @param $callName string

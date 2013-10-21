@@ -29,6 +29,16 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $fields;
 
 	/*
+	 * @var mixed string or array of string
+	 */
+	protected $idFieldName;
+
+	/*
+	 * @var string
+	 */
+	protected $aliasFieldName;
+
+	/*
 	 * @var array of TinyCms\NodeProvider\Library\MagicFieldCallInfo indexed by callName
 	 */
 	protected $magicFieldCallInfos;
@@ -37,11 +47,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 * @var string repositories class name
 	 */
 	protected $storageRepositoryClass;
-
-	/*
-	 * @var mixed string or array of string
-	 */
-	protected $storageIdFieldName;
 
 	/*
 	 * @var string
@@ -60,11 +65,13 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->typeName = $typeName;
 		$this->parentType = $parentType;
 		$this->defaultLanguage = isset($description['defLang']) ? $description['defLang'] : 'en';
-		$this->repositoryClass = isset($description['repository']) ? $description['repository'] : null;
+		$this->idFieldName = isset($description['idField']) ? $description['idField'] : 'id';
+		$this->aliasFieldName = isset($description['aliasField']) ? $description['aliasField'] : 'alias';
+		$this->storageRepositoryClass = isset($description['storageRepository']) ? $description['storageRepository'] : null;
+		$this->storageTable = isset($description['storageTable']) ? $description['storageTable'] : null;
 		$this->finalState = false;
 		$this->fields = array();
 		$this->magicFieldCallInfos = array();
-		$this->storageIdFieldName = 'id';
 	}
 
 	/*
@@ -130,15 +137,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * @return array of string with fieldNames
-	 */
-	public function getFieldNames()
-	{
-		return array_keys($this->fields);
-	}
-
-	/*
-	 * @return string
+	 * @return string with repository class name
 	 */
 	public function getStorageRepositoryClass()
 	{
@@ -154,11 +153,27 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * @return mixd string or array of string with storage id fieldName(s)
+	 * @return array of string with fieldNames
 	 */
-	public function getStorageIdFieldName()
+	public function getFieldNames()
 	{
-		return $this->storageIdFieldName;
+		return array_keys($this->fields);
+	}
+
+	/*
+	 * @return mixd string or array of string with id fieldName(s)
+	 */
+	public function getIdFieldName()
+	{
+		return $this->idFieldName;
+	}
+
+	/*
+	 * @return string with alias fieldName(s)
+	 */
+	public function getAliasFieldName()
+	{
+		return $this->aliasFieldName;
 	}
 
 	/*

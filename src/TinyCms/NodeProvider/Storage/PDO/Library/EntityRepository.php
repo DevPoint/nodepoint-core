@@ -77,14 +77,68 @@ class EntityRepository implements EntityRepositoryInterface {
 	 */
 	protected function _insert(EntityInterface $entity)
 	{
+		$callTypeGet = 'get';
 		$insertValues = array();
 		$type = $entity->_type();
 		$insertNames = $this->_getStorageFieldNames($type);
 		foreach ($insertNames as $fieldName)
 		{
-
-
-
+			$magicCallGetField = $type->getFieldMagicCallName($fieldName, $callTypeGet);
+			$fieldType = $type->getFieldType($fieldName);
+			if ($fieldType->isEntity())
+			{
+				if ($fieldType->isFieldArray($fieldName))
+				{
+					$insertValues[$fieldName] = array();
+					$fieldEntities = $entity->{$magicCallGetField}();
+					foreach ($fieldEntities as $fieldEntity)
+					{
+						$fieldType = $fieldEntity->getType();
+						$magicCallGetId = $fieldType->getFieldMagicCallName($fieldType->getIdFieldName(), $callTypeGet);
+						$insertValues[$fieldName][] = $fieldEntity->{$magicCallGetId}();
+					}
+				}
+				else
+				{
+					$fieldEntity = $entity->{$magicCallGetField}();
+					$fieldType = $fieldEntity->getType();
+					$magicCallGetId = $fieldType->getFieldMagicCallName($fieldType->getIdFieldName(), $callTypeGet);
+					$insertValues[$fieldName] = $fieldEntity->{$magicCallGetId}();
+				}
+			}
+			elseif ($fieldType->isObject())
+			{
+				if ($fieldType->isFieldArray($fieldName))
+				{
+					$insertValues[$fieldName] = array();
+					$fieldObjects = $entity->{$magicCallGetField}();
+					foreach ($fieldObjects as $fieldObject)
+					{
+						$insertValues[$fieldName][] = $fieldType->objectToValue($fieldObject);
+					}
+				}
+				else
+				{
+					$fieldObject = $entity->{$magicCallGetField}();
+					$insertValues[$fieldName] = $fieldType->objectToValue($fieldObject);
+				}
+			}
+			else
+			{
+				if ($fieldType->isFieldArray($fieldName))
+				{
+					$insertValues[$fieldName] = array();
+					$entityValues = $entity->{$magicCallGetField}();
+					foreach ($entityValues as $value)
+					{
+						$insertValues[$fieldName][] = $value;
+					}
+				}
+				else
+				{
+					$insertValues[$fieldName] = $entity->{$magicCallGetField}();
+				}
+			}
 		}
 	}
 

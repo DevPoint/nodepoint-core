@@ -133,6 +133,19 @@ class BaseEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string 
+	 * @return array of string with language codes
+	 */
+	protected function _getMagicFieldLanguagesCall($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]))
+		{
+			return null;
+		}
+		return array_keys($this->fields[$fieldName]);
+	}
+
+	/*
+	 * @param $fieldName string 
 	 * @param $args array(0=>language)
 	 * @return mixed field value
 	 */
@@ -154,6 +167,16 @@ class BaseEntity implements EntityInterface {
 	protected function _getMagicFieldStaticCallI18n($fieldName, &$args)
 	{
 		return $this->type->getFieldStaticValueI18n($fieldName, $args[0]);
+	}
+
+	/*
+	 * @param $fieldName string 
+	 * @return array of string with language codes
+	 */
+	protected function _getMagicFieldStaticLanguagesCall($fieldName)
+	{
+		// TODO: implement
+		return null;
 	}
 
 	/*

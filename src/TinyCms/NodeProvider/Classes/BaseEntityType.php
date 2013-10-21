@@ -483,7 +483,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $callType string - set, get, cnt, validate
+	 * @param $callType string - set, get, cnt, lang, validate
 	 * @return string
 	 */
 	public function getFieldMagicCallName($fieldName, $callType)
@@ -696,6 +696,18 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 				$this->setMagicFieldCallInfo($validateCallName, $magicFieldCallInfo);
 			}
 			$this->fields[$fieldName]['magicFncs']['validate'] = $validateCallName;
+
+			// magic lang function
+			if ($this->hasFieldI18n($fieldName))
+			{
+				$getCallName = 'lang' . $singularName;
+				if (!isset($this->magicFieldCallInfos[$getCallName]))
+				{
+					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'LanguagesCall');
+					$this->setMagicFieldCallInfo($getCallName, $magicFieldCallInfo);
+				}
+				$this->fields[$fieldName]['magicFncs']['lang'] = $getCallName;
+			}
 
 			// array specific magic functions
 			if ($this->isFieldArray($fieldName))

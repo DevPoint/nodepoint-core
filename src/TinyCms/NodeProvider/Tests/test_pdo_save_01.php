@@ -3,6 +3,7 @@
 header("Content-Type:text/plain; charset=utf-8");
 
 use TinyCms\NodeProvider\Library\MagicFieldCallInfo;
+use TinyCms\NodeProvider\Type\Entity\EntityType;
 use TinyCms\NodeProvider\Type\Entity\Entity;
 use TinyCms\NodeProvider\Type\Node\Node;
 use TinyCms\NodeProvider\Type\Document\Document;
@@ -19,15 +20,17 @@ $aliasType = new \TinyCms\NodeProvider\Type\Alias\AliasType();
 $stringType = new \TinyCms\NodeProvider\Type\String\StringType();
 
 $nodeType = new \TinyCms\NodeProvider\Type\Node\NodeType();
+$nodeType->setFieldType('id', $integerType);
+$nodeType->setFieldStorageDesc('id', array('type'=>EntityType::STORAGE_INT));
 $nodeType->setFieldType('alias', $aliasType);
 $nodeType->setFieldType('name', $stringType);
 $nodeType->setFieldDescription('name', array('i18n'=>true));
 
 $documentType = new \TinyCms\NodeProvider\Type\Document\DocumentType();
 $documentType->setFieldType('id', $integerType);
-$documentType->setFieldDescription('id', array('isStorageId'=>true));
-$documentType->setFieldType('parent', $nodeType);
+$documentType->setFieldStorageDesc('id', array('type'=>EntityType::STORAGE_INT));
 $documentType->setFieldType('alias', $aliasType);
+$documentType->setFieldType('parent', $nodeType);
 $documentType->setFieldType('name', $stringType);
 $documentType->setFieldDescription('name', array('i18n'=>true));
 $documentType->setFieldType('body', $stringType);
@@ -77,5 +80,6 @@ $em->flush();
 // output test result
 echo "Test succeeded\n";
 echo "----------------\n";
+echo $documentType->getFieldStorageType('name') . "\n";
 
 $conn = null;

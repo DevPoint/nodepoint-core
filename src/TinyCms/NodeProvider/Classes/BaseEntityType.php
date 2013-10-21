@@ -483,7 +483,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		if (!isset($this->fields[$fieldName]['storage']['type']))
 		{ 
-			return null;
+			return self::STORAGE_TEXT;
 		}
 		return $this->fields[$fieldName]['storage']['type'];
 	}

@@ -4,6 +4,7 @@ namespace TinyCms\NodeProvider\Storage\PDO\Library;
 
 use TinyCms\NodeProvider\Library\EntityInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityManagerInterface;
+use TinyCms\NodeProvider\Storage\PDO\Library\EntityStorageProxy;
 
 class EntityManager implements EntityManagerInterface {
 
@@ -74,9 +75,37 @@ class EntityManager implements EntityManagerInterface {
 		}
 	}
 
-	protected function saveEntity(EntityInterface $entity)
+	protected function saveEntity(EntityInterface $entity, EntityStorageProxy $storageProxy)
 	{
+		// recursively save related entities
+		$callTypeGet = 'get';
 		$type = $entity->_type();
+		$fieldNames = $type->getFieldNames();
+		foreach ($fieldNames as $fieldName)
+		{
+			if ($entity->hasFieldStorageColumn($fieldName))
+			{
+				$fieldType = $entity->_fieldType($fieldName);
+				if ($fieldType->isEntity())
+				{
+					// update related entities before
+					$magicGetCallName = $type->getFieldMagicCallName($fieldName, $callTypeGet);
+					$fieldEntity = $entity->{$magicGetCallName}();
+					$fieldStorageProxy = $fieldEntity->_getStorageProxy();
+					if ($fieldStorageProxy && $fieldStorageProxy->hasUpdate())
+					{
+						$this->saveEntity($fieldEntity, $fieldStorageProxy);
+						$fieldStorageProxy->reset();
+					}
+				}
+				elseif ($fieldType->isReference())
+				{
+					// update related entity references before
+				}
+			}
+		}
+
+		// save entity
 		$typeName = $type->getTypeName();
 		$repository = $this->repositories[$typeName];
 		$repository->save($entity);
@@ -95,8 +124,8 @@ class EntityManager implements EntityManagerInterface {
 				$storageProxy = $entity->_getStorageProxy();
 				if ($storageProxy->hasUpdate())
 				{			
-					$this->saveEntity($entity);
-					$storageProxy->resetUpdate();					
+					$this->saveEntity($entity, $storageProxy);
+					$storageProxy->resetUpdate();
 				}
 			}
 			$this->entitiesToUpdate = array();

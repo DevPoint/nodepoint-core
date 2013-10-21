@@ -83,6 +83,14 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	}
 
 	/*
+	 * @param $fieldName string
+	 */
+	public function hasUpdateField($fieldName)
+	{
+		return (!empty($this->updateFieldNames[$fieldName]));
+	}
+
+	/*
 	 * All fields need an update
 	 */
 	public function updateAllFields()

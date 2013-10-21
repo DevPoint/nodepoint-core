@@ -25,6 +25,7 @@ $nodeType->setFieldStorageDesc('id', array('type'=>EntityType::STORAGE_INT));
 $nodeType->setFieldType('alias', $aliasType);
 $nodeType->setFieldType('name', $stringType);
 $nodeType->setFieldDescription('name', array('i18n'=>true));
+$nodeType->finalize();
 
 $documentType = new \TinyCms\NodeProvider\Type\Document\DocumentType();
 $documentType->setFieldType('id', $integerType);
@@ -35,16 +36,7 @@ $documentType->setFieldType('name', $stringType);
 $documentType->setFieldDescription('name', array('i18n'=>true));
 $documentType->setFieldType('body', $stringType);
 $documentType->setFieldDescription('body', array('i18n'=>true));
-$documentType->setMagicFieldCallInfo('setId', new MagicFieldCallInfo('id', '_setMagicFieldCall'));
-$documentType->setMagicFieldCallInfo('getId', new MagicFieldCallInfo('id', '_getMagicFieldCall'));
-$documentType->setMagicFieldCallInfo('setParent', new MagicFieldCallInfo('parent', '_setMagicFieldCall'));
-$documentType->setMagicFieldCallInfo('getParent', new MagicFieldCallInfo('parent', '_getMagicFieldCall'));
-$documentType->setMagicFieldCallInfo('setAlias', new MagicFieldCallInfo('alias', '_setMagicFieldCall'));
-$documentType->setMagicFieldCallInfo('getAlias', new MagicFieldCallInfo('alias', '_getMagicFieldCall'));
-$documentType->setMagicFieldCallInfo('setName', new MagicFieldCallInfo('name', '_setMagicFieldCallI18n'));
-$documentType->setMagicFieldCallInfo('getName', new MagicFieldCallInfo('name', '_getMagicFieldCallI18n'));
-$documentType->setMagicFieldCallInfo('setBody', new MagicFieldCallInfo('body', '_setMagicFieldCallI18n'));
-$documentType->setMagicFieldCallInfo('getBody', new MagicFieldCallInfo('body', '_getMagicFieldCallI18n'));
+$documentType->finalize();
 
 // language codes
 $langA = "de";

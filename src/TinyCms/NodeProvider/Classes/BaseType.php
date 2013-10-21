@@ -123,4 +123,11 @@ abstract class BaseType implements TypeInterface {
 	{
 		return $value;
 	}
+
+	/*
+	 * Calculate further values from the given properties
+	 */
+	public function finalize()
+	{
+	}
 }

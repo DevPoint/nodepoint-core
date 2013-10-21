@@ -376,6 +376,135 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
+	 * Calculate capitalized version of string
+	 *
+	 * @param string
+	 * @return string
+	 */
+	static protected function capitalizeString($string)
+	{
+		return strtoupper(substr($string, 0, 1)) . substr($string, 1);
+	}
+
+	/*
+	 * Retrieve or calculate fields plural name
+	 * based on the fieldName
+	 *
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldPluralName($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]['desc']['pluralName']))
+		{
+			if ($this->isFieldArray($fieldName))
+			{
+				return $fieldName;
+			}
+			else
+			{
+				$fieldNameLen = strlen($fieldName);
+				if ($fieldNameLen - 1 == strrchr($fieldName, 's'))
+				{
+					return $fieldName . 'es';
+				}
+				elseif ($fieldNameLen - 1 == strrchr($fieldName, 'y'))
+				{
+					return substr($fieldName, 0, $fieldNameLen-1) . 'ies';
+				}
+				else
+				{
+					return $fieldName . 's';
+				}
+			}
+		}
+		return $this->fields[$fieldName]['desc']['pluralName'];
+	}
+
+	/*
+	 * Retrieve or calculate fields plural capitalized name
+	 * based on the fieldName
+	 *
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldPluralCapitalizedName($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]['desc']['pluralCapitalize']))
+		{
+			$pluralName = $this->getFieldPluralName($fieldName);
+			return $this->capitalizeString($pluralName);
+		}
+		return $this->fields[$fieldName]['desc']['pluralCapitalize'];
+	}
+
+	/*
+	 * Retrieve or calculate fields singular name
+	 * based on the fieldName
+	 *
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldSingularName($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]['desc']['singularName']))
+		{
+			if (!$this->isFieldArray($fieldName))
+			{
+				return $fieldName;
+			}
+			else
+			{
+				$fieldNameLen = strlen($fieldName);
+				if ($fieldNameLen - 2 == strrpos($fieldName, 'es'))
+				{
+					return substr($fieldName, 0, $fieldNameLen-2);
+				}
+				elseif ($fieldNameLen - 1 == strrchr($fieldName, 'ies'))
+				{
+					return substr($fieldName, 0, $fieldNameLen-3) . 'y';
+				}
+				else
+				{
+					return substr($fieldName, 0, $fieldNameLen-1);
+				}
+			}
+		}
+		return $this->fields[$fieldName]['desc']['singularName'];
+	}
+
+	/*
+	 * Retrieve or calculate fields singular capitalized name
+	 * based on the fieldName
+	 *
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldSingularCapitalizedName($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]['desc']['singularCapitalize']))
+		{
+			$singularName = $this->getFieldSingularName($fieldName);
+			return $this->capitalizeString($singularName);
+		}
+		return $this->fields[$fieldName]['desc']['singularCapitalize'];
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @param $callType string - set, get, cnt, validate
+	 * @return string
+	 */
+	public function getFieldMagicCallName($fieldName, $callType)
+	{
+		if (!isset($this->fields[$fieldName]['magicFncs'][$callType]))
+		{
+			return null;
+		}
+		return $this->fields[$fieldName]['magicFncs'][$callType];
+	}
+
+	/*
 	 * @param $fieldName string
 	 * @return boolean true if field is an Object
 	 */
@@ -464,13 +593,26 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
+	 * @return boolean
+	 */
+	public function hasFieldStorageColumn($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]['storage']['column']))
+		{ 
+			return true;
+		}
+		return (!empty($this->fields[$fieldName]['storage']['column']));
+	}
+
+	/*
+	 * @param $fieldName string
 	 * @return string
 	 */
 	public function getFieldStorageColumn($fieldName)
 	{
 		if (!isset($this->fields[$fieldName]['storage']['column']))
 		{ 
-			return null;
+			return $fieldName;
 		}
 		return $this->fields[$fieldName]['storage']['column'];
 	}
@@ -521,5 +663,71 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			return null;
 		}
 		return $this->magicFieldCallInfos[$callName];
+	}
+
+	/*
+	 * Calculate further magic calls 
+	 */
+	protected function finalizeMagicCallNames()
+	{
+		$fieldNames = $this->getFieldNames();
+		foreach ($fieldNames as $fieldName)
+		{
+			// required properties
+			$this->fields[$fieldName]['magicFncs'] = array();
+			$i18nStr = $this->hasFieldI18n($fieldName) ? 'I18n' : '';
+			$staticStr = $this->isFieldStatic($fieldName) ? 'Static' : '';
+			$singularName = $this->getFieldSingularCapitalizedName($fieldName);
+
+			// magic set function
+			$setCallName = 'set' . $singularName;
+			if (!isset($this->magicFieldCallInfos[$setCallName]))
+			{
+				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_setMagicField' . $staticStr . 'Call' . $i18nStr);
+				$this->setMagicFieldCallInfo($setCallName, $magicFieldCallInfo);
+			}
+			$this->fields[$fieldName]['magicFncs']['set'] = $setCallName;
+
+			// magic get function
+			$getCallName = 'get' . $singularName;
+			if (!isset($this->magicFieldCallInfos[$getCallName]))
+			{
+				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'Call' . $i18nStr);
+				$this->setMagicFieldCallInfo($getCallName, $magicFieldCallInfo);
+			}
+			$this->fields[$fieldName]['magicFncs']['get'] = $getCallName;
+
+			// magic validate function
+			$validateCallName = 'validate' . $singularName;
+			if (!isset($this->magicFieldCallInfos[$validateCallName]))
+			{
+				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_validateMagicField' . $staticStr . 'Call');
+				$this->setMagicFieldCallInfo($validateCallName, $magicFieldCallInfo);
+			}
+			$this->fields[$fieldName]['magicFncs']['validate'] = $validateCallName;
+
+			// array specific magic functions
+			if ($this->isFieldArray($fieldName))
+			{
+				$pluralName = $this->getFieldPluralCapitalizedName($fieldName);
+
+				// magic cnt function
+				$cntCallName = 'cnt' . $singularName;
+				if (!isset($this->magicFieldCallInfos[$cntCallName]))
+				{
+					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_cntMagicField' . $staticStr . 'Call');
+					$this->setMagicFieldCallInfo($cntCallName, $magicFieldCallInfo);
+				}
+				$this->fields[$fieldName]['magicFncs']['cnt'] = $cntCallName;
+			}
+		}
+	}
+
+	/*
+	 * Calculate further values from the given properties
+	 */
+	public function finalize()
+	{
+		$this->finalizeMagicCallNames();
 	}
 }

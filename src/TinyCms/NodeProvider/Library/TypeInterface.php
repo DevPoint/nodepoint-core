@@ -72,4 +72,10 @@ interface TypeInterface {
 	 * @return mixed - object or input parameter type
 	 */
 	public function objectFromValue(&$value);
+
+	/*
+	 * Calculate further values from the given properties
+	 */
+	public function finalize();
+
 }

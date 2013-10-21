@@ -21,19 +21,7 @@ $entityType->setFieldDescription('body', array('i18n'=>true));
 $entityType->setFieldType('geolocation', $position2dType);
 $entityType->setFieldType('info', $stringType);
 $entityType->setFieldDescription('info', array('isStatic'=>true, 'i18n'=>true));
-$entityType->setMagicFieldCallInfo('setParent', new MagicFieldCallInfo('parent', '_setMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('getParent', new MagicFieldCallInfo('parent', '_getMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('setAlias', new MagicFieldCallInfo('alias', '_setMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('getAlias', new MagicFieldCallInfo('alias', '_getMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('setName', new MagicFieldCallInfo('name', '_setMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('getName', new MagicFieldCallInfo('name', '_getMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('validateName', new MagicFieldCallInfo('name', '_validateMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('setBody', new MagicFieldCallInfo('body', '_setMagicFieldCallI18n'));
-$entityType->setMagicFieldCallInfo('getBody', new MagicFieldCallInfo('body', '_getMagicFieldCallI18n'));
-$entityType->setMagicFieldCallInfo('validateBody', new MagicFieldCallInfo('body', '_validateMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('setGeolocation', new MagicFieldCallInfo('geolocation', '_setMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('getGeolocation', new MagicFieldCallInfo('geolocation', '_getMagicFieldCall'));
-$entityType->setMagicFieldCallInfo('getInfo', new MagicFieldCallInfo('info', '_getMagicFieldStaticCallI18n'));
+$entityType->finalize();
 
 // language codes
 $langA = "de";

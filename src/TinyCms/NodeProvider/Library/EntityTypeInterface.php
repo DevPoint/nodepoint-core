@@ -140,6 +140,42 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getFieldBaseField($fieldName);
 
 	/*
+	 * Retrieve or calculate fields plural name
+	 * based on the fieldName
+	 *
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldPluralName($fieldName);
+
+	/*
+	 * Retrieve or calculate fields plural capitalized name
+	 * based on the fieldName
+	 *
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldPluralCapitalizedName($fieldName);
+
+	/*
+	 * Retrieve or calculate fields singular name
+	 * based on the fieldName
+	 *
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldSingularName($fieldName);
+
+	/*
+	 * Retrieve or calculate fields singular capitalized name
+	 * based on the fieldName
+	 *
+	 * @param $fieldName string
+	 * @return string
+	 */
+	public function getFieldSingularCapitalizedName($fieldName);
+
+	/*
 	 * @param $fieldName string
 	 * @return boolean true if field is an Object
 	 */
@@ -171,6 +207,13 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
+	 * @param $callType string - set, get, cnt, validate
+	 * @return string
+	 */
+	public function getFieldMagicCallName($fieldName, $callType);
+
+	/*
+	 * @param $fieldName string
 	 * @param array
 	 */
 	public function setFieldStorageDesc($fieldName, $storageDesc);
@@ -187,6 +230,12 @@ interface EntityTypeInterface extends TypeInterface {
 	 */
 	public function getFieldStorageTable($fieldName);
 
+	/*
+	 * @param $fieldName string
+	 * @return boolean
+	 */
+	public function hasFieldStorageColumn($fieldName);
+	
 	/*
 	 * @param $fieldName string
 	 * @return string

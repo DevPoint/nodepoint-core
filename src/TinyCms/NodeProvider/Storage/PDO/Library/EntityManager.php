@@ -44,14 +44,6 @@ class EntityManager implements EntityManagerInterface {
 	/*
 	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
 	 */
-	public function update(EntityInterface $entity)
-	{
-		$this->entitiesToUpdate[] = $entity;
-	}
-
-	/*
-	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
-	 */
 	public function persist(EntityInterface $entity)
 	{
 		$storageProxy = $entity->_getStorageProxy();
@@ -75,12 +67,19 @@ class EntityManager implements EntityManagerInterface {
 		}
 	}
 
+	/*
+	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
+	 */
+	public function update(EntityInterface $entity)
+	{
+		$this->entitiesToUpdate[] = $entity;
+	}
 
 	/*
 	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
 	 * @param $storageProxy TinyCms\NodeProvider\Storage\PDO\Library\EntityStorageProxy
 	 */
-	protected function saveEntity(EntityInterface $entity, EntityStorageProxy $storageProxy)
+	protected function _save(EntityInterface $entity, EntityStorageProxy $storageProxy)
 	{
 		// find entities which are necessary to
 		// save before current entity
@@ -150,7 +149,7 @@ class EntityManager implements EntityManagerInterface {
 		$storageProxy = $entity->_getStorageProxy();
 		if ($storageProxy && $storageProxy->hasUpdate())
 		{			
-			$this->saveEntity($entity, $storageProxy);
+			$this->_save($entity, $storageProxy);
 			$storageProxy->resetUpdate();
 		}
 	}
@@ -167,7 +166,7 @@ class EntityManager implements EntityManagerInterface {
 				$storageProxy = $entity->_getStorageProxy();
 				if ($storageProxy->hasUpdate())
 				{			
-					$this->saveEntity($entity, $storageProxy);
+					$this->_save($entity, $storageProxy);
 					$storageProxy->resetUpdate();
 				}
 			}

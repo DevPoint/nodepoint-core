@@ -14,8 +14,13 @@ interface EntityManagerInterface {
 	/*
 	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
 	 */
-	public function save(EntityInterface $entity);
+	public function update(EntityInterface $entity);
 	
+	/*
+	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
+	 */
+	public function save(EntityInterface $entity);
+
 	/*
 	 * Writes all changes back to storage
 	 */

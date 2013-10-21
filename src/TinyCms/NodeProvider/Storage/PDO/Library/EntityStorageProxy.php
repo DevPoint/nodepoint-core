@@ -74,7 +74,7 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 		if (null == $this->updateFieldNames)
 		{
 			$this->updateFieldNames = array();
-			$this->em->onUpdate($this->entity);
+			$this->em->update($this->entity);
 		}
 		if (empty($this->updateFieldNames[$fieldName]))
 		{

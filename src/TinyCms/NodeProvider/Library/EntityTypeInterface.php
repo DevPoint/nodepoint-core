@@ -7,9 +7,9 @@ interface EntityTypeInterface extends TypeInterface {
 	/*
 	 * Constants for storage types
 	 */
-	const STORAGE_STR = 1;
-	const STORAGE_INT = 2;
-	const STORAGE_FLOAT = 3;
+	const STORAGE_STR = "STR";
+	const STORAGE_INT = "INT";
+	const STORAGE_FLOAT = "FLOAT";
 
 	/*
 	 * @return boolean true if inheritance isn't possible

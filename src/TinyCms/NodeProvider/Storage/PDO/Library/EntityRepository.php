@@ -45,12 +45,57 @@ class EntityRepository implements EntityRepositoryInterface {
 	}
 
 	/*
+	 * @param $entity TinyCms\NodeProvider\Library\EntityTypeInterface
+	 */
+	protected function _getStorageFieldNames(EntityTypeInterface $type)
+	{
+		$storageFieldNames = array();
+		$fieldNames = $type->getFieldNames();
+		foreach ($fieldNames as $fieldName)
+		{
+			if (!$type->isFieldReadOnly($fieldName))
+			{
+				if ($type->hasFieldStorageColumn($fieldName))
+				{
+					$storageFieldNames[] = $fieldName;
+				}
+			}
+		}
+		return $storageFieldNames;
+	}
+
+	/*
+	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
+	 */
+	protected function _update(EntityInterface $entity)
+	{
+		$type = $entity->_type();
+	}
+
+	/*
+	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
+	 */
+	protected function _insert(EntityInterface $entity)
+	{
+		$type = $entity->_type();
+		$insertNames = $this->_getStorageFieldNames($type);
+	}
+
+	/*
 	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
 	 */
 	public function save(EntityInterface $entity)
 	{
-
-
-		
+		$type = $entity->_type();
+		$magicCallGetId = $type->getFieldMagicCallName($type->getIdFieldName(), 'get');
+		$entityId = $entity->{$magicCallGetId}();
+		if (null !== $entityId)
+		{
+			$this->_update($entity);
+		}
+		else
+		{
+			$this->_insert($entity);
+		}
 	}
 }

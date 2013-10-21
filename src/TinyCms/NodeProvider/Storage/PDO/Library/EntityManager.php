@@ -117,7 +117,7 @@ class EntityManager implements EntityManagerInterface {
 		}
 
 		// walk through canditates to check
-		// if they should have to be saved in front
+		// if they should be saved in front
 		foreach ($relatedEntityCanditates as $relatedEntity)
 		{
 			$relatedType = $relatedEntity->_type();

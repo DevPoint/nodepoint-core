@@ -88,7 +88,6 @@ class EntityManager implements EntityManagerInterface {
 				$fieldType = $entity->_fieldType($fieldName);
 				if ($fieldType->isEntity())
 				{
-					// update related entities before
 					$magicGetCallName = $type->getFieldMagicCallName($fieldName, $callTypeGet);
 					$fieldEntity = $entity->{$magicGetCallName}();
 					$fieldStorageProxy = $fieldEntity->_getStorageProxy();
@@ -97,10 +96,6 @@ class EntityManager implements EntityManagerInterface {
 						$this->saveEntity($fieldEntity, $fieldStorageProxy);
 						$fieldStorageProxy->reset();
 					}
-				}
-				elseif ($fieldType->isReference())
-				{
-					// update related entity references before
 				}
 			}
 		}

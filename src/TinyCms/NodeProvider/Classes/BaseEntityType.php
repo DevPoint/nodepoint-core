@@ -657,7 +657,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * Calculate further magic calls 
+	 * Calculate further magic function calls 
 	 */
 	protected function finalizeMagicCallNames()
 	{
@@ -703,10 +703,10 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 				$pluralName = $this->getFieldPluralCapitalizedName($fieldName);
 
 				// magic cnt function
-				$cntCallName = 'cnt' . $singularName;
+				$cntCallName = 'get' . $singularName . 'Count';
 				if (!isset($this->magicFieldCallInfos[$cntCallName]))
 				{
-					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_cntMagicField' . $staticStr . 'Call');
+					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'CountCall');
 					$this->setMagicFieldCallInfo($cntCallName, $magicFieldCallInfo);
 				}
 				$this->fields[$fieldName]['magicFncs']['cnt'] = $cntCallName;

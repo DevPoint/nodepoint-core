@@ -75,12 +75,19 @@ class EntityManager implements EntityManagerInterface {
 		}
 	}
 
+
+	/*
+	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
+	 * @param $storageProxy TinyCms\NodeProvider\Storage\PDO\Library\EntityStorageProxy
+	 */
 	protected function saveEntity(EntityInterface $entity, EntityStorageProxy $storageProxy)
 	{
-		// recursively save related entities
+		// find entities which are necessary to
+		// save before current entity
 		$callTypeGet = 'get';
 		$type = $entity->_type();
 		$fieldNames = $type->getFieldNames();
+		$relatedEntitiesCanditates = array();
 		foreach ($fieldNames as $fieldName)
 		{
 			if ($entity->hasFieldStorageColumn($fieldName))
@@ -88,24 +95,63 @@ class EntityManager implements EntityManagerInterface {
 				$fieldType = $entity->_fieldType($fieldName);
 				if ($fieldType->isEntity())
 				{
-					$magicGetCallName = $type->getFieldMagicCallName($fieldName, $callTypeGet);
-					$fieldEntity = $entity->{$magicGetCallName}();
-					$fieldStorageProxy = $fieldEntity->_getStorageProxy();
-					if ($fieldStorageProxy && $fieldStorageProxy->hasUpdate())
+					$magicCallGetField = $type->getFieldMagicCallName($fieldName, $callTypeGet);
+					if ($type->isFieldArray($fieldName))
 					{
-						$this->saveEntity($fieldEntity, $fieldStorageProxy);
-						$fieldStorageProxy->reset();
+						$relatedEntities = $entity->{$magicCallGetField}();
+						if (is_array($relatedEntities))
+						{
+							foreach ($relatedEntities as $relatedEntity)
+							{
+								$relatedEntitiesCanditates[] = $relatedEntity;
+							}
+						}
+					}
+					else
+					{
+						$relatedEntity = $entity->{$magicCallGetField}();
+						if (null !== $relatedEntity)
+						{
+							$relatedEntitiesCanditates[] = $relatedEntity;
+						}
 					}
 				}
 			}
 		}
 
-		// save entity
+		// walk through canditates to check
+		// if the should have been saved before
+		foreach ($relatedEntitiesCanditates as $relatedEntity)
+		{
+			$relatedType = $relatedEntity->_type();
+			$magicCallGetId = $relatedType->getFieldMagicCallName($relatedType->getIdFieldName(), $callTypeGet);
+			$relatedEntityId = $relatedEntity->{$magicCallGetId}();
+			if (null === $relatedEntityId)
+			{
+				$relatedStorageProxy = $relatedEntity->_getStorageProxy();
+				$relatedEntityManager = $relatedStorageProxy->getEntityManager();
+				$relatedEntityManager->save($relatedEntity);
+			}
+		}
+
+		// save current entity
 		$typeName = $type->getTypeName();
 		$repository = $this->repositories[$typeName];
 		$repository->save($entity);
 	}
 
+	/*
+	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
+	 */
+	public function save(EntityInterface $entity)
+	{
+		$storageProxy = $entity->_getStorageProxy();
+		if ($storageProxy && $storageProxy->hasUpdate())
+		{			
+			$this->saveEntity($entity, $storageProxy);
+			$storageProxy->resetUpdate();
+		}
+	}
 
 	/*
 	 * Writes all changes back to storage

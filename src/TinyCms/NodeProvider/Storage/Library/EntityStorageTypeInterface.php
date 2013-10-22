@@ -12,8 +12,7 @@ interface EntityStorageTypeInterface {
 
 	/*
 	 * @param $column mixed
-	 * @param $type TinyCms\NodeProvider\Library\EntityTypeInterface
 	 * @return mixed
 	 */
-	public function valueFromStorageColumn($column, $type=null);
+	public function valueFromStorageColumn($column);
 }

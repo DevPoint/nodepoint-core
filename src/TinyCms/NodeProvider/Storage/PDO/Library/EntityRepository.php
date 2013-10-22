@@ -88,7 +88,8 @@ class EntityRepository implements EntityRepositoryInterface {
 					foreach ($fieldEntities as $fieldEntity)
 					{
 						$fieldType = $fieldEntity->_type();
-						$magicCallGetId = $fieldType->getFieldMagicCallName($fieldType->getIdFieldName(), $callTypeGet);
+						$idFieldName = $fieldType->getIdFieldName();
+						$magicCallGetId = $fieldType->getFieldMagicCallName($idFieldName, $callTypeGet);
 						$saveValues[$fieldName][] = $fieldEntity->{$magicCallGetId}();
 					}
 				}
@@ -96,7 +97,8 @@ class EntityRepository implements EntityRepositoryInterface {
 				{
 					$fieldEntity = $entity->{$magicCallGetField}();
 					$fieldType = $fieldEntity->_type();
-					$magicCallGetId = $fieldType->getFieldMagicCallName($fieldType->getIdFieldName(), $callTypeGet);
+					$idFieldName = $fieldType->getIdFieldName();
+					$magicCallGetId = $fieldType->getFieldMagicCallName($idFieldName, $callTypeGet);
 					$saveValues[$fieldName] = $fieldEntity->{$magicCallGetId}();
 				}
 			}

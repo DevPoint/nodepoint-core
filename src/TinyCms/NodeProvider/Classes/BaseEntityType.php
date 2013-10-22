@@ -483,7 +483,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $callType string - set, get, cnt, lang, validate
+	 * @param $callType string  
+	 *			set, get, cnt, setitem, getitem,
+	 *			lang, validate
 	 * @return string
 	 */
 	public function getFieldMagicCallName($fieldName, $callType)
@@ -712,8 +714,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// array specific magic functions
 			if ($this->isFieldArray($fieldName))
 			{
-				$pluralName = $this->getFieldPluralCapitalizedName($fieldName);
-
 				// magic cnt function
 				$cntCallName = 'get' . $singularName . 'Count';
 				if (!isset($this->magicFieldCallInfos[$cntCallName]))
@@ -722,6 +722,24 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 					$this->setMagicFieldCallInfo($cntCallName, $magicFieldCallInfo);
 				}
 				$this->fields[$fieldName]['magicFncs']['cnt'] = $cntCallName;
+
+				// magic get item function
+				$getItemCallName = 'get' . $singularName;
+				if (!isset($this->magicFieldCallInfos[$cntCallName]))
+				{
+					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'ItemCall' . $i18nStr);
+					$this->setMagicFieldCallInfo($getItemCallName, $magicFieldCallInfo);
+				}
+				$this->fields[$fieldName]['magicFncs']['getitem'] = $getItemCallName;
+
+				// magic set item function
+				$setItemCallName = 'set' . $singularName;
+				if (!isset($this->magicFieldCallInfos[$cntCallName]))
+				{
+					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_setMagicField' . $staticStr . 'ItemCall' . $i18nStr);
+					$this->setMagicFieldCallInfo($setItemCallName, $magicFieldCallInfo);
+				}
+				$this->fields[$fieldName]['magicFncs']['setitem'] = $setItemCallName;
 			}
 		}
 	}

@@ -201,7 +201,9 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $callType string - set, get, cnt, validate
+	 * @param $callType string  
+	 *			set, get, cnt, setitem, getitem,
+	 *			lang, validate
 	 * @return string
 	 */
 	public function getFieldMagicCallName($fieldName, $callType);

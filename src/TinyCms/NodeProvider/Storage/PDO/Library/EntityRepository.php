@@ -66,6 +66,111 @@ class EntityRepository implements EntityRepositoryInterface {
 
 	/*
 	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
+	 * @param $saveFieldNames array of string with fieldNames
+	 * @return array
+	 */
+	protected function _getStorageFieldValues(EntityInterface $entity, $saveFieldNames)
+	{
+		$callTypeGet = 'get';
+		$callTypeLang = 'lang';
+		$saveValues = array();
+		$type = $entity->_type();
+		foreach ($saveFieldNames as $fieldName)
+		{
+			$magicCallGetField = $type->getFieldMagicCallName($fieldName, $callTypeGet);
+			if ($type->isFieldEntity($fieldName))
+			{
+				// get field with entity reference
+				if ($type->isFieldArray($fieldName))
+				{
+					$saveValues[$fieldName] = array();
+					$fieldEntities = $entity->{$magicCallGetField}();
+					foreach ($fieldEntities as $fieldEntity)
+					{
+						$fieldType = $fieldEntity->_type();
+						$magicCallGetId = $fieldType->getFieldMagicCallName($fieldType->getIdFieldName(), $callTypeGet);
+						$saveValues[$fieldName][] = $fieldEntity->{$magicCallGetId}();
+					}
+				}
+				else
+				{
+					$fieldEntity = $entity->{$magicCallGetField}();
+					$fieldType = $fieldEntity->_type();
+					$magicCallGetId = $fieldType->getFieldMagicCallName($fieldType->getIdFieldName(), $callTypeGet);
+					$saveValues[$fieldName] = $fieldEntity->{$magicCallGetId}();
+				}
+			}
+			else
+			{
+				// get field with I18n support
+				if ($type->hasFieldI18n($fieldName))
+				{
+					$saveValues[$fieldName] = array();
+					$magicCallGetLanguages = $type->getFieldMagicCallName($fieldName, $callTypeLang);
+					$languages = $entity->{$magicCallGetLanguages}();
+					foreach ($languages as $lang)
+					{
+						if ($type->isFieldArray($fieldName))
+						{
+							$saveValues[$fieldName][$lang] = array();
+							$fieldValues = $entity->{$magicCallGetField}($lang);
+							foreach ($fieldValues as $fieldValue)
+							{
+								if (is_object($fieldValue))
+								{
+									$fieldType = $type->getFieldType($fieldName);
+									$fieldValue = $fieldType->objectToValue($fieldValue);
+								}
+								$saveValues[$fieldName][$lang][] = $fieldValue;
+							}
+						}
+						else
+						{
+							$fieldValue = $entity->{$magicCallGetField}($lang);
+							if (is_object($fieldValue))
+							{
+								$fieldType = $type->getFieldType($fieldName);
+								$fieldValue = $fieldType->objectToValue($fieldValue);
+							}
+							$saveValues[$fieldName][$lang] = $fieldValue;
+						}
+					}
+				}
+				// get field with NO I18n support
+				else
+				{
+					if ($type->isFieldArray($fieldName))
+					{
+						$saveValues[$fieldName] = array();
+						$fieldValues = $entity->{$magicCallGetField}();
+						foreach ($fieldValues as $fieldValue)
+						{
+							if (is_object($fieldValue))
+							{
+								$fieldType = $type->getFieldType($fieldName);
+								$fieldValue = $fieldType->objectToValue($fieldValue);
+							}
+							$saveValues[$fieldName][] = $fieldValue;
+						}
+					}
+					else
+					{
+						$fieldValue = $entity->{$magicCallGetField}();
+						if (is_object($fieldValue))
+						{
+							$fieldType = $type->getFieldType($fieldName);
+							$fieldValue = $fieldType->objectToValue($fieldValue);
+						}
+						$saveValues[$fieldName] = $fieldValue;
+					}
+				}
+			}
+		}
+		return $saveValues;
+	}
+
+	/*
+	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
 	 */
 	protected function _update(EntityInterface $entity)
 	{
@@ -78,67 +183,13 @@ class EntityRepository implements EntityRepositoryInterface {
 	protected function _insert(EntityInterface $entity)
 	{
 		$callTypeGet = 'get';
-		$insertValues = array();
+		$callTypeLang = 'lang';
 		$type = $entity->_type();
-		$insertNames = $this->_getStorageFieldNames($type);
-		foreach ($insertNames as $fieldName)
+		$fieldNames = $this->_getStorageFieldNames($type);
+		$fieldValues = $this->_getStorageFieldValues($entity, $fieldNames);
+		foreach ($fieldNames as $fieldName)
 		{
-			$magicCallGetField = $type->getFieldMagicCallName($fieldName, $callTypeGet);
-			$fieldType = $type->getFieldType($fieldName);
-			if ($fieldType->isEntity())
-			{
-				if ($fieldType->isFieldArray($fieldName))
-				{
-					$insertValues[$fieldName] = array();
-					$fieldEntities = $entity->{$magicCallGetField}();
-					foreach ($fieldEntities as $fieldEntity)
-					{
-						$fieldType = $fieldEntity->getType();
-						$magicCallGetId = $fieldType->getFieldMagicCallName($fieldType->getIdFieldName(), $callTypeGet);
-						$insertValues[$fieldName][] = $fieldEntity->{$magicCallGetId}();
-					}
-				}
-				else
-				{
-					$fieldEntity = $entity->{$magicCallGetField}();
-					$fieldType = $fieldEntity->getType();
-					$magicCallGetId = $fieldType->getFieldMagicCallName($fieldType->getIdFieldName(), $callTypeGet);
-					$insertValues[$fieldName] = $fieldEntity->{$magicCallGetId}();
-				}
-			}
-			elseif ($fieldType->isObject())
-			{
-				if ($fieldType->isFieldArray($fieldName))
-				{
-					$insertValues[$fieldName] = array();
-					$fieldObjects = $entity->{$magicCallGetField}();
-					foreach ($fieldObjects as $fieldObject)
-					{
-						$insertValues[$fieldName][] = $fieldType->objectToValue($fieldObject);
-					}
-				}
-				else
-				{
-					$fieldObject = $entity->{$magicCallGetField}();
-					$insertValues[$fieldName] = $fieldType->objectToValue($fieldObject);
-				}
-			}
-			else
-			{
-				if ($fieldType->isFieldArray($fieldName))
-				{
-					$insertValues[$fieldName] = array();
-					$entityValues = $entity->{$magicCallGetField}();
-					foreach ($entityValues as $value)
-					{
-						$insertValues[$fieldName][] = $value;
-					}
-				}
-				else
-				{
-					$insertValues[$fieldName] = $entity->{$magicCallGetField}();
-				}
-			}
+
 		}
 	}
 

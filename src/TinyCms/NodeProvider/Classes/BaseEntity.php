@@ -23,6 +23,11 @@ class BaseEntity implements EntityInterface {
 	protected $fields;
 
 	/*
+	 * @var array of values indexed by fieldName
+	 */
+	protected $meta;
+
+	/*
 	 * Constructor
 	 */
 	public function __construct($type, $fields=array())
@@ -63,6 +68,54 @@ class BaseEntity implements EntityInterface {
 	final public function _getStorageProxy()
 	{
 		return $this->storageProxy;
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return array
+	 */
+	final public function _setFieldMeta($fieldName, $meta)
+	{
+		$this->meta[$fieldName] = $meta;
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return array
+	 */
+	final public function _getFieldMeta($fieldName)
+	{
+		if (!isset($this->meta[$fieldName]))
+		{
+			return null;
+		}
+		return $this->meta[$fieldName];
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return array
+	 */
+	final public function _setFieldMetaI18n($fieldName, $lang, $meta)
+	{
+		if (!isset($this->meta[$fieldName]))
+		{
+			$this->meta[$fieldName] = array();
+		}
+		$this->meta[$fieldName][$lang] = $meta;
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return array
+	 */
+	final public function _getFieldMetaI18n($fieldName, $lang)
+	{
+		if (!isset($this->meta[$fieldName][$lang]))
+		{
+			return null;
+		}
+		return $this->meta[$fieldName][$lang];
 	}
 
 	/*

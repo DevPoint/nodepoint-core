@@ -175,6 +175,13 @@ class EntityRepository implements EntityRepositoryInterface {
 	protected function _update(EntityInterface $entity)
 	{
 		$type = $entity->_type();
+		$storageProxy = $entity->_getStorageProxy();
+		$fieldNames = $storageProxy->getUpdateFieldNames();
+		$fieldValues = $this->_getStorageFieldValues($entity, $fieldNames);
+		foreach ($fieldValues as $fieldName => &$fieldValue)
+		{
+
+		}
 	}
 
 	/*
@@ -182,8 +189,6 @@ class EntityRepository implements EntityRepositoryInterface {
 	 */
 	protected function _insert(EntityInterface $entity)
 	{
-		$callTypeGet = 'get';
-		$callTypeLang = 'lang';
 		$type = $entity->_type();
 		$fieldNames = $this->_getStorageFieldNames($type);
 		$fieldValues = $this->_getStorageFieldValues($entity, $fieldNames);

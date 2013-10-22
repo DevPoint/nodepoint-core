@@ -72,6 +72,19 @@ class BaseEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string
+	 * @return boolean
+	 */
+	final public function _hasFieldMeta($fieldName)
+	{
+		if (!isset($this->meta[$fieldName]))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	/*
+	 * @param $fieldName string
 	 * @return array
 	 */
 	final public function _setFieldMeta($fieldName, $meta)
@@ -94,6 +107,20 @@ class BaseEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string
+	 * @return boolean
+	 */
+	final public function _hasFieldMetaI18n($fieldName, $lang)
+	{
+		if (!isset($this->meta[$fieldName][$lang]))
+		{
+			return false;
+		}
+		return true;
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @param $lang string with language code
 	 * @return array
 	 */
 	final public function _setFieldMetaI18n($fieldName, $lang, $meta)
@@ -107,6 +134,7 @@ class BaseEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string
+	 * @param $lang string with language code
 	 * @return array
 	 */
 	final public function _getFieldMetaI18n($fieldName, $lang)

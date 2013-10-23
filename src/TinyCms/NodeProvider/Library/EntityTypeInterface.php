@@ -5,13 +5,6 @@ namespace TinyCms\NodeProvider\Library;
 interface EntityTypeInterface extends TypeInterface {
 
 	/*
-	 * Constants for storage types
-	 */
-	const STORAGE_TEXT = "TEXT";
-	const STORAGE_INT = "INT";
-	const STORAGE_FLOAT = "FLOAT";
-
-	/*
 	 * @return boolean true if inheritance isn't possible
 	 */
 	public function isFinal();
@@ -35,6 +28,11 @@ interface EntityTypeInterface extends TypeInterface {
 	 * @return string with table name
 	 */
 	public function getStorageTable();
+
+	/*
+	 * @return string with table name
+	 */
+	public function createStorageField($fieldName, $lang, $value);
 
 	/*
 	 * @return array of string with fieldNames
@@ -222,6 +220,12 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
+	 * @return int - Int, Float, Text, Entity
+	 */
+	public function getFieldStorageType($fieldName);
+
+	/*
+	 * @param $fieldName string
 	 * @return string
 	 */
 	public function getFieldStorageTable($fieldName);
@@ -237,12 +241,6 @@ interface EntityTypeInterface extends TypeInterface {
 	 * @return string
 	 */
 	public function getFieldStorageColumn($fieldName);
-
-	/*
-	 * @param $fieldName string
-	 * @return string - Int, Float, Text
-	 */
-	public function getFieldStorageType($fieldName);
 
 	/*
 	 * @param $fieldName string

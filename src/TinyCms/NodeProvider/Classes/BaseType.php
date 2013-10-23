@@ -99,6 +99,15 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
+	 * @param $fieldName string
+	 * @return int - Int, Float, Text, Entity
+	 */
+	public function getStorageType()
+	{
+		return self::STORAGE_TEXT;
+	}
+
+	/*
 	 * @return boolean true for object types
 	 */
 	public function isObject()

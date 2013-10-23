@@ -5,6 +5,15 @@ namespace TinyCms\NodeProvider\Library;
 interface TypeInterface {
 
 	/*
+	 * Constants for storage types
+	 */
+	const STORAGE_NONE = 	0;
+	const STORAGE_TEXT = 	1;
+	const STORAGE_INT = 	2;
+	const STORAGE_FLOAT = 	3;
+	const STORAGE_ENTITY = 	4;
+
+	/*
 	 * @param $type string
 	 */
 	public function setTypeName($typeName);
@@ -55,6 +64,12 @@ interface TypeInterface {
 	 * @return string
 	 */
 	public function getReferenceTypeName();
+
+	/*
+	 * @param $fieldName string
+	 * @return int - Int, Float, Text, Entity
+	 */
+	public function getStorageType();
 
 	/*
 	 * @return boolean

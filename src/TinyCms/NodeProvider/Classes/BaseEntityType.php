@@ -137,6 +137,15 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
+	 * @param $fieldName string
+	 * @return int - Int, Float, Text, Entity
+	 */
+	public function getStorageType()
+	{
+		return self::STORAGE_ENTITY;
+	}
+
+	/*
 	 * @return string with repository class name
 	 */
 	public function getStorageRepositoryClass()
@@ -150,6 +159,14 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	public function getStorageTable()
 	{
 		return $this->storageTable;
+	}
+
+	/*
+	 * @return string with table name
+	 */
+	public function createStorageField($fieldName, $lang, $value)
+	{
+
 	}
 
 	/*
@@ -612,13 +629,13 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return string - Int, Float, Text
+	 * @return int - Int, Float, Text, Entity
 	 */
 	public function getFieldStorageType($fieldName)
 	{
 		if (!isset($this->fields[$fieldName]['storage']['type']))
 		{ 
-			return self::STORAGE_TEXT;
+			return $this->getFieldType($fieldName)->getStorageType();
 		}
 		return $this->fields[$fieldName]['storage']['type'];
 	}

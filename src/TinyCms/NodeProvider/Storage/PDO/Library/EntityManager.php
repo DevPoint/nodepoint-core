@@ -162,12 +162,7 @@ class EntityManager implements EntityManagerInterface {
 		{
 			foreach ($this->entitiesToUpdate as $entity)
 			{
-				$storageProxy = $entity->_getStorageProxy();
-				if ($storageProxy->hasUpdate())
-				{			
-					$this->_save($entity, $storageProxy);
-					$storageProxy->resetUpdate();
-				}
+				$this->save($entity);
 			}
 			$this->entitiesToUpdate = array();
 		}

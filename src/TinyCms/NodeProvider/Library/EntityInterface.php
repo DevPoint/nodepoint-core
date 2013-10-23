@@ -17,6 +17,11 @@ interface EntityInterface {
 	public function _fieldType($fieldName);
 
 	/*
+	 * @return array of TinyCms\NodeProvider\Library\EntityFieldInterface
+	 */
+	public function _fields();
+
+	/*
 	 * @param $repository TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
 	 */
 	public function _setStorageProxy(EntityStorageProxyInterface $storageProxy);

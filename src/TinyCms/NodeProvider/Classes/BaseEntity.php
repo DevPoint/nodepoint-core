@@ -4,6 +4,8 @@ namespace TinyCms\NodeProvider\Classes;
 
 use TinyCms\NodeProvider\Library\EntityInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityStorageProxyInterface;
+use TinyCms\NodeProvider\Classes\EntityField;
+use TinyCms\NodeProvider\Classes\EntityArrayField;
 
 class BaseEntity implements EntityInterface {
 
@@ -13,28 +15,49 @@ class BaseEntity implements EntityInterface {
 	protected $type;
 
 	/*
-	 * @var TinyCms\NodeProvider\Library\EntityStorageProxyInterface
+	 * @var TinyCms\NodeProvider\Storage\Library\EntityStorageProxyInterface
 	 */
 	protected $storageProxy;
 
 	/*
-	 * @var array of values indexed by fieldName
+	 * @var array of TinyCms\NodeProvider\Library\EntityFieldInterface indexed by fieldName
 	 */
 	protected $fields;
 
 	/*
 	 * @var array of values indexed by fieldName
 	 */
-	protected $meta;
+	protected $cachedFields;
 
 	/*
 	 * Constructor
 	 */
 	public function __construct($type, $fields=array())
 	{
+		// store parameters
 		$this->type = $type;
 		$this->storageProxy = null;
 		$this->fields = $fields;
+
+		// create cachedFields array		
+		$this->cachedFields = array();
+		foreach ($fields as $field)
+		{
+			$fieldName = $field->getName();
+			if ($type->hasFieldI18n($fieldName))
+			{
+				if (!isset($this->cachedFields[$fieldName]))
+				{
+					$this->cachedFields[$fieldName] = array();	
+				}
+				$lang = $field->getLanguage();
+				$this->cachedFields[$fieldName][$lang] = $field;
+			}
+			else
+			{
+				$this->cachedFields[$fieldName] = $field;
+			}
+		}
 	}
 
 	/*
@@ -55,6 +78,14 @@ class BaseEntity implements EntityInterface {
 	}
 
 	/*
+	 * @return array of TinyCms\NodeProvider\Library\EntityFieldInterface
+	 */
+	final public function _fields()
+	{
+		return $this->fields;
+	}
+
+	/*
 	 * @param $repository TinyCms\NodeProvider\Storage\Library\EntityStorageProxyInterface
 	 */
 	public function _setStorageProxy(EntityStorageProxyInterface $storageProxy)
@@ -68,82 +99,6 @@ class BaseEntity implements EntityInterface {
 	final public function _getStorageProxy()
 	{
 		return $this->storageProxy;
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean
-	 */
-	final public function _hasFieldMeta($fieldName)
-	{
-		if (!isset($this->meta[$fieldName]))
-		{
-			return false;
-		}
-		return true;
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return array
-	 */
-	final public function _setFieldMeta($fieldName, $meta)
-	{
-		$this->meta[$fieldName] = $meta;
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return array
-	 */
-	final public function _getFieldMeta($fieldName)
-	{
-		if (!isset($this->meta[$fieldName]))
-		{
-			return null;
-		}
-		return $this->meta[$fieldName];
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean
-	 */
-	final public function _hasFieldMetaI18n($fieldName, $lang)
-	{
-		if (!isset($this->meta[$fieldName][$lang]))
-		{
-			return false;
-		}
-		return true;
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @param $lang string with language code
-	 * @return array
-	 */
-	final public function _setFieldMetaI18n($fieldName, $lang, $meta)
-	{
-		if (!isset($this->meta[$fieldName]))
-		{
-			$this->meta[$fieldName] = array();
-		}
-		$this->meta[$fieldName][$lang] = $meta;
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @param $lang string with language code
-	 * @return array
-	 */
-	final public function _getFieldMetaI18n($fieldName, $lang)
-	{
-		if (!isset($this->meta[$fieldName][$lang]))
-		{
-			return null;
-		}
-		return $this->meta[$fieldName][$lang];
 	}
 
 	/*
@@ -163,7 +118,22 @@ class BaseEntity implements EntityInterface {
 	 */
 	protected function _setMagicFieldCall($fieldName, &$args)
 	{
-		$this->fields[$fieldName] = $args[0];
+		if (!isset($this->cachedFields[$fieldName]))
+		{
+			if ($this->type->isFieldArray($fieldName))
+			{
+				$field = new EntityArrayField($fieldName, null);
+				$this->cachedFields[$fieldName] = $field;
+				$this->fields[] = $field;
+			}
+			else
+			{
+				$field = new EntityField($fieldName, null);
+				$this->cachedFields[$fieldName] = $field;
+				$this->fields[] = $field;
+			}
+		}
+		$this->cachedFields[$fieldName]->setValue($args[0]);
 		if (null !== $this->storageProxy)
 		{
 			$this->storageProxy->addUpdateField($fieldName);
@@ -177,11 +147,11 @@ class BaseEntity implements EntityInterface {
 	 */
 	protected function _getMagicFieldCall($fieldName)
 	{
-		if (!isset($this->fields[$fieldName]))
+		if (!isset($this->cachedFields[$fieldName]))
 		{
 			return null;
 		}
-		return $this->fields[$fieldName];
+		return $this->cachedFields[$fieldName]->getValue();
 	}
 
 	/*
@@ -200,29 +170,32 @@ class BaseEntity implements EntityInterface {
 	 */
 	protected function _setMagicFieldCallI18n($fieldName, &$args)
 	{
-		if (!isset($this->fields[$fieldName]))
+		if (!isset($this->cachedFields[$fieldName]))
 		{
-			$this->fields[$fieldName] = array();	
+			$this->cachedFields[$fieldName] = array();	
 		}
-		$this->fields[$fieldName][$args[0]] = $args[1];
+		$lang = $args[0];
+		if (!isset($this->cachedFields[$fieldName][$lang]))
+		{
+			if ($this->type->isFieldArray($fieldName))
+			{
+				$field = new EntityArrayField($fieldName, $lang);
+				$this->cachedFields[$fieldName][$lang] = $field;
+				$this->fields[] = $field;
+			}
+			else
+			{
+				$field = new EntityField($fieldName, $lang);
+				$this->cachedFields[$fieldName][$lang] = $field;
+				$this->fields[] = $field;
+			}
+		}
+		$this->cachedFields[$fieldName][$lang]->setValue($args[1]);
 		if (null !== $this->storageProxy)
 		{
 			$this->storageProxy->addUpdateField($fieldName);
 		}
 		return $this;
-	}
-
-	/*
-	 * @param $fieldName string 
-	 * @return array of string with language codes
-	 */
-	protected function _getMagicFieldLanguagesCall($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]))
-		{
-			return null;
-		}
-		return array_keys($this->fields[$fieldName]);
 	}
 
 	/*
@@ -233,11 +206,11 @@ class BaseEntity implements EntityInterface {
 	protected function _getMagicFieldCallI18n($fieldName, &$args)
 	{
 		$lang = $args[0];
-		if (!isset($this->fields[$fieldName][$lang]))
+		if (!isset($this->cachedFields[$fieldName][$lang]))
 		{
 			return null;
 		}
-		return $this->fields[$fieldName][$lang];
+		return $this->cachedFields[$fieldName][$lang]->getValue();
 	}
 
 	/*
@@ -248,16 +221,6 @@ class BaseEntity implements EntityInterface {
 	protected function _getMagicFieldStaticCallI18n($fieldName, &$args)
 	{
 		return $this->type->getFieldStaticValueI18n($fieldName, $args[0]);
-	}
-
-	/*
-	 * @param $fieldName string 
-	 * @return array of string with language codes
-	 */
-	protected function _getMagicFieldStaticLanguagesCall($fieldName)
-	{
-		// TODO: implement
-		return null;
 	}
 
 	/*

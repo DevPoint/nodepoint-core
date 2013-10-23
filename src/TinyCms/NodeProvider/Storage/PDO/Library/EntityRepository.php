@@ -134,7 +134,6 @@ class EntityRepository implements EntityRepositoryInterface {
 				$saveField['outvalue'] = $fieldValue;
 			}
 		}
-		echo count($saveFields) . ',';
 		return $saveFields;
 	}
 

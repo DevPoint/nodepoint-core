@@ -3,7 +3,12 @@
 namespace TinyCms\NodeProvider\Storage\Library;
 
 interface SerializerInterface {
-	
+
+	/*	
+	 * @return string
+	 */
+	public function getTypeName();
+
 	/*
 	 * @param $value mixed
 	 * @return string

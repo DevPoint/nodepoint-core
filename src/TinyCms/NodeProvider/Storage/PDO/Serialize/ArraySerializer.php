@@ -6,6 +6,14 @@ use TinyCms\NodeProvider\Storage\PDO\Classes\BaseSerializer;
 
 class ArraySerializer extends BaseSerializer {
 	
+	/*	
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		parent::__construct('TinyCmsCore/ArraySerializer');
+	}
+
 	/*
 	 * @param $value mixed
 	 * @return string

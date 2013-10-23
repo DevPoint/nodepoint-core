@@ -131,10 +131,6 @@ class EntityRepository implements EntityRepositoryInterface {
 				{
 					$fieldValue = $serializer->serialize($fieldValue);
 				}
-				else if (is_array($fieldValue))
-				{
-					$fieldValue = serialize($fieldValue);
-				}
 				$saveField['outvalue'] = $fieldValue;
 			}
 		}

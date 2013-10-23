@@ -6,6 +6,29 @@ use TinyCms\NodeProvider\Storage\Library\SerializerInterface;
 
 class BaseSerializer implements SerializerInterface {
 	
+	/*	
+	 * @var string
+	 */
+	public $typeName;
+
+	/*	
+	 * Constructor
+	 *
+	 * @param string
+	 */
+	public function __construct($typeName)
+	{
+		$this->typeName = $typeName;
+	}
+
+	/*	
+	 * @return string
+	 */
+	final public function getTypeName()
+	{
+		return $this->typeName;
+	}
+
 	/*
 	 * @param $value mixed
 	 * @return string

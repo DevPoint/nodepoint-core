@@ -21,8 +21,15 @@ class EntityManager implements EntityManagerInterface {
 
 	/*
 	 * @var array of TinyCms\NodeProvider\Storage\Library\SerializerInterface
+	 *		indexed by Type
 	 */
 	protected $serializers;
+
+	/*
+	 * @var array of TinyCms\NodeProvider\Storage\Library\SerializerInterface
+	 *		indexed by class name
+	 */
+	protected $cachedSerializer;
 
 	/*
 	 * @var array of TinyCms\NodeProvider\Library\EntityInterface
@@ -41,12 +48,14 @@ class EntityManager implements EntityManagerInterface {
 		// create standard serializers
 		$this->serializers = array();
 		$stringSerializer = new Serialize\StringSerializer();
+		$this->cachedSerializer[$stringSerializer->getTypeName()] = $stringSerializer;
 		$this->serializers['TinyCmsCore/String'] = $stringSerializer;
 		$this->serializers['TinyCmsCore/Alias'] = $stringSerializer;
 		$this->serializers['TinyCmsCore/Text'] = $stringSerializer;
 		$this->serializers['TinyCmsCore/RichText'] = $stringSerializer;
 
 		$arraySerializer = new Serialize\ArraySerializer();
+		$this->cachedSerializer[$arraySerializer->getTypeName()] = $arraySerializer;
 		$this->serializers['TinyCmsCore/Position2d'] = $arraySerializer;
 		$this->serializers['TinyCmsCore/Bound2d'] = $arraySerializer;
 	}

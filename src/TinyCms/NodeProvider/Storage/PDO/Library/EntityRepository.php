@@ -2,12 +2,10 @@
 
 namespace TinyCms\NodeProvider\Storage\PDO\Library;
 
-use TinyCms\NodeProvider\Library\TypeInterface;
 use TinyCms\NodeProvider\Library\EntityInterface;
 use TinyCms\NodeProvider\Library\EntityTypeInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityManagerInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface;
-use TinyCms\NodeProvider\Classes\StorageField;
 
 class EntityRepository implements EntityRepositoryInterface {
 

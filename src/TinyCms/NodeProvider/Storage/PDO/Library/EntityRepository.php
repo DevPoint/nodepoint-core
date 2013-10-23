@@ -105,6 +105,7 @@ class EntityRepository implements EntityRepositoryInterface {
 
 		// convert values to storage device format
 		$callTypeGet = 'get';
+		$em = $this->getEntityManager();
 		foreach ($saveFields as &$saveField)
 		{
 			$fieldName = $saveField['name'];
@@ -120,13 +121,12 @@ class EntityRepository implements EntityRepositoryInterface {
 			else
 			{
 				$fieldValue = $saveField['value'];
+				$fieldType = $type->getFieldType($fieldName);
 				if (is_object($fieldValue))
 				{
-					$fieldType = $type->getFieldType($fieldName);
 					$fieldValue = $fieldType->objectToValue($fieldValue);
 				}
-				$fieldType = $type->getFieldType($fieldName);
-				$serializer = $this->em->getSerializer($fieldType->getTypeName());
+				$serializer = $em->getSerializer($fieldType->getTypeName());
 				if (null !== $serializer)
 				{
 					$fieldValue = $serializer->serialize($fieldValue);

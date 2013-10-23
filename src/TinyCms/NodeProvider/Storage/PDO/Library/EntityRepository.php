@@ -69,7 +69,7 @@ class EntityRepository implements EntityRepositoryInterface {
 	 * @param $fieldNames array of string with fieldNames
 	 * @return array
 	 */
-	protected function _getStorageFieldValues(EntityInterface $entity, $fieldNames)
+	protected function _getSerializedFieldValues(EntityInterface $entity, $fieldNames)
 	{
 		// explode array items
 		$saveFields = array();
@@ -125,7 +125,13 @@ class EntityRepository implements EntityRepositoryInterface {
 					$fieldType = $type->getFieldType($fieldName);
 					$fieldValue = $fieldType->objectToValue($fieldValue);
 				}
-				if (is_array($fieldValue))
+				$fieldType = $type->getFieldType($fieldName);
+				$serializer = $this->em->getSerializer($fieldType->getTypeName());
+				if (null !== $serializer)
+				{
+					$fieldValue = $serializer->serialize($fieldValue);
+				}
+				else if (is_array($fieldValue))
 				{
 					$fieldValue = serialize($fieldValue);
 				}
@@ -143,7 +149,7 @@ class EntityRepository implements EntityRepositoryInterface {
 		$type = $entity->_type();
 		$storageProxy = $entity->_getStorageProxy();
 		$fieldNames = $storageProxy->getUpdateFieldNames();
-		$updateFieldValues = $this->_getStorageFieldValues($entity, $fieldNames);
+		$updateFieldValues = $this->_getSerializedFieldValues($entity, $fieldNames);
 		foreach ($updateValues as &$updateValue)
 		{
 
@@ -157,7 +163,7 @@ class EntityRepository implements EntityRepositoryInterface {
 	{
 		$type = $entity->_type();
 		$fieldNames = $this->_getStorageFieldNames($type);
-		$insertFieldValues = $this->_getStorageFieldValues($entity, $fieldNames);
+		$insertFieldValues = $this->_getSerializedFieldValues($entity, $fieldNames);
 		foreach ($insertFieldValues as &$insertValue)
 		{
 

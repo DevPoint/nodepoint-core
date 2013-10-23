@@ -4,6 +4,7 @@ header("Content-Type:text/plain; charset=utf-8");
 
 use TinyCms\NodeProvider\Library\MagicFieldCallInfo;
 use TinyCms\NodeProvider\Library\TypeInterface;
+use TinyCms\NodeProvider\Type\Position2d\Position2d;
 use TinyCms\NodeProvider\Type\Entity\EntityType;
 use TinyCms\NodeProvider\Type\Entity\Entity;
 use TinyCms\NodeProvider\Type\Node\Node;
@@ -19,6 +20,7 @@ $em = new \TinyCms\NodeProvider\Storage\PDO\Library\EntityManager($conn);
 $integerType = new \TinyCms\NodeProvider\Type\Integer\IntegerType();
 $aliasType = new \TinyCms\NodeProvider\Type\Alias\AliasType();
 $stringType = new \TinyCms\NodeProvider\Type\String\StringType();
+$position2dType = new \TinyCms\NodeProvider\Type\Position2d\Position2dType();
 
 $nodeType = new \TinyCms\NodeProvider\Type\Node\NodeType();
 $nodeType->setFieldType('id', $integerType);
@@ -32,6 +34,7 @@ $documentType->setFieldType('id', $integerType);
 $documentType->setFieldType('alias', $aliasType);
 $documentType->setFieldType('parent', $nodeType);
 $documentType->setFieldType('name', $stringType);
+$documentType->setFieldType('geolocation', $position2dType);
 $documentType->setFieldDescription('name', array('i18n'=>true));
 $documentType->setFieldType('body', $stringType);
 $documentType->setFieldDescription('body', array('i18n'=>true));
@@ -54,6 +57,9 @@ $object->setAlias("julian-brabsche");
 $object->setName($langA, "Julian Brabsche");
 $object->setBody($langA, "Hier kommt Julian, unser Mathe-Genie!");
 $object->setBody($langB, "Here comes Julian, our Mathe-Genius!");
+$geolocation = new Position2d();
+$geolocation->set(43.001, 15.002);
+$object->setGeolocation($geolocation);
 $arrObjects[] = $object;
 $em->persist($object);
 

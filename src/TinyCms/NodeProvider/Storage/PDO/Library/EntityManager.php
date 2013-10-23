@@ -5,6 +5,7 @@ namespace TinyCms\NodeProvider\Storage\PDO\Library;
 use TinyCms\NodeProvider\Library\EntityInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityManagerInterface;
 use TinyCms\NodeProvider\Storage\PDO\Library\EntityStorageProxy;
+use TinyCms\NodeProvider\Storage\PDO\Serialize;
 
 class EntityManager implements EntityManagerInterface {
 
@@ -19,6 +20,11 @@ class EntityManager implements EntityManagerInterface {
 	protected $repositories;
 
 	/*
+	 * @var array of TinyCms\NodeProvider\Storage\Library\SerializerInterface
+	 */
+	protected $serializers;
+
+	/*
 	 * @var array of TinyCms\NodeProvider\Library\EntityInterface
 	 */
 	protected $entitiesToUpdate;
@@ -31,6 +37,18 @@ class EntityManager implements EntityManagerInterface {
 		$this->conn = $conn;
 		$this->repositories = array();
 		$this->entitiesToUpdate = array();
+
+		// create standard serializers
+		$this->serializers = array();
+		$stringSerializer = new Serialize\StringSerializer();
+		$this->serializers['TinyCmsCore/String'] = $stringSerializer;
+		$this->serializers['TinyCmsCore/Alias'] = $stringSerializer;
+		$this->serializers['TinyCmsCore/Text'] = $stringSerializer;
+		$this->serializers['TinyCmsCore/RichText'] = $stringSerializer;
+
+		$arraySerializer = new Serialize\ArraySerializer();
+		$this->serializers['TinyCmsCore/Position2d'] = $arraySerializer;
+		$this->serializers['TinyCmsCore/Bound2d'] = $arraySerializer;
 	}
 
 	/*
@@ -138,6 +156,28 @@ class EntityManager implements EntityManagerInterface {
 		$typeName = $type->getTypeName();
 		$repository = $this->repositories[$typeName];
 		$repository->save($entity);
+	}
+
+	/*
+	 * @param $typeName string
+	 * @param $serializer TinyCms\NodeProvider\Storage\Library\SerializerInterface
+	 */
+	public function setSerializer($typeName, SerializerInterface $serializer)
+	{
+		$this->serializers[$typeName] = $serializer;
+	}
+
+	/*
+	 * @param $typeName string
+	 * @return TinyCms\NodeProvider\Storage\Library\SerializerInterface
+	 */
+	public function getSerializer($typeName)
+	{
+		if (!isset($this->serializers[$typeName]))
+		{
+			return null;
+		}
+		return $this->serializers[$typeName];
 	}
 
 	/*

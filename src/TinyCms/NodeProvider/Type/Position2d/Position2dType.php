@@ -12,7 +12,7 @@ class Position2dType extends BaseType {
 	public function __construct()
 	{
 		$this->typeName = 'TinyCmsCore/Position2d';
-		$this->className = 'TinyCms\NodeProvider\Type\Position2d\Position2d';
+		$this->className = "\\TinyCms\\NodeProvider\\Type\\Position2d\\Position2d";
 	}
 
 	/*
@@ -24,22 +24,25 @@ class Position2dType extends BaseType {
 	}
 
 	/*
-	 * @param $object mixed
-	 * @return mixed - array or input parameter type
+	 * @param $object object
+	 * @return array
 	 */
-	public function objectToValue($object, $options=null)
+	public function objectToArray($object)
 	{
 		$result = array('x'=>$object->x, 'y'=>$object->y);
 		return $result;
 	}
 
 	/*
-	 * @param $value mixed
-	 * @return mixed - object or input parameter type
+	 * @param $value array
+	 * @return object
 	 */
-	public function objectFromValue(&$value)
+	public function objectFromArray(&$arrValue)
 	{
-		$object = new Position2d($value['x'], $value['y']);
+		$objectClassName = $this->getClassName();
+		$object = new $objectClassName();
+		$object->x = $arrValue['x'];
+		$object->y = $arrValue['y'];
 		return $object;
 	}
 }

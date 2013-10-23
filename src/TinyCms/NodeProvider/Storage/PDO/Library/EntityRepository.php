@@ -122,14 +122,9 @@ class EntityRepository implements EntityRepositoryInterface {
 			{
 				$fieldValue = $saveField['value'];
 				$fieldType = $type->getFieldType($fieldName);
-				if (is_object($fieldValue))
+				if ($fieldType->isObject())
 				{
-					$fieldValue = $fieldType->objectToValue($fieldValue);
-				}
-				$serializer = $em->getSerializer($fieldType->getTypeName());
-				if (null !== $serializer)
-				{
-					$fieldValue = $serializer->serialize($fieldValue);
+					$fieldValue = $fieldType->objectToSerialized($fieldValue);
 				}
 				$saveField['outvalue'] = $fieldValue;
 			}

@@ -116,21 +116,49 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
-	 * @param $object mixed
-	 * @return mixed - array or input parameter type
+	 * @param $object object
+	 * @return array
 	 */
-	public function objectToValue($object, $options=null)
+	public function objectToArray($object)
 	{
-		return $object;
+		return null;
 	}
 
 	/*
-	 * @param $value mixed
+	 * @param $value array
 	 * @return mixed - object or input parameter type
 	 */
-	public function objectFromValue(&$value)
+	public function objectFromArray(&$arrValue)
 	{
-		return $value;
+		return null;
+	}
+
+	/*
+	 * @param $object object
+	 * @return string
+	 */
+	public function objectToSerialized($object)
+	{
+		$arrValue = $this->objectToArray($object);
+		if (null === $arrValue)
+		{
+			return null;
+		}
+		return serialize($arrValue);
+	}
+
+	/*
+	 * @param $value string
+	 * @return object
+	 */
+	public function objectFromSerialized(&$serializedValue)
+	{
+		$arrValue = unserialize($serializedValue);
+		if (null === $arrValue)
+		{
+			return null;
+		}
+		return $this->objectFromArray($arrValue);
 	}
 
 	/*

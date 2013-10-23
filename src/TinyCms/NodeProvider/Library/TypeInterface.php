@@ -80,14 +80,26 @@ interface TypeInterface {
 	 * @param $object mixed
 	 * @return mixed - array or input parameter type
 	 */
-	public function objectToValue($object, $options=null);
+	public function objectToArray($object);
 
 	/*
 	 * @param $value mixed
 	 * @return mixed - object or input parameter type
 	 */
-	public function objectFromValue(&$value);
+	public function objectFromArray(&$value);
 
+	/*
+	 * @param $object object
+	 * @return string
+	 */
+	public function objectToSerialized($object);
+
+	/*
+	 * @param $value string
+	 * @return object
+	 */
+	public function objectFromSerialized(&$serializedValue);
+	
 	/*
 	 * Calculate further values from the given properties
 	 */

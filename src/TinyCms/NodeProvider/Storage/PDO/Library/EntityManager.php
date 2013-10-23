@@ -2,6 +2,7 @@
 
 namespace TinyCms\NodeProvider\Storage\PDO\Library;
 
+use TinyCms\NodeProvider\Library\TypeInterface;
 use TinyCms\NodeProvider\Library\EntityInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityManagerInterface;
 use TinyCms\NodeProvider\Storage\PDO\Library\EntityStorageProxy;
@@ -89,7 +90,7 @@ class EntityManager implements EntityManagerInterface {
 		$relatedEntityCanditates = array();
 		foreach ($fieldNames as $fieldName)
 		{
-			if ($type->isFieldEntity($fieldName) && $type->hasFieldStorageColumn($fieldName))
+			if ($type->isFieldEntity($fieldName) && TypeInterface::STORAGE_NONE !== $type->getFieldStorageType($fieldName))
 			{
 				$magicCallGetField = $type->getFieldMagicCallName($fieldName, $callTypeGet);
 				if ($type->isFieldArray($fieldName))

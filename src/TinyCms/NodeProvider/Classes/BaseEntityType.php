@@ -162,14 +162,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * @return string with table name
-	 */
-	public function createStorageField($fieldName, $lang, $value)
-	{
-
-	}
-
-	/*
 	 * @return array of string with fieldNames
 	 */
 	public function getFieldNames()
@@ -590,28 +582,15 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return string
+	 * @return int - Int, Float, Text, Entity
 	 */
-	public function getFieldStorageTable($fieldName)
+	public function getFieldStorageType($fieldName)
 	{
-		if (!isset($this->fields[$fieldName]['storage']['table']))
+		if (!isset($this->fields[$fieldName]['storage']['type']))
 		{ 
-			return null;
+			return $this->getFieldType($fieldName)->getStorageType();
 		}
-		return $this->fields[$fieldName]['storage']['table'];
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean
-	 */
-	public function hasFieldStorageColumn($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['storage']['column']))
-		{ 
-			return true;
-		}
-		return (!empty($this->fields[$fieldName]['storage']['column']));
+		return $this->fields[$fieldName]['storage']['type'];
 	}
 
 	/*
@@ -625,19 +604,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			return $fieldName;
 		}
 		return $this->fields[$fieldName]['storage']['column'];
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return int - Int, Float, Text, Entity
-	 */
-	public function getFieldStorageType($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['storage']['type']))
-		{ 
-			return $this->getFieldType($fieldName)->getStorageType();
-		}
-		return $this->fields[$fieldName]['storage']['type'];
 	}
 
 	/*
@@ -715,18 +681,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 				$this->setMagicFieldCallInfo($validateCallName, $magicFieldCallInfo);
 			}
 			$this->fields[$fieldName]['magicFncs']['validate'] = $validateCallName;
-
-			// magic lang function
-			if ($this->hasFieldI18n($fieldName))
-			{
-				$getCallName = 'lang' . $singularName;
-				if (!isset($this->magicFieldCallInfos[$getCallName]))
-				{
-					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'LanguagesCall');
-					$this->setMagicFieldCallInfo($getCallName, $magicFieldCallInfo);
-				}
-				$this->fields[$fieldName]['magicFncs']['lang'] = $getCallName;
-			}
 
 			// array specific magic functions
 			if ($this->isFieldArray($fieldName))

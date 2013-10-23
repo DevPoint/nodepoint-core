@@ -30,11 +30,6 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getStorageTable();
 
 	/*
-	 * @return string with table name
-	 */
-	public function createStorageField($fieldName, $lang, $value);
-
-	/*
 	 * @return array of string with fieldNames
 	 */
 	public function getFieldNames();
@@ -224,18 +219,6 @@ interface EntityTypeInterface extends TypeInterface {
 	 */
 	public function getFieldStorageType($fieldName);
 
-	/*
-	 * @param $fieldName string
-	 * @return string
-	 */
-	public function getFieldStorageTable($fieldName);
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean
-	 */
-	public function hasFieldStorageColumn($fieldName);
-	
 	/*
 	 * @param $fieldName string
 	 * @return string

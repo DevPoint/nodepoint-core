@@ -15,7 +15,7 @@ abstract class BaseEntityArrayField extends AbstractEntityField {
 	 * @param $name string with fieldName
 	 * @param $lang string with language code
 	 */
-	public function __construct($name, $lang=null)
+	protected function __construct($name, $lang=null)
 	{
 		parent::__construct($name, $lang);
 		$this->items = array();

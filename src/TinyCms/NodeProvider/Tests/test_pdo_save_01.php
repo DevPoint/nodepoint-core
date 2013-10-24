@@ -24,7 +24,10 @@ $position2dType = new \TinyCms\NodeProvider\Type\Position2d\Position2dType();
 
 $nodeType = new \TinyCms\NodeProvider\Type\Node\NodeType();
 $nodeType->setFieldType('id', $integerType);
+$nodeType->setFieldType('parent', $nodeType);
+$nodeType->setFieldStorageDesc('parent', array('column'=>'parent_id'));
 $nodeType->setFieldType('alias', $aliasType);
+$nodeType->setFieldDescription('alias', array('i18n'=>true));
 $nodeType->setFieldType('name', $stringType);
 $nodeType->setFieldDescription('name', array('i18n'=>true));
 $nodeType->finalize();
@@ -33,6 +36,7 @@ $documentType = new \TinyCms\NodeProvider\Type\Document\DocumentType();
 $documentType->setFieldType('id', $integerType);
 $documentType->setFieldType('alias', $aliasType);
 $documentType->setFieldType('parent', $nodeType);
+$documentType->setFieldStorageDesc('parent', array('column'=>'parent_id'));
 $documentType->setFieldType('name', $stringType);
 $documentType->setFieldType('geolocation', $position2dType);
 $documentType->setFieldDescription('name', array('i18n'=>true));

@@ -67,6 +67,14 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
+	 * @return boolean true for object types
+	 */
+	public function isObject()
+	{
+		return (!empty($this->className));
+	}
+
+	/*
 	 * @return boolean true for entity types
 	 */
 	public function isEntity()
@@ -105,14 +113,6 @@ abstract class BaseType implements TypeInterface {
 	public function getStorageType()
 	{
 		return self::STORAGE_TEXT;
-	}
-
-	/*
-	 * @return boolean true for object types
-	 */
-	public function isObject()
-	{
-		return (null !== $this->className);
 	}
 
 	/*

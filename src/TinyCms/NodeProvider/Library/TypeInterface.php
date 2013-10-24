@@ -46,6 +46,11 @@ interface TypeInterface {
 	public function getClassName();
 
 	/*
+	 * @return boolean true for object types
+	 */
+	public function isObject();
+
+	/*
 	 * @return boolean true for entity types
 	 */
 	public function isEntity();
@@ -70,11 +75,6 @@ interface TypeInterface {
 	 * @return int - Int, Float, Text, Entity
 	 */
 	public function getStorageType();
-
-	/*
-	 * @return boolean
-	 */
-	public function isObject();
 
 	/*
 	 * @param $object mixed

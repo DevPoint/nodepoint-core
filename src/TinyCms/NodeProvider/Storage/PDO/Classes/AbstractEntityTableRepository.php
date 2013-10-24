@@ -166,7 +166,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		$fieldName = $saveField['name'];
 		$fieldType = $type->getFieldType($fieldName);
 		$storageType = $type->getFieldStorageType($fieldName);
-		$arrFieldTableValue = array(
+		$entityFieldRow = array(
 			'entity_id' => $entityId,
 			'fieldName' => $fieldName,
 			'type' => $fieldType->getTypeName(),
@@ -179,25 +179,25 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			'valueText' => null);
 		if (isset($saveField['id']))
 		{
-			$arrFieldTableValue['id'] = $saveField['id'];
+			$entityFieldRow['id'] = $saveField['id'];
 		}
 		switch ($storageType)
 		{
 			case TypeInterface::STORAGE_INT:
 			case TypeInterface::STORAGE_ENTITY:
-				$arrFieldTableValue['valueInt'] = $saveField['value'];
-				$arrFieldTableValue['keyInt'] = isset($saveField['key']) ? $saveField['key'] : null;
+				$entityFieldRow['valueInt'] = $saveField['value'];
+				$entityFieldRow['keyInt'] = isset($saveField['key']) ? $saveField['key'] : null;
 				break;
 			case TypeInterface::STORAGE_FLOAT:
-				$arrFieldTableValue['valueFloat'] = $saveField['value'];
-				$arrFieldTableValue['keyText'] = isset($saveField['key']) ? $saveField['key'] : '';
+				$entityFieldRow['valueFloat'] = $saveField['value'];
+				$entityFieldRow['keyText'] = isset($saveField['key']) ? $saveField['key'] : '';
 				break;
 			default:
-				$arrFieldTableValue['valueText'] = $saveField['value'];
-				$arrFieldTableValue['keyText'] = isset($saveField['key']) ? $saveField['key'] : '';
+				$entityFieldRow['valueText'] = $saveField['value'];
+				$entityFieldRow['keyText'] = isset($saveField['key']) ? $saveField['key'] : '';
 				break;
 		}
-		return $arrFieldTableValue;
+		return $entityFieldRow;
 	}
 
 	/*

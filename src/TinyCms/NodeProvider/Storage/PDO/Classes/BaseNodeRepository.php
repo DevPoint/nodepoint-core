@@ -65,7 +65,6 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$insertFieldValues = $this->_serializeEntityFields($entity, $fieldNames);
 
 		// filter fields and insert them into the entity table
-		$mapFieldsSaved = array();
 		$entityRow = array();
 		$entityRow['type'] = $type->getTypeName();
 		foreach ($insertFieldValues as &$insertValue)
@@ -74,8 +73,8 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 			if (isset($this->entityTableFields[$fieldName]))
 			{
 				$columnName = $this->entityTableFields[$fieldName];
-				$entityTableValue[$columnName] = $insertValue['value'];
-				$mapFieldsSaved[$fieldName] = true;
+				$entityRow[$columnName] = $insertValue['value'];
+				$insertValue['done'] = true;
 			}
 		}
 		$entityId = $this->_insertEntityRow($entityRow);
@@ -85,9 +84,9 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$entityFieldRows = array();
 		foreach ($insertFieldValues as &$insertValue)
 		{
-			$fieldName = $insertValue['name'];
-			if (empty($mapFieldsSaved[$fieldName]))
+			if (empty($insertValue['done']))
 			{
+				$fieldName = $insertValue['name'];
 				if (isset($insertValue['items']))
 				{
 					$saveValue = array();
@@ -96,15 +95,16 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 					foreach ($insertValue['items'] as $insertItem)
 					{
 						$saveValue['sort'] = $insertItem['sort'];
+						$saveValue['key'] = $insertItem['key'];
 						$saveValue['value'] = $insertItem['value'];
-						$entityFieldRows[] = $this->_getEntityFieldsTableValue($entityId, $type, $saveValue);
+						$entityFieldRows[] = $this->_getEntityFieldsTableRow($type, $entityId, $saveValue);
 					}
 				}
 				else
 				{
-					$entityFieldRows[] = $this->_getEntityFieldsTableValue($entityId, $type, $insertValue);
+					$entityFieldRows[] = $this->_getEntityFieldsTableRow($type, $entityId, $insertValue);
 				}
-				$mapFieldsSaved[$fieldName] = true;
+				$insertValue['done'] = true;
 			}
 		}
 		$this->_insertEntityFieldRows($entityFieldRows);

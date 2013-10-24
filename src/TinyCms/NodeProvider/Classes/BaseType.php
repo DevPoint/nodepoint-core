@@ -116,6 +116,15 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
+	 * @param $value mixed
+	 * @return mixed string or int
+	 */
+	public function searchKeyFromValue($value)
+	{
+		return null;
+	}
+
+	/*
 	 * @param $object object
 	 * @return array
 	 */

@@ -116,17 +116,21 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			$fieldName = $field->getName();
 			if (!empty($mapFieldNames[$fieldName]))
 			{
+				$fieldType = $type->getFieldType($fieldName);
+				$fieldSearchable = $type->isFieldSearchable($fieldName);
 				if ($field->isArray())
 				{
 					$saveFieldItems = array();
-					$fieldType = $type->getFieldType($fieldName);
 					foreach ($field->getArrayItems() as $arrayField)
 					{
-						$fieldValue = $this->_serializeValue($fieldType, $arrayField->getValue());
+						$fieldValue = $arrayField->getValue();
+						$saveValue = $this->_serializeValue($fieldType, $fieldValue);
+						$saveSearchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($fieldValue) : null;
 						$saveFieldItems[] = array(
 							'id' => $arrayField->getId(), 
 							'sort' => $arrayField->getSortIndex(),
-							'value' => $fieldValue);
+							'value' => $saveValue,
+							'key' => $saveSearchKey);
 					}
 					$saveFields[] = array(
 						'name' => $field->getName(),
@@ -136,13 +140,15 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				}
 				else
 				{
-					$fieldType = $type->getFieldType($fieldName);
-					$fieldValue = $this->_serializeValue($fieldType, $field->getValue());
+					$fieldValue = $field->getValue();
+					$saveSearchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($fieldValue) : null;
+					$saveValue = $this->_serializeValue($fieldType, $fieldValue);
 					$saveFields[] = array(
 						'name' => $field->getName(),
 						'lang' => $field->getLanguage(),
 						'id' => $field->getId(),
-						'value' => $fieldValue);
+						'value' => $saveValue,
+						'key' => $saveSearchKey);
 				}
 			}
 		}
@@ -150,12 +156,12 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	}
 
 	/*
-	 * @param $entityId int
 	 * @param $type TinyCms\NodeProvider\Library\EntityTypeInterface
+	 * @param $entityId int
 	 * @param $saveField array
 	 * @return array
 	 */
-	protected function _getEntityFieldsTableValue($entityId, EntityTypeInterface $type, $saveField)
+	protected function _getEntityFieldsTableRow(EntityTypeInterface $type, $entityId, &$saveField)
 	{
 		$fieldName = $saveField['name'];
 		$fieldType = $type->getFieldType($fieldName);
@@ -166,8 +172,8 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			'type' => $fieldType->getTypeName(),
 			'lang' => isset($saveField['lang']) ? $saveField['lang'] : '',
 			'sortIndex' => isset($saveField['sort']) ? $saveField['sort'] : 0,
-			'keyInt' => isset($saveField['keyInt']) ? $saveField['keyInt'] : null,
-			'keyText' => isset($saveField['keyText']) ? $saveField['keyText'] : '',
+			'keyInt' => null,
+			'keyText' => '',
 			'valueInt' => null,
 			'valueFloat' => null,
 			'valueText' => null);
@@ -180,12 +186,15 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			case TypeInterface::STORAGE_INT:
 			case TypeInterface::STORAGE_ENTITY:
 				$arrFieldTableValue['valueInt'] = $saveField['value'];
+				$arrFieldTableValue['keyInt'] = isset($saveField['key']) ? $saveField['key'] : null;
 				break;
 			case TypeInterface::STORAGE_FLOAT:
 				$arrFieldTableValue['valueFloat'] = $saveField['value'];
+				$arrFieldTableValue['keyText'] = isset($saveField['key']) ? $saveField['key'] : '';
 				break;
 			default:
 				$arrFieldTableValue['valueText'] = $saveField['value'];
+				$arrFieldTableValue['keyText'] = isset($saveField['key']) ? $saveField['key'] : '';
 				break;
 		}
 		return $arrFieldTableValue;

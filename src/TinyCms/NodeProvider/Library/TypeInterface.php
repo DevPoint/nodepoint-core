@@ -77,6 +77,12 @@ interface TypeInterface {
 	public function getStorageType();
 
 	/*
+	 * @param $value mixed
+	 * @return mixed string or int
+	 */
+	public function searchKeyFromValue($value);
+
+	/*
 	 * @param $object mixed
 	 * @return mixed - array or input parameter type
 	 */

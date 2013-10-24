@@ -360,6 +360,15 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
+	 * @param $fieldName string
+	 * @return boolean if field is accessable by find operations
+	 */
+	public function isFieldSearchable($fieldName)
+	{
+		return (!empty($this->fields[$fieldName]['desc']['searchable']));
+	}
+
+	/*
 	 * Base field names are used for constructed
 	 * fields and for fields which have dynamic options
 	 *

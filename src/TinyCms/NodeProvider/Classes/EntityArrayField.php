@@ -15,6 +15,7 @@ class EntityArrayField extends BaseEntityArrayField {
 			foreach ($value as $itemValue)
 			{
 				$item = new EntityField(null, null);
+				$item->setSortIndex(count($this->items));
 				$item->setValue($value);
 				$this->items[] = $item;
 			}

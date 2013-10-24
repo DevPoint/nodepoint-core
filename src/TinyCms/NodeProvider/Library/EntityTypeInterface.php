@@ -176,6 +176,12 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
+	 * @return boolean if field is accessable by find operations
+	 */
+	public function isFieldSearchable($fieldName);
+
+	/*
+	 * @param $fieldName string
 	 * @return boolean
 	 */
 	public function hasFieldOptions($fieldName);

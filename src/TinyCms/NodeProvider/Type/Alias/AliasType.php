@@ -13,4 +13,13 @@ class AliasType extends BaseType {
 	{
 		$this->typeName = 'TinyCmsCore/Alias';
 	}
+
+	/*
+	 * @param $value mixed
+	 * @return mixed string or int
+	 */
+	public function searchKeyFromValue($value)
+	{
+		return mb_strtolower($value, 'UTF-8');
+	}
 }

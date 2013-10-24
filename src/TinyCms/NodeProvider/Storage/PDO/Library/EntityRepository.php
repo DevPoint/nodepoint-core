@@ -2,6 +2,7 @@
 
 namespace TinyCms\NodeProvider\Storage\PDO\Library;
 
+use TinyCms\NodeProvider\Library\TypeInterface;
 use TinyCms\NodeProvider\Library\EntityInterface;
 use TinyCms\NodeProvider\Library\EntityTypeInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityManagerInterface;
@@ -65,13 +66,33 @@ class EntityRepository implements EntityRepositoryInterface {
 	}
 
 	/*
+	 * @param $fieldType TinyCms\NodeProvider\Library\TypeInterface
+	 * @param $value mixed
+	 * @return mixed string, int, float
+	 */
+	protected function _serializeValue(TypeInterface $type, $value)
+	{
+		if ($type->isEntity())
+		{
+			$entityType = $value->_type();
+			$idFieldName = $entityType->getIdFieldName();
+			$magicCallGetId = $entityType->getFieldMagicCallName($idFieldName, 'get');
+			$value = $value->{$magicCallGetId}();
+		}
+		else if ($type->isObject())
+		{
+			$value = $type->objectToSerialized($value);
+		}
+		return $value;
+	}
+
+	/*
 	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
 	 * @param $fieldNames array of string with fieldNames
 	 * @return array
 	 */
-	protected function _getSerializedFieldValues(EntityInterface $entity, $fieldNames)
+	protected function _serializeEntityFields(EntityInterface $entity, $fieldNames)
 	{
-		// explode array items
 		$saveFields = array();
 		$type = $entity->_type();
 		$mapFieldNames = array_fill_keys($fieldNames, true);
@@ -82,51 +103,31 @@ class EntityRepository implements EntityRepositoryInterface {
 			{
 				if ($field->isArray())
 				{
+					$saveFieldItems = array();
+					$fieldType = $type->getFieldType($fieldName);
 					foreach ($field->getArrayItems() as $arrayField)
 					{
-						$saveFields[] = array(
-							'name' => $field->getName(),
-							'lang' => $field->getLanguage(),
-							'parent_id' => $field->getId(),
-							'id' => $arrayField->getId(),
-							'value' => $arrayField->getValue());
+						$fieldValue = $this->_serializeValue($fieldType, $arrayField->getValue());
+						$saveFieldItems[] = array(
+							'id' => $arrayField->getId(), 
+							'value' => $fieldValue);
 					}
-				}
-				else
-				{
 					$saveFields[] = array(
 						'name' => $field->getName(),
 						'lang' => $field->getLanguage(),
 						'id' => $field->getId(),
-						'value' => $field->getValue());
+						'items' => $saveFieldItems);
 				}
-			}
-		}
-
-		// convert values to storage device format
-		$callTypeGet = 'get';
-		$em = $this->getEntityManager();
-		foreach ($saveFields as &$saveField)
-		{
-			$fieldName = $saveField['name'];
-			if ($type->isFieldEntity($fieldName))
-			{
-				$fieldEntity = $saveField['value'];
-				$fieldType = $fieldEntity->_type();
-				$idFieldName = $fieldType->getIdFieldName();
-				$magicCallGetId = $fieldType->getFieldMagicCallName($idFieldName, $callTypeGet);
-				$fieldEntityId = $fieldEntity->{$magicCallGetId}();
-				$saveField['outvalue'] = $fieldEntityId;
-			}
-			else
-			{
-				$fieldValue = $saveField['value'];
-				$fieldType = $type->getFieldType($fieldName);
-				if ($fieldType->isObject())
+				else
 				{
-					$fieldValue = $fieldType->objectToSerialized($fieldValue);
+					$fieldType = $type->getFieldType($fieldName);
+					$fieldValue = $this->_serializeValue($fieldType, $field->getValue());
+					$saveFields[] = array(
+						'name' => $field->getName(),
+						'lang' => $field->getLanguage(),
+						'id' => $field->getId(),
+						'value' => $fieldValue);
 				}
-				$saveField['outvalue'] = $fieldValue;
 			}
 		}
 		return $saveFields;
@@ -140,8 +141,8 @@ class EntityRepository implements EntityRepositoryInterface {
 		$type = $entity->_type();
 		$storageProxy = $entity->_getStorageProxy();
 		$fieldNames = $storageProxy->getUpdateFieldNames();
-		$updateFieldValues = $this->_getSerializedFieldValues($entity, $fieldNames);
-		foreach ($updateValues as &$updateValue)
+		$updateFieldValues = $this->_serializeEntityFields($entity, $fieldNames);
+		foreach ($updateFieldValues as &$updateValue)
 		{
 
 		}
@@ -154,7 +155,7 @@ class EntityRepository implements EntityRepositoryInterface {
 	{
 		$type = $entity->_type();
 		$fieldNames = $this->_getStorageFieldNames($type);
-		$insertFieldValues = $this->_getSerializedFieldValues($entity, $fieldNames);
+		$insertFieldValues = $this->_serializeEntityFields($entity, $fieldNames);
 		foreach ($insertFieldValues as &$insertValue)
 		{
 

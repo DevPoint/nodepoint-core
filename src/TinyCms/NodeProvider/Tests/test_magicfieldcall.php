@@ -62,7 +62,7 @@ $geolocation->set(43.001, 15.002);
 $object->setGeolocation($geolocation);
 $arrObjects[] = $object;
 
-$arrGeolocation = $object->_fieldType('geolocation')->objectToValue($object->getGeolocation());
+$arrGeolocation = $object->_fieldType('geolocation')->objectToArray($object->getGeolocation());
 
 
 // output test result

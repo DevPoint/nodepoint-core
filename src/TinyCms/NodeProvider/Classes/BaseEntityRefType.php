@@ -23,9 +23,17 @@ abstract class BaseEntityRefType extends BaseType {
 	}
 
 	/*
+	 * @return boolean true for entity types
+	 */
+	final public function isEntity()
+	{
+		return true;
+	}
+
+	/*
 	 * @return boolean true if value refering to an entity
 	 */
-	public function isReference()
+	final public function isReference()
 	{
 		return true;
 	}
@@ -33,7 +41,7 @@ abstract class BaseEntityRefType extends BaseType {
 	/*
 	 * @return string
 	 */
-	public function getReferenceTypeName()
+	final public function getReferenceTypeName()
 	{
 		return $this->referenceTypeName;
 	}

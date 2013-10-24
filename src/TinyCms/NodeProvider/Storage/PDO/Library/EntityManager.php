@@ -82,15 +82,15 @@ class EntityManager implements EntityManagerInterface {
 	 */
 	protected function _save(EntityInterface $entity)
 	{
-		// find entities which are necessary to
-		// save before current entity
+		// find entities which have to be saved
+		// before current entity
 		$callTypeGet = 'get';
 		$type = $entity->_type();
 		$fieldNames = $type->getFieldNames();
 		$relatedEntityCanditates = array();
 		foreach ($fieldNames as $fieldName)
 		{
-			if ($type->isFieldEntity($fieldName) && TypeInterface::STORAGE_NONE !== $type->getFieldStorageType($fieldName))
+			if ($type->isFieldEntity($fieldName) && 0 != $type->getFieldStorageType($fieldName))
 			{
 				$magicCallGetField = $type->getFieldMagicCallName($fieldName, $callTypeGet);
 				if ($type->isFieldArray($fieldName))

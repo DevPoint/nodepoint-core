@@ -103,7 +103,7 @@ abstract class BaseType implements TypeInterface {
 	 */
 	public function getReferenceTypeName()
 	{
-		return false;
+		return null;
 	}
 
 	/*

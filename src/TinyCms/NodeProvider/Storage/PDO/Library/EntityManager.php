@@ -6,7 +6,7 @@ use TinyCms\NodeProvider\Library\TypeInterface;
 use TinyCms\NodeProvider\Library\EntityInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityManagerInterface;
 use TinyCms\NodeProvider\Storage\PDO\Library\EntityStorageProxy;
-use TinyCms\NodeProvider\Storage\PDO\Serialize;
+use TinyCms\NodeProvider\Storage\PDO\Classes\BaseEntityRepository;
 
 class EntityManager implements EntityManagerInterface {
 
@@ -58,9 +58,9 @@ class EntityManager implements EntityManagerInterface {
 				$repositoryClass = $type->getStorageRepositoryClass();
 				if (!$repositoryClass)
 				{
-					$repositoryClass = "\\TinyCms\\NodeProvider\\Storage\\PDO\\Library\\EntityRepository";
+					$repositoryClass = "\\TinyCms\\NodeProvider\\Storage\\PDO\\Type\\Node\\NodeRepository";
 				}
-				$repository = new $repositoryClass($this->conn, $this, $type);
+				$repository = new $repositoryClass($this->conn, $this);
 				$this->repositories[$typeName] = $repository;
 			}
 			$storageProxy = new EntityStorageProxy($this, $entity);

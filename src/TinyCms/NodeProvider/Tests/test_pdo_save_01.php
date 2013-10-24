@@ -50,7 +50,7 @@ $langB = "en";
 
 // create object instance
 $parent = new Node($nodeType);
-$parent->setAlias("root");
+$parent->setAlias($langA, "root");
 $parent->setName($langA, "Root");
 $em->persist($parent);
 
@@ -71,7 +71,7 @@ $object->setName($langA, "J. Brabsche");
 
 $object = new Document($documentType);
 $object->setParent($parent);
-$object->setAlias("david-brabsche");
+$object->setAlias($langA, "david-brabsche");
 $object->setName($langA, "David Brabsche");
 $object->setBody($langA, "Hier kommt unser lieber David!");
 $object->setBody($langB, "Here comes our cute David!");

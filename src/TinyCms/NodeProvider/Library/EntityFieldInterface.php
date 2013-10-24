@@ -35,6 +35,16 @@ interface EntityFieldInterface {
 	public function getLanguage();
 
 	/*
+	 * @param $index int
+	 */
+	public function setSortIndex($index);
+
+	/*
+	 * @return int
+	 */
+	public function getSortIndex();
+
+	/*
 	 * @param $value mixed
 	 */
 	public function setValue($value);

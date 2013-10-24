@@ -17,6 +17,11 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	protected $lang;
 
 	/*
+	 * @var int
+	 */
+	protected $sortIndex;
+
+	/*
 	 * @var string
 	 */
 	protected $id;
@@ -30,6 +35,7 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 		$this->name = $name;
 		$this->lang = $lang;
 		$this->id = null;
+		$this->sortIndex = 0;
 	}
 
 	/*
@@ -78,6 +84,22 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	public function getLanguage()
 	{
 		return $this->lang;
+	}
+
+	/*
+	 * @param $index int
+	 */
+	public function setSortIndex($index)
+	{
+		$this->sortIndex = $index;
+	}
+
+	/*
+	 * @return int
+	 */
+	public function getSortIndex()
+	{
+		return $this->sortIndex;
 	}
 
 	/*

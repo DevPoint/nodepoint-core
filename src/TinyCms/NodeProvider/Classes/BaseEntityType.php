@@ -460,7 +460,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 				{
 					return substr($fieldName, 0, $fieldNameLen-2);
 				}
-				elseif ($fieldNameLen - 1 == strrchr($fieldName, 'ies'))
+				elseif ($fieldNameLen - 3 == strrchr($fieldName, 'ies'))
 				{
 					return substr($fieldName, 0, $fieldNameLen-3) . 'y';
 				}

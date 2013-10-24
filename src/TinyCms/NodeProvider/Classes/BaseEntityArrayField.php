@@ -37,7 +37,7 @@ abstract class BaseEntityArrayField extends AbstractEntityField {
 	/*
 	 * @return boolean
 	 */
-	public function isArray()
+	final public function isArray()
 	{
 		return true;
 	}
@@ -45,7 +45,7 @@ abstract class BaseEntityArrayField extends AbstractEntityField {
 	/*
 	 * @return int
 	 */
-	public function getArraySize()
+	final public function getArraySize()
 	{
 		return count($this->items);
 	}

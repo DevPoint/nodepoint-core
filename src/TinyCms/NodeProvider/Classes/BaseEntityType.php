@@ -81,7 +81,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->storageTable = isset($description['storageTable']) ? $description['storageTable'] : null;
 		$this->finalState = false;
 		$this->fields = array();
-		$this->staticEntity = null;
+		$this->staticEntity = new StaticEntity($this);
 		$this->magicFieldCallInfos = array();
 		$this->magicFieldStaticCallInfos = array();
 	}

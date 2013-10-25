@@ -2,8 +2,6 @@
 
 header("Content-Type:text/plain; charset=utf-8");
 
-use TinyCms\NodeProvider\Library\MagicFieldCallInfo;
-use TinyCms\NodeProvider\Classes\StaticEntity;
 use TinyCms\NodeProvider\Type\Entity\Entity;
 use TinyCms\NodeProvider\Type\Node\Node;
 use TinyCms\NodeProvider\Type\Position2d\Position2d;
@@ -29,10 +27,9 @@ $entityType->setFieldDescription('info', array('static'=>true, 'i18n'=>true));
 $entityType->finalize();
 
 // set static values
-$entityStatic = new StaticEntity($entityType);
+$entityStatic = $entityType->getStaticEntity();
 $entityStatic->setInfo($langA, "Informationsunterlagen");
 $entityStatic->setInfo($langB, "Information material");
-$entityType->setStaticEntity($entityStatic);
 
 // create object instance
 $parent = new Node($entityType);

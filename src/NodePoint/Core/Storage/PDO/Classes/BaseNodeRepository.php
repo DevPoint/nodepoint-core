@@ -98,12 +98,12 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 						$saveValue['sort'] = $insertItem['sort'];
 						$saveValue['key'] = $insertItem['key'];
 						$saveValue['value'] = $insertItem['value'];
-						$entityFieldRows[] = $this->_getEntityFieldsTableRow($type, $entityId, $saveValue);
+						$entityFieldRows[] = $this->_getEntityFieldsRow($type, $entityId, $saveValue);
 					}
 				}
 				else
 				{
-					$entityFieldRows[] = $this->_getEntityFieldsTableRow($type, $entityId, $insertValue);
+					$entityFieldRows[] = $this->_getEntityFieldsRow($type, $entityId, $insertValue);
 				}
 				$insertValue['done'] = true;
 			}

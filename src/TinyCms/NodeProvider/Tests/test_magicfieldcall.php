@@ -3,9 +3,14 @@
 header("Content-Type:text/plain; charset=utf-8");
 
 use TinyCms\NodeProvider\Library\MagicFieldCallInfo;
+use TinyCms\NodeProvider\Classes\StaticEntity;
 use TinyCms\NodeProvider\Type\Entity\Entity;
 use TinyCms\NodeProvider\Type\Node\Node;
 use TinyCms\NodeProvider\Type\Position2d\Position2d;
+
+// language codes
+$langA = "de";
+$langB = "en";
 
 // create types
 $parentType = new \TinyCms\NodeProvider\Type\Entity\EntityType();
@@ -20,16 +25,14 @@ $entityType->setFieldType('body', $stringType);
 $entityType->setFieldDescription('body', array('i18n'=>true));
 $entityType->setFieldType('geolocation', $position2dType);
 $entityType->setFieldType('info', $stringType);
-$entityType->setFieldDescription('info', array('isStatic'=>true, 'i18n'=>true));
+$entityType->setFieldDescription('info', array('static'=>true, 'i18n'=>true));
 $entityType->finalize();
 
-// language codes
-$langA = "de";
-$langB = "en";
-
 // set static values
-$entityType->setFieldStaticValueI18n('info', $langA, "Informationsunterlagen");
-$entityType->setFieldStaticValueI18n('info', $langB, "Information material");
+$entityStatic = new StaticEntity($entityType);
+$entityStatic->setInfo($langA, "Informationsunterlagen");
+$entityStatic->setInfo($langB, "Information material");
+$entityType->setStaticEntity($entityStatic);
 
 // create object instance
 $parent = new Node($entityType);
@@ -70,7 +73,7 @@ echo "Test succeeded\n";
 echo "----------------\n";
 foreach ($arrObjects as $object)
 {
-	$langOut = $langB;
+	$langOut = $langA;
 	echo $object->getName() . "\n";
 	echo $object->getBody($langOut) . "\n";
 	echo "Meine Eltern heißen " . $object->getParent()->getName() . "\n";

@@ -15,6 +15,16 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getParentType();
 
 	/*
+	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
+	 */
+	public function setStaticEntity($entity);
+
+	/*
+	 * @return TinyCms\NodeProvider\Library\EntityInterface
+	 */
+	public function getStaticEntity();
+
+	/*
 	 * @return string language code
 	 */
 	public function getDefaultLanguage();
@@ -91,31 +101,6 @@ interface EntityTypeInterface extends TypeInterface {
 	 * @return boolean if field is accessable without instance
 	 */
 	public function isFieldStatic($fieldName);
-
-	/*
-	 * @param $fieldName string
-	 * @param $value mixed
-	 */
-	public function setFieldStaticValue($fieldName, $value);
-
-	/*
-	 * @param $fieldName string
-	 * @return mixed
-	 */
-	public function getFieldStaticValue($fieldName);
-
-	/*
-	 * @param $fieldName string
-	 * @param $lang string with language code or null
-	 * @param $value mixed
-	 */
-	public function setFieldStaticValueI18n($fieldName, $lang, $value);
-	/*
-	 * @param $fieldName string
-	 * @param $lang string with language code or null
-	 * @return mixed
-	 */
-	public function getFieldStaticValueI18n($fieldName, $lang);
 
 	/*
 	 * Base field names are used for constructed

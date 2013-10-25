@@ -5,17 +5,12 @@ namespace TinyCms\NodeProvider\Classes;
 use TinyCms\NodeProvider\Library\EntityInterface;
 use TinyCms\NodeProvider\Storage\Library\EntityStorageProxyInterface;
 
-class BaseEntity extends AbstractEntity {
+class StaticEntity extends AbstractEntity {
 
 	/*
 	 * @var array of TinyCms\NodeProvider\Library\EntityFieldInterface indexed by fieldName
 	 */
 	protected $fields;
-
-	/*
-	 * @var TinyCms\NodeProvider\Storage\Library\EntityStorageProxyInterface
-	 */
-	protected $storageProxy;
 
 	/*
 	 * Constructor
@@ -27,14 +22,6 @@ class BaseEntity extends AbstractEntity {
 	{
 		// basic construction
 		parent::__construct($type);
-		$this->storageProxy = null;
-
-		// add static entity fields
-		$staticEntity = $type->getStaticEntity();
-		if (null !== $staticEntity)
-		{
-			$this->_addFieldsToCache($staticEntity->_fields());
-		}
 
 		// add entity fields
 		$this->fields = $fields;
@@ -50,22 +37,6 @@ class BaseEntity extends AbstractEntity {
 	}
 
 	/*
-	 * @param $repository TinyCms\NodeProvider\Storage\Library\EntityStorageProxyInterface
-	 */
-	public function _setStorageProxy(EntityStorageProxyInterface $storageProxy)
-	{
-		$this->storageProxy = $storageProxy;
-	}
-
-	/*
-	 * @return TinyCms\NodeProvider\Storage\Library\EntityRepositoryInterface
-	 */
-	final public function _getStorageProxy()
-	{
-		return $this->storageProxy;
-	}
-
-	/*
 	 * @param $name string callName
 	 * @param $args array
 	 * @return mixed field value or this
@@ -73,7 +44,7 @@ class BaseEntity extends AbstractEntity {
 	public function __call($name, $args)
 	{
 		// get magic field call info
-		$magicFieldCallInfo = $this->type->getMagicFieldCallInfo($name);
+		$magicFieldCallInfo = $this->type->getMagicFieldStaticCallInfo($name);
 		if (null !== $magicFieldCallInfo)
 		{
 			return $this->{$magicFieldCallInfo->functionCall}($magicFieldCallInfo->field, $args);

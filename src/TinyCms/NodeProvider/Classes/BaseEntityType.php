@@ -39,9 +39,19 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $aliasFieldName;
 
 	/*
+	 * @var TinyCms\NodeProvider\Library\EntityInterface
+	 */
+	protected $staticEntity;
+
+	/*
 	 * @var array of TinyCms\NodeProvider\Library\MagicFieldCallInfo indexed by callName
 	 */
 	protected $magicFieldCallInfos;
+
+	/*
+	 * @var array of TinyCms\NodeProvider\Library\MagicFieldCallInfo indexed by callName
+	 */
+	protected $magicFieldStaticCallInfos;
 
 	/*
 	 * @var string repositories class name
@@ -71,7 +81,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->storageTable = isset($description['storageTable']) ? $description['storageTable'] : null;
 		$this->finalState = false;
 		$this->fields = array();
+		$this->staticEntity = null;
 		$this->magicFieldCallInfos = array();
+		$this->magicFieldStaticCallInfos = array();
 	}
 
 	/*
@@ -134,6 +146,22 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	final public function getParentType()
 	{
 		return $this->parentType;
+	}
+
+	/*
+	 * @param $entity TinyCms\NodeProvider\Library\EntityInterface
+	 */
+	public function setStaticEntity($entity)
+	{
+		$this->staticEntity = $entity;
+	}
+
+	/*
+	 * @return TinyCms\NodeProvider\Library\EntityInterface
+	 */
+	final public function getStaticEntity()
+	{
+		return $this->staticEntity;
 	}
 
 	/*
@@ -274,80 +302,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function isFieldStatic($fieldName)
 	{
-		return (!empty($this->fields[$fieldName]['desc']['isStatic']));
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @param $value mixed
-	 */
-	public function setFieldStaticValue($fieldName, $value)
-	{
-		if ($this->hasFieldI18n($fieldName))
-		{
-			// TODO: Exception: use i18n version of function
-			return;
-		}
-		$this->fields[$fieldName]['staticValues'] = $value;
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return mixed
-	 */
-	public function getFieldStaticValue($fieldName)
-	{
-		if ($this->hasFieldI18n($fieldName))
-		{
-			// TODO: Exception: use i18n version of function
-			return null;
-		}
-		if (!isset($this->fields[$fieldName]['staticValues']))
-		{
-			return null;
-		}
-		return $this->fields[$fieldName]['staticValues'];
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @param $lang string with language code
-	 * @param $value mixed
-	 */
-	public function setFieldStaticValueI18n($fieldName, $lang, $value)
-	{
-		if (!$this->hasFieldI18n($fieldName))
-		{
-			// TODO: Exception: language access to field, which hasn't i18n
-			return;
-		}
-		if (!isset($this->fields[$fieldName]['staticValues']))
-		{
-			$this->fields[$fieldName]['staticValues'] = array();
-		}
-		$this->fields[$fieldName]['staticValues'][$lang] = $value;
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @param $lang string with language code or null
-	 * @return mixed
-	 */
-	public function getFieldStaticValueI18n($fieldName, $lang)
-	{
-		if (!$this->hasFieldI18n($fieldName))
-		{
-			if (!isset($this->fields[$fieldName]['staticValues']))
-			{
-				return null;
-			}
-			return $this->fields[$fieldName]['staticValues'];
-		}
-		if (!isset($this->fields[$fieldName]['staticValues'][$lang]))
-		{
-			return null;
-		}
-		return $this->fields[$fieldName]['staticValues'][$lang];
+		return (!empty($this->fields[$fieldName]['desc']['static']));
 	}
 
 	/*
@@ -356,7 +311,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function isFieldConstructed($fieldName)
 	{
-		return (!empty($this->fields[$fieldName]['desc']['isConstructed']));
+		return (!empty($this->fields[$fieldName]['desc']['constructed']));
 	}
 
 	/*
@@ -636,6 +591,28 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
+	 * @param $callName string
+	 * @param $magicFieldCallInfo TinyCms\NodeProvider\Library\MagicFieldCallInfo
+	 */
+	public function setMagicFieldStaticCallInfo($callName, MagicFieldCallInfo $magicFieldCallInfo)
+	{
+		$this->magicFieldStaticCallInfos[$callName] = $magicFieldCallInfo;
+	}
+
+	/*
+	 * @param $callName string
+	 * @return TinyCms\NodeProvider\Library\MagicFieldCallInfo
+	 */
+	public function getMagicFieldStaticCallInfo($callName)
+	{
+		if (!isset($this->magicFieldStaticCallInfos[$callName]))
+		{
+			return null;
+		}
+		return $this->magicFieldStaticCallInfos[$callName];
+	}
+
+	/*
 	 * Calculate further magic function calls 
 	 */
 	protected function finalizeMagicCallNames()
@@ -646,7 +623,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// required properties
 			$this->fields[$fieldName]['magicFncs'] = array();
 			$i18nStr = $this->hasFieldI18n($fieldName) ? 'I18n' : '';
-			$staticStr = $this->isFieldStatic($fieldName) ? 'Static' : '';
+			$staticState = $this->isFieldStatic($fieldName);
 			$singularName = $this->getFieldSingularCapitalizedName($fieldName);
 
 			// magic set function
@@ -654,7 +631,14 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			if (!isset($this->magicFieldCallInfos[$setCallName]) && empty($staticStr))
 			{
 				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_setMagicFieldCall' . $i18nStr);
-				$this->setMagicFieldCallInfo($setCallName, $magicFieldCallInfo);
+				if ($staticState)
+				{
+					$this->setMagicFieldStaticCallInfo($setCallName, $magicFieldCallInfo);
+				}
+				else
+				{
+					$this->setMagicFieldCallInfo($setCallName, $magicFieldCallInfo);
+				}
 			}
 			$this->fields[$fieldName]['magicFncs']['set'] = $setCallName;
 
@@ -662,8 +646,12 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			$getCallName = 'get' . $singularName;
 			if (!isset($this->magicFieldCallInfos[$getCallName]))
 			{
-				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'Call' . $i18nStr);
+				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicFieldCall' . $i18nStr);
 				$this->setMagicFieldCallInfo($getCallName, $magicFieldCallInfo);
+				if ($staticState)
+				{
+					$this->setMagicFieldStaticCallInfo($getCallName, $magicFieldCallInfo);
+				}
 			}
 			$this->fields[$fieldName]['magicFncs']['get'] = $getCallName;
 
@@ -673,36 +661,54 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			{
 				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_validateMagicFieldCall');
 				$this->setMagicFieldCallInfo($validateCallName, $magicFieldCallInfo);
+				if ($staticState)
+				{
+					$this->setMagicFieldStaticCallInfo($validateCallName, $magicFieldCallInfo);
+				}
 			}
 			$this->fields[$fieldName]['magicFncs']['validate'] = $validateCallName;
 
-			// array specific magic functions
 			if ($this->isFieldArray($fieldName))
 			{
-				// magic cnt function
+				// array magic cnt function
 				$cntCallName = 'get' . $singularName . 'Count';
 				if (!isset($this->magicFieldCallInfos[$cntCallName]))
 				{
 					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'CountCall');
 					$this->setMagicFieldCallInfo($cntCallName, $magicFieldCallInfo);
+					if ($staticState)
+					{
+						$this->setMagicFieldStaticCallInfo($cntCallName, $magicFieldCallInfo);
+					}
 				}
 				$this->fields[$fieldName]['magicFncs']['cnt'] = $cntCallName;
 
-				// magic get item function
+				// array magic get item function
 				$getItemCallName = 'get' . $singularName;
 				if (!isset($this->magicFieldCallInfos[$getItemCallName]))
 				{
 					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'ItemCall' . $i18nStr);
 					$this->setMagicFieldCallInfo($getItemCallName, $magicFieldCallInfo);
+					if ($staticState)
+					{
+						$this->setMagicFieldStaticCallInfo($cntCallName, $magicFieldCallInfo);
+					}
 				}
 				$this->fields[$fieldName]['magicFncs']['getitem'] = $getItemCallName;
 
-				// magic set item function
+				// array magic set item function
 				$setItemCallName = 'set' . $singularName;
 				if (!isset($this->magicFieldCallInfos[$setItemCallName]) && empty($staticStr))
 				{
 					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_setMagicFieldItemCall' . $i18nStr);
-					$this->setMagicFieldCallInfo($setItemCallName, $magicFieldCallInfo);
+					if ($staticState)
+					{
+						$this->setMagicFieldStaticCallInfo($setItemCallName, $magicFieldCallInfo);
+					}
+					else
+					{
+						$this->setMagicFieldCallInfo($setItemCallName, $magicFieldCallInfo);
+					}
 				}
 				$this->fields[$fieldName]['magicFncs']['setitem'] = $setItemCallName;
 			}

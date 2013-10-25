@@ -14,7 +14,7 @@ $conn = new \PDO('mysql:host=localhost;dbname=tinycms', $dbuser, $dbpass);
 
 // construct parameters
 $params = array();
-$ids = array(1,2);
+$ids = array(1,2,3);
 $idsStrIin = str_repeat('?,', count($ids) - 1) . '?';
 $params = array_merge($params, $ids);// add array of id
 //$params[] = 'TinyCmsCore/User'; // add type

@@ -457,8 +457,8 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	/*
 	 * @param $fieldName string
 	 * @param $callType string  
-	 *			set, get, cnt, setitem, getitem,
-	 *			lang, validate
+	 *			set, get, validate, 
+	 *			cnt, setitem, getitem,
 	 * @return string
 	 */
 	public function getFieldMagicCallName($fieldName, $callType)
@@ -628,12 +628,15 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 			// magic set function
 			$setCallName = 'set' . $singularName;
-			if (!isset($this->magicFieldCallInfos[$setCallName]) && empty($staticStr))
+			if (!isset($this->magicFieldCallInfos[$setCallName]))
 			{
 				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_setMagicFieldCall' . $i18nStr);
 				if ($staticState)
 				{
-					$this->setMagicFieldStaticCallInfo($setCallName, $magicFieldCallInfo);
+					if (!isset($this->magicFieldStaticCallInfos[$setCallName]))
+					{
+						$this->setMagicFieldStaticCallInfo($setCallName, $magicFieldCallInfo);
+					}
 				}
 				else
 				{
@@ -648,7 +651,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			{
 				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicFieldCall' . $i18nStr);
 				$this->setMagicFieldCallInfo($getCallName, $magicFieldCallInfo);
-				if ($staticState)
+				if ($staticState && !isset($this->magicFieldStaticCallInfos[$getCallName]))
 				{
 					$this->setMagicFieldStaticCallInfo($getCallName, $magicFieldCallInfo);
 				}
@@ -657,11 +660,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 			// magic validate function
 			$validateCallName = 'validate' . $singularName;
-			if (!isset($this->magicFieldCallInfos[$validateCallName]) && empty($staticStr))
+			if (!isset($this->magicFieldCallInfos[$validateCallName]))
 			{
 				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_validateMagicFieldCall');
 				$this->setMagicFieldCallInfo($validateCallName, $magicFieldCallInfo);
-				if ($staticState)
+				if ($staticState && !isset($this->magicFieldStaticCallInfos[$validateCallName]))
 				{
 					$this->setMagicFieldStaticCallInfo($validateCallName, $magicFieldCallInfo);
 				}
@@ -676,7 +679,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 				{
 					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'CountCall');
 					$this->setMagicFieldCallInfo($cntCallName, $magicFieldCallInfo);
-					if ($staticState)
+					if ($staticState && !isset($this->magicFieldStaticCallInfos[$cntCallName]))
 					{
 						$this->setMagicFieldStaticCallInfo($cntCallName, $magicFieldCallInfo);
 					}
@@ -689,9 +692,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 				{
 					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'ItemCall' . $i18nStr);
 					$this->setMagicFieldCallInfo($getItemCallName, $magicFieldCallInfo);
-					if ($staticState)
+					if ($staticState && !isset($this->magicFieldStaticCallInfos[$getItemCallName]))
 					{
-						$this->setMagicFieldStaticCallInfo($cntCallName, $magicFieldCallInfo);
+						$this->setMagicFieldStaticCallInfo($getItemCallName, $magicFieldCallInfo);
 					}
 				}
 				$this->fields[$fieldName]['magicFncs']['getitem'] = $getItemCallName;
@@ -703,7 +706,10 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_setMagicFieldItemCall' . $i18nStr);
 					if ($staticState)
 					{
-						$this->setMagicFieldStaticCallInfo($setItemCallName, $magicFieldCallInfo);
+						if (!isset($this->magicFieldStaticCallInfos[$setItemCallName]))
+						{
+							$this->setMagicFieldStaticCallInfo($setItemCallName, $magicFieldCallInfo);
+						}
 					}
 					else
 					{

@@ -13,7 +13,7 @@ use NodePoint\Core\Type\Document\Document;
 // establish connection to database
 $dbuser = 'root';
 $dbpass = '';
-$conn = new PDO('mysql:host=localhost;dbname=tinycms', $dbuser, $dbpass);
+$conn = new PDO('mysql:host=localhost;dbname=nodepoint', $dbuser, $dbpass);
 $em = new \NodePoint\Core\Storage\PDO\Library\EntityManager($conn);
 
 // create types

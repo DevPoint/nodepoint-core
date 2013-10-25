@@ -41,6 +41,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		$this->em = $em;
 		$this->conn = $conn;
 
+		// fields contained by entity table
 		$this->tableFields = array();
 		$this->tableFields['entities'] = array(
 			'id' => 'id',
@@ -158,7 +159,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $saveField array
 	 * @return array
 	 */
-	protected function _getEntityFieldsTableRow(EntityTypeInterface $type, $entityId, &$saveField)
+	protected function _getEntityFieldsRow(EntityTypeInterface $type, $entityId, &$saveField)
 	{
 		$fieldName = $saveField['name'];
 		$fieldType = $type->getFieldType($fieldName);

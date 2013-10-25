@@ -206,7 +206,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 */
 	protected function _insertEntityRow(&$entityRow)
 	{
-		$stmt = $this->conn->prepare("INSERT INTO tcm_entities (parent_id, fieldName, type) VALUES (:parent_id, :fieldName, :type)");
+		$stmt = $this->conn->prepare("INSERT INTO np_entities (parent_id, fieldName, type) VALUES (:parent_id, :fieldName, :type)");
 		$stmt->bindParam(':parent_id', $entityRow['parent_id'], \PDO::PARAM_INT);
 		$stmt->bindParam(':fieldName', $entityRow['fieldName'], \PDO::PARAM_STR);
 		$stmt->bindParam(':type', $entityRow['type'], \PDO::PARAM_STR);
@@ -221,7 +221,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	{
 		foreach ($entityFieldRows as &$fieldRow)
 		{
-			$stmt = $this->conn->prepare("INSERT INTO tcm_entity_fields (entity_id, fieldName, type, lang, sortIndex, valueInt, valueFloat, valueText, keyInt, keyText) VALUES (:entity_id, :fieldName, :type, :lang, :sortIndex, :valueInt, :valueFloat, :valueText, :keyInt, :keyText)");
+			$stmt = $this->conn->prepare("INSERT INTO np_entity_fields (entity_id, fieldName, type, lang, sortIndex, valueInt, valueFloat, valueText, keyInt, keyText) VALUES (:entity_id, :fieldName, :type, :lang, :sortIndex, :valueInt, :valueFloat, :valueText, :keyInt, :keyText)");
 			$stmt->bindParam(':entity_id', $fieldRow['entity_id'], \PDO::PARAM_INT);
 			$stmt->bindParam(':fieldName', $fieldRow['fieldName'], \PDO::PARAM_STR);
 			$stmt->bindParam(':type', $fieldRow['type'], \PDO::PARAM_STR);

@@ -67,12 +67,13 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		// filter fields and insert them into the entity table
 		$entityRow = array();
 		$entityRow['type'] = $type->getTypeName();
+		$entityTableFields = &$this->tableFields['entities'];
 		foreach ($insertFieldValues as &$insertValue)
 		{
 			$fieldName = $insertValue['name'];
-			if (isset($this->entityTableFields[$fieldName]))
+			if (isset($entityTableFields[$fieldName]))
 			{
-				$columnName = $this->entityTableFields[$fieldName];
+				$columnName = $entityTableFields[$fieldName];
 				$entityRow[$columnName] = $insertValue['value'];
 				$insertValue['done'] = true;
 			}

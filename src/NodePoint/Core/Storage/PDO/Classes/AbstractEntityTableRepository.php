@@ -7,6 +7,7 @@ use NodePoint\Core\Library\EntityInterface;
 use NodePoint\Core\Library\EntityTypeInterface;
 use NodePoint\Core\Storage\Library\EntityManagerInterface;
 use NodePoint\Core\Storage\Library\EntityRepositoryInterface;
+use NodePoint\Core\Storage\PDO\Library\PDOColumnInfo;
 
 abstract class AbstractEntityTableRepository implements EntityRepositoryInterface {
 
@@ -23,17 +24,12 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	/*
 	 * @var array
 	 */
-	protected $entityTableFields;
+	protected $tableFields;
 
 	/*
 	 * @var array
 	 */
-	protected $entityTableColumns;
-
-	/*
-	 * @var array
-	 */
-	protected $entityFieldTableColumns;
+	protected $tableColumns;
 
 	/*
 	 * @param $conn \PDO
@@ -45,31 +41,32 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		$this->em = $em;
 		$this->conn = $conn;
 
-		// fields handled by entity table
-		$this->entityTableFields = array(
+		$this->tableFields = array();
+		$this->tableFields['entities'] = array(
 			'id' => 'id',
 			'parent' => 'parent_id');
-		
-		// columns for entity table
-		$this->entityTableColumns = array(
-			'id' => \PDO::PARAM_INT,
-			'parent_id' => \PDO::PARAM_STR,
-			'fieldName' => \PDO::PARAM_STR,
-			'type' => \PDO::PARAM_STR);
 
-		// columns for entity fields table
-		$this->entityFieldTableColumns = array(
-			'id' => \PDO::PARAM_INT,
-			'entity_id' => \PDO::PARAM_STR,
-			'fieldName' => \PDO::PARAM_STR,
-			'type' => \PDO::PARAM_STR,
-			'lang' => \PDO::PARAM_STR,
-			'valueInt' => \PDO::PARAM_INT,
-			'valueFloat' => \PDO::PARAM_STR,
-			'valueText' => \PDO::PARAM_STR,
-			'sortIndex' => \PDO::PARAM_INT,
-			'keyInt' => \PDO::PARAM_INT,
-			'keyText' => \PDO::PARAM_STR);
+		// columns of entity table
+		$this->tableColumns = array();
+		$this->tableColumns['entities'] = array(
+			'id' => new PDOColumnInfo(\PDO::PARAM_INT, 0),
+			'parent_id' => new PDOColumnInfo(\PDO::PARAM_INT, null),
+			'fieldName' => new PDOColumnInfo(\PDO::PARAM_STR, ''),
+			'type' => new PDOColumnInfo(\PDO::PARAM_STR, ''));
+
+		// columns of entity fields table
+		$this->tableColumns['entityFields'] = array(
+			'id' => new PDOColumnInfo(\PDO::PARAM_INT, 0),
+			'entity_id' => new PDOColumnInfo(\PDO::PARAM_STR, ''),
+			'fieldName' => new PDOColumnInfo(\PDO::PARAM_STR, ''),
+			'type' => new PDOColumnInfo(\PDO::PARAM_STR, ''),
+			'lang' => new PDOColumnInfo(\PDO::PARAM_STR, ''),
+			'valueInt' => new PDOColumnInfo(\PDO::PARAM_INT, null),
+			'valueFloat' => new PDOColumnInfo(\PDO::PARAM_STR, null),
+			'valueText' => new PDOColumnInfo(\PDO::PARAM_STR, null),
+			'sortIndex' => new PDOColumnInfo(\PDO::PARAM_INT, 0),
+			'keyInt' => new PDOColumnInfo(\PDO::PARAM_INT, null),
+			'keyText' => new PDOColumnInfo(\PDO::PARAM_STR, ''));
 	}
 
 	/*
@@ -166,17 +163,18 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		$fieldName = $saveField['name'];
 		$fieldType = $type->getFieldType($fieldName);
 		$storageType = $type->getFieldStorageType($fieldName);
+		$columInfo = &$this->tableColumns['entityFields'];
 		$entityFieldRow = array(
 			'entity_id' => $entityId,
 			'fieldName' => $fieldName,
 			'type' => $fieldType->getTypeName(),
-			'lang' => isset($saveField['lang']) ? $saveField['lang'] : '',
-			'sortIndex' => isset($saveField['sort']) ? $saveField['sort'] : 0,
-			'keyInt' => null,
-			'keyText' => '',
-			'valueInt' => null,
-			'valueFloat' => null,
-			'valueText' => null);
+			'lang' => isset($saveField['lang']) ? $saveField['lang'] : $columInfo['lang']->nullValue,
+			'sortIndex' => isset($saveField['sort']) ? $saveField['sort'] : $columInfo['sortIndex']->nullValue,
+			'keyInt' => $columInfo['keyInt']->nullValue,
+			'keyText' => $columInfo['keyText']->nullValue,
+			'valueInt' => $columInfo['valueInt']->nullValue,
+			'valueFloat' => $columInfo['valueFloat']->nullValue,
+			'valueText' => $columInfo['valueText']->nullValue);
 		if (isset($saveField['id']))
 		{
 			$entityFieldRow['id'] = $saveField['id'];
@@ -186,15 +184,15 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			case TypeInterface::STORAGE_INT:
 			case TypeInterface::STORAGE_ENTITY:
 				$entityFieldRow['valueInt'] = $saveField['value'];
-				$entityFieldRow['keyInt'] = isset($saveField['key']) ? $saveField['key'] : null;
+				$entityFieldRow['keyInt'] = isset($saveField['key']) ? $saveField['key'] : $columInfo['keyInt']->nullValue;
 				break;
 			case TypeInterface::STORAGE_FLOAT:
 				$entityFieldRow['valueFloat'] = $saveField['value'];
-				$entityFieldRow['keyText'] = isset($saveField['key']) ? $saveField['key'] : '';
+				$entityFieldRow['keyText'] = isset($saveField['key']) ? $saveField['key'] : $columInfo['keyText']->nullValue;
 				break;
 			default:
 				$entityFieldRow['valueText'] = $saveField['value'];
-				$entityFieldRow['keyText'] = isset($saveField['key']) ? $saveField['key'] : '';
+				$entityFieldRow['keyText'] = isset($saveField['key']) ? $saveField['key'] : $columInfo['keyText']->nullValue;
 				break;
 		}
 		return $entityFieldRow;
@@ -206,10 +204,15 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 */
 	protected function _insertEntityRow(&$entityRow)
 	{
-		$stmt = $this->conn->prepare("INSERT INTO np_entities (parent_id, fieldName, type) VALUES (:parent_id, :fieldName, :type)");
-		$stmt->bindParam(':parent_id', $entityRow['parent_id'], \PDO::PARAM_INT);
-		$stmt->bindParam(':fieldName', $entityRow['fieldName'], \PDO::PARAM_STR);
-		$stmt->bindParam(':type', $entityRow['type'], \PDO::PARAM_STR);
+		$columInfo = &$this->tableColumns['entities'];
+		$columns = array('parent_id','fieldName','type');
+		$columnsNameStr = implode(',', $columns);
+		$columnsVarStr = ':' . implode(',:', $columns);
+		$stmt = $this->conn->prepare("INSERT INTO np_entities ({$columnsNameStr}) VALUES ({$columnsVarStr})");
+		foreach ($columns as $column)
+		{
+			$stmt->bindParam(':'.$column, $entityRow[$column], $columInfo[$column]->paramType);
+		}
 		$stmt->execute();
 		return $this->conn->lastInsertId();
 	}
@@ -219,19 +222,17 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 */
 	protected function _insertEntityFieldRows(&$entityFieldRows)
 	{
+		$columInfo = &$this->tableColumns['entityFields'];
+		$columns = array('entity_id','fieldName','type','lang','sortIndex','valueInt','valueFloat','valueText','keyInt','keyText');
+		$columnsNameStr = implode(',', $columns);
+		$columnsVarStr = ':' . implode(',:', $columns);
 		foreach ($entityFieldRows as &$fieldRow)
 		{
-			$stmt = $this->conn->prepare("INSERT INTO np_entity_fields (entity_id, fieldName, type, lang, sortIndex, valueInt, valueFloat, valueText, keyInt, keyText) VALUES (:entity_id, :fieldName, :type, :lang, :sortIndex, :valueInt, :valueFloat, :valueText, :keyInt, :keyText)");
-			$stmt->bindParam(':entity_id', $fieldRow['entity_id'], \PDO::PARAM_INT);
-			$stmt->bindParam(':fieldName', $fieldRow['fieldName'], \PDO::PARAM_STR);
-			$stmt->bindParam(':type', $fieldRow['type'], \PDO::PARAM_STR);
-			$stmt->bindParam(':lang', $fieldRow['lang'], \PDO::PARAM_STR);
-			$stmt->bindParam(':sortIndex', $fieldRow['sortIndex'], \PDO::PARAM_INT);
-			$stmt->bindParam(':valueInt', $fieldRow['valueInt'], \PDO::PARAM_INT);
-			$stmt->bindParam(':valueFloat', $fieldRow['valueFloat'], \PDO::PARAM_STR);
-			$stmt->bindParam(':valueText', $fieldRow['valueText'], \PDO::PARAM_STR);
-			$stmt->bindParam(':keyInt', $fieldRow['keyInt'], \PDO::PARAM_INT);
-			$stmt->bindParam(':keyText', $fieldRow['keyText'], \PDO::PARAM_STR);
+			$stmt = $this->conn->prepare("INSERT INTO np_entity_fields ({$columnsNameStr}) VALUES ({$columnsVarStr})");
+			foreach ($columns as $column)
+			{
+				$stmt->bindParam(':'.$column, $fieldRow[$column], $columInfo[$column]->paramType);
+			}
 			$stmt->execute();
 		}
 	}

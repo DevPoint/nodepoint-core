@@ -79,7 +79,8 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 			}
 		}
 		$entityId = $this->_insertEntityRow($entityRow);
-		$entity->setId($entityId);
+		$magicCallSetId = $type->getFieldMagicCallName($type->getIdFieldName(), 'set');
+		$entity->{$magicCallSetId}($entityId);
 
 		// filter fields and insert them into the entity fields table
 		$entityFieldRows = array();

@@ -21,7 +21,7 @@ interface EntityManagerInterface {
 	 * @param $entityId string
 	 * @return NodePoint\Core\Library\EntityInterface
 	 */
-	public function find($entityId, $typeName);
+	public function find($typeName, $entityId);
 
 	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface

@@ -32,8 +32,10 @@ interface EntityInterface {
 	public function _getStorageProxy();
 
 	/*
-	 * @param $fieldName string 
+	 * Perform lazy loading of a field
+	 *
+	 * @param $field NodePoint\Core\Library\EntityFieldInterface
 	 * @return boolean
 	 */
-	public function _loadField($fieldName);
+	public function _loadField($field);
 }

@@ -97,10 +97,12 @@ class AbstractEntity implements EntityInterface {
 	}
 
 	/*
-	 * @param $fieldName string 
+	 * Perform lazy loading of a field
+	 *
+	 * @param $field NodePoint\Core\Library\EntityFieldInterface
 	 * @return boolean
 	 */
-	public function _loadField($fieldName)
+	public function _loadField($field)
 	{
 		return false;
 	}
@@ -157,7 +159,7 @@ class AbstractEntity implements EntityInterface {
 			return null;
 		}
 		$field = $this->cachedFields[$fieldName];
-		if ($field->isLazyLoaded() && !$this->_loadField($fieldName))
+		if ($field->isLazyLoaded() && !$this->_loadField($field))
 		{
 			return null;
 		}
@@ -233,6 +235,11 @@ class AbstractEntity implements EntityInterface {
 		{
 			return null;
 		}
-		return $this->cachedFields[$fieldName][$lang]->getValue();
+		$field = $this->cachedFields[$fieldName][$lang];
+		if ($field->isLazyLoaded() && !$this->_loadField($field))
+		{
+			return null;
+		}
+		return $field->getValue();
 	}
 }

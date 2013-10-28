@@ -143,6 +143,16 @@ class EntityManager implements EntityManagerInterface {
 	}
 
 	/*
+	 * @param $typeName string
+	 * @param $entityId string
+	 * @return NodePoint\Core\Library\EntityInterface
+	 */
+	public function find($typeName, $entityId)
+	{
+		return null;
+	}
+
+	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
 	 */
 	public function save(EntityInterface $entity)

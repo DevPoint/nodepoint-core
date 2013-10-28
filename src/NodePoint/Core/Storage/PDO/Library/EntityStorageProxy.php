@@ -69,7 +69,7 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	/*
 	 * @param $fieldName string
 	 */
-	public function addUpdateField($fieldName)
+	public function onUpdateField($fieldName)
 	{
 		if (null == $this->updateFieldNames)
 		{
@@ -103,7 +103,7 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 			{
 				if (!$type->isFieldReadOnly($fieldName))
 				{
-					$this->addUpdateField($fieldName);
+					$this->onUpdateField($fieldName);
 				}
 			}
 		}

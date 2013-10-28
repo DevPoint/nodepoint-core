@@ -130,7 +130,6 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		}
 	}
 
-
 	/*
 	 * @param $entityId string 
 	 * @return NodePoint\Core\Library\EntityInterface

@@ -27,6 +27,11 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	protected $id;
 
 	/*
+	 * @var boolean
+	 */
+	protected $lazyLoaded;
+
+	/*
 	 * @param $name string with fieldName
 	 * @param mixed string with language code
 	 */
@@ -36,6 +41,7 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 		$this->lang = $lang;
 		$this->id = null;
 		$this->sortIndex = 0;
+		$this->lazyLoaded = false;
 	}
 
 	/*
@@ -100,6 +106,22 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	public function getSortIndex()
 	{
 		return $this->sortIndex;
+	}
+
+	/*
+	 * @param $state boolean
+	 */
+	public function setLazyLoadState($state)
+	{
+		$this->lazyLoaded = $state;
+	}
+
+	/*
+	 * @return boolean
+	 */
+	public function isLazyLoaded()
+	{
+		return $this->lazyLoaded;
 	}
 
 	/*

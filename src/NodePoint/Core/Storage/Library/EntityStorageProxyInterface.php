@@ -17,5 +17,5 @@ interface EntityStorageProxyInterface {
 	/*
 	 * @param $fieldName string
 	 */
-	public function addUpdateField($fieldName);
+	public function onUpdateField($fieldName);
 }

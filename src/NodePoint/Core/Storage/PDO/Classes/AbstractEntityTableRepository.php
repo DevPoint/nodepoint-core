@@ -127,7 +127,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 						$serializedValue = $fieldValue;
 						if ($fieldType->isEntity())
 						{
-							$fieldTypeName = $fieldValue->getType()->getTypeName();
+						//	$fieldTypeName = $fieldValue->getType()->getTypeName();
 							$serializedValue = $this->_getEntityId($fieldValue);
 						}
 						elseif ($fieldType->isObject())
@@ -155,7 +155,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 					$serializedValue = $fieldValue;
 					if ($fieldType->isEntity())
 					{
-						$fieldTypeName = $fieldValue->_type()->getTypeName();
+					//	$fieldTypeName = $fieldValue->_type()->getTypeName();
 						$serializedValue = $this->_getEntityId($fieldValue);
 					}
 					elseif ($fieldType->isObject())

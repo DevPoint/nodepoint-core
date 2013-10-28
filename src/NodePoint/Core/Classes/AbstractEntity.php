@@ -98,6 +98,15 @@ class AbstractEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string 
+	 * @return boolean
+	 */
+	public function _loadField($fieldName)
+	{
+		return false;
+	}
+
+	/*
+	 * @param $fieldName string 
 	 * @param $args array(0=>value)
 	 * @return boolean
 	 */
@@ -132,7 +141,7 @@ class AbstractEntity implements EntityInterface {
 		$storageProxy = $this->_getStorageProxy();
 		if (null !== $storageProxy)
 		{
-			$storageProxy->addUpdateField($fieldName);
+			$storageProxy->onUpdateField($fieldName);
 		}
 		return $this;
 	}
@@ -147,7 +156,33 @@ class AbstractEntity implements EntityInterface {
 		{
 			return null;
 		}
-		return $this->cachedFields[$fieldName]->getValue();
+		$field = $this->cachedFields[$fieldName];
+		if ($field->isLazyLoaded() && !$this->_loadField($fieldName))
+		{
+			return null;
+		}
+		return $field->getValue();
+	}
+
+	/*
+	 * @param $fieldName string 
+	 * @return string with entity id
+	 */
+	protected function _getMagicFieldEntityIdCall($fieldName)
+	{
+		if (!isset($this->cachedFields[$fieldName]))
+		{
+			return null;
+		}
+		$field = $this->cachedFields[$fieldName];
+		$value = $field->getValue();
+		if ($field->isLazyLoaded())
+		{
+			return $value;
+		}
+		$entityType = $value->_type();
+		$magicCallGetId = $entityType->getFieldMagicCallName($entityType->getIdFieldName(), 'get');
+		return $value->{$magicCallGetId}();
 	}
 
 	/*
@@ -181,7 +216,7 @@ class AbstractEntity implements EntityInterface {
 		$storageProxy = $this->_getStorageProxy();
 		if (null !== $storageProxy)
 		{
-			$storageProxy->addUpdateField($fieldName);
+			$storageProxy->onUpdateField($fieldName);
 		}
 		return $this;
 	}

@@ -59,11 +59,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $storageRepositoryClass;
 
 	/*
-	 * @var string
-	 */
-	protected $storageTable;
-
-	/*
 	 * Constructor
 	 *
 	 * @param $typeName string
@@ -78,7 +73,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->idFieldName = isset($description['idField']) ? $description['idField'] : 'id';
 		$this->aliasFieldName = isset($description['aliasField']) ? $description['aliasField'] : 'alias';
 		$this->storageRepositoryClass = isset($description['storageRepository']) ? $description['storageRepository'] : null;
-		$this->storageTable = isset($description['storageTable']) ? $description['storageTable'] : null;
 		$this->finalState = false;
 		$this->fields = array();
 		$this->staticEntity = new StaticEntity($this);
@@ -179,14 +173,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	public function getStorageRepositoryClass()
 	{
 		return $this->storageRepositoryClass;
-	}
-
-	/*
-	 * @return string with table name
-	 */
-	public function getStorageTable()
-	{
-		return $this->storageTable;
 	}
 
 	/*
@@ -543,32 +529,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * @param $fieldName string
-	 * @return string
-	 */
-	public function getFieldStorageColumn($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['storage']['column']))
-		{ 
-			return null;
-		}
-		return $this->fields[$fieldName]['storage']['column'];
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return string
-	 */
-	public function getFieldStorageSql($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['storage']['sql']))
-		{ 
-			return null;
-		}
-		return $this->fields[$fieldName]['storage']['sql'];
-	}
-
-	/*
 	 * @param $callName string
 	 * @param $magicFieldCallInfo NodePoint\Core\Library\MagicFieldCallInfo
 	 */
@@ -657,6 +617,22 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 				}
 			}
 			$this->fields[$fieldName]['magicFncs']['get'] = $getCallName;
+
+			if ($this->isFieldEntity($fieldName))
+			{
+				// entity magic get id function
+				$getIdCallName = 'get' . $singularName . 'Id';
+				if (!isset($this->magicFieldCallInfos[$getIdCallName]))
+				{
+					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicFieldEntityIdCall');
+					$this->setMagicFieldCallInfo($getIdCallName, $magicFieldCallInfo);
+					if ($staticState && !isset($this->magicFieldStaticCallInfos[$getIdCallName]))
+					{
+						$this->setMagicFieldStaticCallInfo($getIdCallName, $magicFieldCallInfo);
+					}
+				}
+				$this->fields[$fieldName]['magicFncs']['getId'] = $getIdCallName;
+			}
 
 			// magic validate function
 			$validateCallName = 'validate' . $singularName;

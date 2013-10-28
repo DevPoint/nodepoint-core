@@ -12,6 +12,12 @@ interface EntityRepositoryInterface {
 	public function getEntityManager();
 	
 	/*
+	 * @param $entityId string
+	 * @return NodePoint\Core\Library\EntityInterface
+	 */
+	public function find($entityId);
+
+	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
 	 */
 	public function save(EntityInterface $entity);

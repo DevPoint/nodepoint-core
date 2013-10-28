@@ -45,6 +45,16 @@ interface EntityFieldInterface {
 	public function getSortIndex();
 
 	/*
+	 * @param $state boolean
+	 */
+	public function setLazyLoadState($state);
+
+	/*
+	 * @return boolean
+	 */
+	public function isLazyLoaded();
+
+	/*
 	 * @param $value mixed
 	 */
 	public function setValue($value);

@@ -17,6 +17,13 @@ interface EntityManagerInterface {
 	public function update(EntityInterface $entity);
 	
 	/*
+	 * @param $typeName string
+	 * @param $entityId string
+	 * @return NodePoint\Core\Library\EntityInterface
+	 */
+	public function find($entityId, $typeName);
+
+	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
 	 */
 	public function save(EntityInterface $entity);

@@ -35,11 +35,6 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getStorageRepositoryClass();
 
 	/*
-	 * @return string with table name
-	 */
-	public function getStorageTable();
-
-	/*
 	 * @return array of string with fieldNames
 	 */
 	public function getFieldNames();
@@ -203,18 +198,6 @@ interface EntityTypeInterface extends TypeInterface {
 	 * @return int - Int, Float, Text, Entity
 	 */
 	public function getFieldStorageType($fieldName);
-
-	/*
-	 * @param $fieldName string
-	 * @return string
-	 */
-	public function getFieldStorageColumn($fieldName);
-
-	/*
-	 * @param $fieldName string
-	 * @return string
-	 */
-	public function getFieldStorageSql($fieldName);
 
 	/*
 	 * @param $callName string

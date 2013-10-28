@@ -30,4 +30,10 @@ interface EntityInterface {
 	 * @return NodePoint\Core\Storage\Library\EntityRepositoryInterface
 	 */
 	public function _getStorageProxy();
+
+	/*
+	 * @param $fieldName string 
+	 * @return boolean
+	 */
+	public function _loadField($fieldName);
 }

@@ -47,7 +47,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$type = $entity->_type();
 		$storageProxy = $entity->_getStorageProxy();
 		$fieldNames = $storageProxy->getUpdateFieldNames();
-		$updateFieldValues = $this->_serializeFields($entity, $fieldNames);
+		$updateFieldValues = $this->_serializeFields($type, $entity->_fields(), $fieldNames);
 		foreach ($updateFieldValues as &$updateValue)
 		{
 
@@ -62,20 +62,20 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		// serialize the entities fields
 		$type = $entity->_type();
 		$fieldNames = $this->_getStorageFieldNames($type);
-		$insertFieldValues = $this->_serializeFields($entity, $fieldNames);
+		$serializedFields = $this->_serializeFields($type, $entity->_fields(), $fieldNames);
 
 		// filter fields and insert them into the entity table
 		$entityRow = array();
 		$entityRow['type'] = $type->getTypeName();
 		$entityTableFields = &$this->tableFields['entities'];
-		foreach ($insertFieldValues as &$insertValue)
+		foreach ($serializedFields as &$serializedField)
 		{
-			$fieldName = $insertValue['name'];
+			$fieldName = $serializedField['name'];
 			if (isset($entityTableFields[$fieldName]))
 			{
 				$columnName = $entityTableFields[$fieldName];
-				$entityRow[$columnName] = $insertValue['value'];
-				$insertValue['done'] = true;
+				$entityRow[$columnName] = $serializedField['value'];
+				$serializedField['done'] = true;
 			}
 		}
 		$entityId = $this->_insertEntityRow($entityRow);
@@ -84,17 +84,17 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 
 		// filter fields and insert them into the entity fields table
 		$entityFieldRows = array();
-		foreach ($insertFieldValues as &$insertValue)
+		foreach ($serializedFields as &$serializedField)
 		{
-			if (empty($insertValue['done']))
+			if (empty($serializedField['done']))
 			{
-				$fieldName = $insertValue['name'];
-				if (isset($insertValue['items']))
+				$fieldName = $serializedField['name'];
+				if (isset($serializedField['items']))
 				{
 					$item = array();
 					$item['name'] = $fieldName;
-					$item['lang'] = $insertValue['lang'];
-					foreach ($insertValue['items'] as $insertItem)
+					$item['lang'] = $serializedField['lang'];
+					foreach ($serializedField['items'] as $insertItem)
 					{
 						$item['sort'] = $insertItem['sort'];
 						$item['key'] = $insertItem['key'];
@@ -104,9 +104,9 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 				}
 				else
 				{
-					$entityFieldRows[] = $this->_serializedFieldToFieldRow($type, $insertValue, $entityId);
+					$entityFieldRows[] = $this->_serializedFieldToFieldRow($type, $serializedField, $entityId);
 				}
-				$insertValue['done'] = true;
+				$serializedField['done'] = true;
 			}
 		}
 		$this->_insertEntityFieldRows($entityFieldRows);

@@ -80,36 +80,37 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 
 	/*
 	 * @param $fieldType NodePoint\Core\Library\TypeInterface
-	 * @param $value mixed
-	 * @return mixed string, int, float
+	 * @param $entityId string
+	 * @return NodePoint\Core\Library\EntityInterface
 	 */
-	protected function _serializeValue(TypeInterface $type, $value)
+	protected function _createEntity($type, $entityId)
 	{
-		if ($type->isEntity())
-		{
-			$entityType = $value->_type();
-			$idFieldName = $entityType->getIdFieldName();
-			$magicCallGetId = $entityType->getFieldMagicCallName($idFieldName, 'get');
-			$value = $value->{$magicCallGetId}();
-		}
-		else if ($type->isObject())
-		{
-			$value = $type->objectToSerialized($value);
-		}
-		return $value;
+
 	}
 
 	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
+	 * @return string
+	 */
+	protected function _getEntityId($entity)
+	{
+		$entityType = $entity->_type();
+		$idFieldName = $entityType->getIdFieldName();
+		$magicCallGetId = $entityType->getFieldMagicCallName($idFieldName, 'get');
+		return $entity->{$magicCallGetId}();
+	}
+
+	/*
+	 * @param $type NodePoint\Core\Library\EntityTypeInterface
+	 * @param $fields array of NodePoint\Core\Library\EntityFieldInterface
 	 * @param $fieldNames array of string with fieldNames
 	 * @return array
 	 */
-	protected function _serializeFields(EntityInterface $entity, $fieldNames)
+	protected function _serializeFields(EntityTypeInterface $type, &$fields, $fieldNames)
 	{
 		$serializedFields = array();
-		$type = $entity->_type();
 		$mapFieldNames = array_fill_keys($fieldNames, true);
-		foreach ($entity->_fields() as $field)
+		foreach ($fields as $field)
 		{
 			$fieldName = $field->getName();
 			if (!empty($mapFieldNames[$fieldName]))
@@ -122,12 +123,23 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 					foreach ($field->getArrayItems() as $arrayField)
 					{
 						$fieldValue = $arrayField->getValue();
-						$serializedValue = $this->_serializeValue($fieldType, $fieldValue);
+						$fieldTypeName = $fieldType->getTypeName();
+						$serializedValue = $fieldValue;
+						if ($fieldType->isEntity())
+						{
+							$fieldTypeName = $fieldValue->getType()->getTypeName();
+							$serializedValue = $this->_getEntityId($fieldValue);
+						}
+						elseif ($fieldType->isObject())
+						{
+							$serializedValue = $fieldType->objectToSerialized($fieldValue);
+						}
 						$searchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($fieldValue) : null;
 						$serializedFieldItems[] = array(
 							'id' => $arrayField->getId(), 
-							'sort' => $arrayField->getSortIndex(),
+							'type' => $fieldTypeName,
 							'value' => $serializedValue,
+							'sort' => $arrayField->getSortIndex(),
 							'key' => $searchKey);
 					}
 					$serializedFields[] = array(
@@ -139,12 +151,23 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				else
 				{
 					$fieldValue = $field->getValue();
+					$fieldTypeName = $fieldType->getTypeName();
+					$serializedValue = $fieldValue;
+					if ($fieldType->isEntity())
+					{
+						$fieldTypeName = $fieldValue->_type()->getTypeName();
+						$serializedValue = $this->_getEntityId($fieldValue);
+					}
+					elseif ($fieldType->isObject())
+					{
+						$serializedValue = $fieldType->objectToSerialized($fieldValue);
+					}
 					$searchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($fieldValue) : null;
-					$serializedValue = $this->_serializeValue($fieldType, $fieldValue);
 					$serializedFields[] = array(
+						'id' => $field->getId(),
 						'name' => $field->getName(),
 						'lang' => $field->getLanguage(),
-						'id' => $field->getId(),
+						'type' => $fieldTypeName,
 						'value' => $serializedValue,
 						'key' => $searchKey);
 				}
@@ -155,6 +178,34 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 
 	/*
 	 * @param $type NodePoint\Core\Library\EntityTypeInterface
+	 * @param $serializedFields array
+	 * @return array of NodePoint\Core\Library\EntityFieldInterface
+	 */
+	protected function _unserializeFields(EntityTypeInterface $type, &$serializedFields)
+	{
+		$fields = array();
+		foreach ($serializedFields as &$serializedField)
+		{
+			$fieldName = $serializedField['name'];
+			$fieldType = $type->getFieldType($fieldName);
+			if ($type->isFieldArray($fieldName))
+			{
+
+			
+
+			}
+			else
+			{
+				$serializedValue = $serializedField['value'];
+
+
+			}
+		}
+		return $fields;
+	}	
+
+	/*
+	 * @param $type NodePoint\Core\Library\EntityTypeInterface
 	 * @param $serializedField array
 	 * @param $entityId int
 	 * @return array
@@ -162,13 +213,12 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _serializedFieldToFieldRow(EntityTypeInterface $type, &$serializedField, $entityId)
 	{
 		$fieldName = $serializedField['name'];
-		$fieldType = $type->getFieldType($fieldName);
 		$storageType = $type->getFieldStorageType($fieldName);
 		$columInfo = &$this->tableColumns['entityFields'];
 		$fieldRow = array(
 			'entity_id' => $entityId,
 			'fieldName' => $fieldName,
-			'type' => $fieldType->getTypeName(),
+			'type' => $serializedField['type'],
 			'lang' => isset($serializedField['lang']) ? $serializedField['lang'] : $columInfo['lang']->nullValue,
 			'sortIndex' => isset($serializedField['sort']) ? $serializedField['sort'] : $columInfo['sortIndex']->nullValue,
 			'keyInt' => $columInfo['keyInt']->nullValue,
@@ -208,12 +258,12 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _serializedFieldFromFieldRow(EntityTypeInterface $type, &$fieldRow)
 	{
 		$fieldName = $serializedField['name'];
-		$fieldType = $type->getFieldType($fieldName);
 		$storageType = $type->getFieldStorageType($fieldName);
 		$columInfo = &$this->tableColumns['entityFields'];
 		$serializedField = array(
 			'id' => $fieldRow['id'],
 			'name' => $fieldName,
+			'type' => $fieldRow['lang'],
 			'lang' => ($fieldRow['lang'] != $columInfo['lang']->nullValue) ? $fieldRow['lang'] : null);
 		switch ($storageType)
 		{

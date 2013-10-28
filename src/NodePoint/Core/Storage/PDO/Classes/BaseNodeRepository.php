@@ -47,7 +47,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$type = $entity->_type();
 		$storageProxy = $entity->_getStorageProxy();
 		$fieldNames = $storageProxy->getUpdateFieldNames();
-		$updateFieldValues = $this->_serializeEntityFields($entity, $fieldNames);
+		$updateFieldValues = $this->_serializeFields($entity, $fieldNames);
 		foreach ($updateFieldValues as &$updateValue)
 		{
 
@@ -62,7 +62,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		// serialize the entities fields
 		$type = $entity->_type();
 		$fieldNames = $this->_getStorageFieldNames($type);
-		$insertFieldValues = $this->_serializeEntityFields($entity, $fieldNames);
+		$insertFieldValues = $this->_serializeFields($entity, $fieldNames);
 
 		// filter fields and insert them into the entity table
 		$entityRow = array();
@@ -91,20 +91,20 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 				$fieldName = $insertValue['name'];
 				if (isset($insertValue['items']))
 				{
-					$saveValue = array();
-					$saveValue['name'] = $fieldName;
-					$saveValue['lang'] = $insertValue['lang'];
+					$item = array();
+					$item['name'] = $fieldName;
+					$item['lang'] = $insertValue['lang'];
 					foreach ($insertValue['items'] as $insertItem)
 					{
-						$saveValue['sort'] = $insertItem['sort'];
-						$saveValue['key'] = $insertItem['key'];
-						$saveValue['value'] = $insertItem['value'];
-						$entityFieldRows[] = $this->_getEntityFieldsRow($type, $entityId, $saveValue);
+						$item['sort'] = $insertItem['sort'];
+						$item['key'] = $insertItem['key'];
+						$item['value'] = $insertItem['value'];
+						$entityFieldRows[] = $this->_serializedFieldToFieldRow($type, $item, $entityId);
 					}
 				}
 				else
 				{
-					$entityFieldRows[] = $this->_getEntityFieldsRow($type, $entityId, $insertValue);
+					$entityFieldRows[] = $this->_serializedFieldToFieldRow($type, $insertValue, $entityId);
 				}
 				$insertValue['done'] = true;
 			}
@@ -128,5 +128,18 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		{
 			$this->_insert($entity);
 		}
+	}
+
+
+	/*
+	 * @param $entityId string 
+	 * @return NodePoint\Core\Library\EntityInterface
+	 */
+	public function find($entityId)
+	{
+
+
+
+
 	}
 }

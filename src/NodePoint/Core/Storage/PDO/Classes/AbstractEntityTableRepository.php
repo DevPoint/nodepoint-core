@@ -123,11 +123,9 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 					foreach ($field->getArrayItems() as $arrayField)
 					{
 						$fieldValue = $arrayField->getValue();
-						$fieldTypeName = $fieldType->getTypeName();
 						$serializedValue = $fieldValue;
 						if ($fieldType->isEntity())
 						{
-						//	$fieldTypeName = $fieldValue->getType()->getTypeName();
 							$serializedValue = $this->_getEntityId($fieldValue);
 						}
 						elseif ($fieldType->isObject())
@@ -137,7 +135,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 						$searchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($fieldValue) : null;
 						$serializedFieldItems[] = array(
 							'id' => $arrayField->getId(), 
-							'type' => $fieldTypeName,
+							'type' => $fieldType->getTypeName(),
 							'value' => $serializedValue,
 							'sort' => $arrayField->getSortIndex(),
 							'key' => $searchKey);
@@ -151,11 +149,9 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				else
 				{
 					$fieldValue = $field->getValue();
-					$fieldTypeName = $fieldType->getTypeName();
 					$serializedValue = $fieldValue;
 					if ($fieldType->isEntity())
 					{
-					//	$fieldTypeName = $fieldValue->_type()->getTypeName();
 						$serializedValue = $this->_getEntityId($fieldValue);
 					}
 					elseif ($fieldType->isObject())
@@ -167,7 +163,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 						'id' => $field->getId(),
 						'name' => $field->getName(),
 						'lang' => $field->getLanguage(),
-						'type' => $fieldTypeName,
+						'type' => $fieldType->getTypeName(),
 						'value' => $serializedValue,
 						'key' => $searchKey);
 				}
@@ -184,6 +180,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _unserializeFields(EntityTypeInterface $type, &$serializedFields)
 	{
 		$fields = array();
+		$cachedArrayFields = array();
 		foreach ($serializedFields as &$serializedField)
 		{
 			$fieldName = $serializedField['name'];

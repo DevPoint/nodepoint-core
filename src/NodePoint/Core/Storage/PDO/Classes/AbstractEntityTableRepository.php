@@ -121,11 +121,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _serializeFieldsToEntityRow(EntityTypeInterface $type, $fields, &$mapFieldNames, $entityId)
 	{
 		// serialize existing fields
-		$entityRow = array('type' => $type->getTypeName());
-		if (isset($entityId))
-		{
-			$entityRow['id'] = $entityId;
-		}
+		$entityRow = array();
 		$entityTableFields = &$this->tableFields['entities'];
 		foreach ($fields as $field)
 		{
@@ -146,6 +142,22 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				$entityRow[$column] = $value;
 			}
 		}
+
+		// if none of the given field names 
+		// could have been used, return a NULL result
+		if (empty($entityRow))
+		{
+			return null;
+		}
+
+		// set columns which are only set 
+		// when row has been initial created
+		$entityRow['type'] = $type->getTypeName();
+		if (isset($entityId))
+		{
+			$entityRow['id'] = $entityId;
+		}
+
 		// set undefined columns to its null value
 		// unset field names which have been used
 		$columInfo = &$this->tableColumns['entities'];

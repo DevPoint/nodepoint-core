@@ -49,13 +49,16 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$fields = $entity->_fields();
 		$storageProxy = $entity->_getStorageProxy();
 		$fieldNames = $storageProxy->getUpdateFieldNames();
-		$mapFieldNames = array_fill_keys($fieldNames, true);
 
 		// filter fields and update them intthe entity table
+		$mapFieldNames = array_fill_keys($fieldNames, true);
 		$entityId = $this->_getEntityId($entity);
 		$entityRow = $this->_serializeFieldsToEntityRow($type, $fields, $mapFieldNames, $entityId);
-		$this->_updateEntityRow($entityRow);
-		
+		if (null !== $entityRow)
+		{
+			$this->_updateEntityRow($entityRow);
+		}
+			
 		// filter fields and update them in the entity fields table
 		$entityFieldRows = $this->_serializeFieldsToFieldRows($type, $fields, $mapFieldNames, $entityId);
 		$this->_saveEntityFieldRows($entityFieldRows);

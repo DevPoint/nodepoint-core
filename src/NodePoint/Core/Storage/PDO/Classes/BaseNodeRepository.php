@@ -54,7 +54,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$mapFieldNames = array_fill_keys($fieldNames, true);
 		$entityId = $this->_getEntityId($entity);
 		$entityRow = $this->_serializeFieldsToEntityRow($type, $fields, $mapFieldNames, $entityId);
-		if (null !== $entityRow)
+		if (!empty($entityRow))
 		{
 			$this->_updateEntityRow($entityRow);
 		}

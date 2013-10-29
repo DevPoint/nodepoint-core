@@ -158,15 +158,11 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			}
 		}
 
-		// if none of the given field names 
-		// could have been used return a NULL result
-		if (empty($entityRow))
-		{
-			return null;
-		}
-
 		// set standard fields values
-		$entityRow['type'] = $type->getTypeName();
+		if (!empty($entityRow))
+		{
+			$entityRow['type'] = $type->getTypeName();
+		}
 		return $entityRow;
 	}
 

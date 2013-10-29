@@ -44,14 +44,22 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	 */
 	protected function _update(EntityInterface $entity)
 	{
+		// prepare serialization of the entity
 		$type = $entity->_type();
+		$fields = $entity->_fields();
 		$storageProxy = $entity->_getStorageProxy();
 		$fieldNames = $storageProxy->getUpdateFieldNames();
-		$updateFieldValues = $this->_serializeFields($type, $entity->_fields(), $fieldNames);
-		foreach ($updateFieldValues as &$updateValue)
-		{
+		$mapFieldNames = array_fill_keys($fieldNames, true);
 
-		}
+		// filter fields and update them intthe entity table
+		$entityRow = $this->_serializeFieldsToEntityRow($type, $fields, $mapFieldNames);
+		$this->_updateEntityRow($entityRow);
+		
+		// filter fields and update them in the entity fields table
+		$magicCallGetId = $type->getFieldMagicCallName($type->getIdFieldName(), 'get');
+		$entityId = $entity->{$magicCallGetId}();
+		$entityFieldRows = $this->_serializeFieldsToFieldRows($type, $fields, $mapFieldNames, $entityId);
+		$this->_updateEntityFieldRows($entityFieldRows);
 	}
 
 	/*
@@ -59,56 +67,20 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	 */
 	protected function _insert(EntityInterface $entity)
 	{
-		// serialize the entities fields
+		// prepare serialization of the entity
 		$type = $entity->_type();
+		$fields = $entity->_fields();
 		$fieldNames = $this->_getStorageFieldNames($type);
-		$serializedFields = $this->_serializeFields($type, $entity->_fields(), $fieldNames);
+		$mapFieldNames = array_fill_keys($fieldNames, true);
 
 		// filter fields and insert them into the entity table
-		$entityRow = array();
-		$entityRow['type'] = $type->getTypeName();
-		$entityTableFields = &$this->tableFields['entities'];
-		foreach ($serializedFields as &$serializedField)
-		{
-			$fieldName = $serializedField['name'];
-			if (isset($entityTableFields[$fieldName]))
-			{
-				$columnName = $entityTableFields[$fieldName];
-				$entityRow[$columnName] = $serializedField['value'];
-				$serializedField['done'] = true;
-			}
-		}
+		$entityRow = $this->_serializeFieldsToEntityRow($type, $fields, $mapFieldNames);
 		$entityId = $this->_insertEntityRow($entityRow);
 		$magicCallSetId = $type->getFieldMagicCallName($type->getIdFieldName(), 'set');
 		$entity->{$magicCallSetId}($entityId);
 
 		// filter fields and insert them into the entity fields table
-		$entityFieldRows = array();
-		foreach ($serializedFields as &$serializedField)
-		{
-			if (empty($serializedField['done']))
-			{
-				$fieldName = $serializedField['name'];
-				if (isset($serializedField['items']))
-				{
-					$item = array();
-					$item['name'] = $fieldName;
-					$item['lang'] = $serializedField['lang'];
-					foreach ($serializedField['items'] as $insertItem)
-					{
-						$item['sort'] = $insertItem['sort'];
-						$item['key'] = $insertItem['key'];
-						$item['value'] = $insertItem['value'];
-						$entityFieldRows[] = $this->_serializedFieldToFieldRow($type, $item, $entityId);
-					}
-				}
-				else
-				{
-					$entityFieldRows[] = $this->_serializedFieldToFieldRow($type, $serializedField, $entityId);
-				}
-				$serializedField['done'] = true;
-			}
-		}
+		$entityFieldRows = $this->_serializeFieldsToFieldRows($type, $fields, $mapFieldNames, $entityId);
 		$this->_insertEntityFieldRows($entityFieldRows);
 	}
 

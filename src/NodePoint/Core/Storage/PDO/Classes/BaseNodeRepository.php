@@ -52,14 +52,13 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$mapFieldNames = array_fill_keys($fieldNames, true);
 
 		// filter fields and update them intthe entity table
-		$entityRow = $this->_serializeFieldsToEntityRow($type, $fields, $mapFieldNames);
+		$entityId = $this->_getEntityId($entity);
+		$entityRow = $this->_serializeFieldsToEntityRow($type, $fields, $mapFieldNames, $entityId);
 		$this->_updateEntityRow($entityRow);
 		
 		// filter fields and update them in the entity fields table
-		$magicCallGetId = $type->getFieldMagicCallName($type->getIdFieldName(), 'get');
-		$entityId = $entity->{$magicCallGetId}();
 		$entityFieldRows = $this->_serializeFieldsToFieldRows($type, $fields, $mapFieldNames, $entityId);
-		$this->_updateEntityFieldRows($entityFieldRows);
+		$this->_saveEntityFieldRows($entityFieldRows);
 	}
 
 	/*
@@ -74,10 +73,9 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$mapFieldNames = array_fill_keys($fieldNames, true);
 
 		// filter fields and insert them into the entity table
-		$entityRow = $this->_serializeFieldsToEntityRow($type, $fields, $mapFieldNames);
+		$entityRow = $this->_serializeFieldsToEntityRow($type, $fields, $mapFieldNames, null);
 		$entityId = $this->_insertEntityRow($entityRow);
-		$magicCallSetId = $type->getFieldMagicCallName($type->getIdFieldName(), 'set');
-		$entity->{$magicCallSetId}($entityId);
+		$this->_setEntityId($entity, $entityId);
 
 		// filter fields and insert them into the entity fields table
 		$entityFieldRows = $this->_serializeFieldsToFieldRows($type, $fields, $mapFieldNames, $entityId);
@@ -90,8 +88,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	public function save(EntityInterface $entity)
 	{
 		$type = $entity->_type();
-		$magicCallGetId = $type->getFieldMagicCallName($type->getIdFieldName(), 'get');
-		$entityId = $entity->{$magicCallGetId}();
+		$entityId = $this->_getEntityId($entity);
 		if (null !== $entityId)
 		{
 			$this->_update($entity);

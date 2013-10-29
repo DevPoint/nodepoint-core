@@ -91,6 +91,18 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 
 	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
+	 * @param $entityId string
+	 */
+	protected function _setEntityId($entity, $entityId)
+	{
+		$entityType = $entity->_type();
+		$idFieldName = $entityType->getIdFieldName();
+		$magicCallSetId = $entityType->getFieldMagicCallName($idFieldName, 'set');
+		$entity->{$magicCallSetId}($entityId);
+	}
+
+	/*
+	 * @param $entity NodePoint\Core\Library\EntityInterface
 	 * @return string
 	 */
 	protected function _getEntityId($entity)
@@ -106,10 +118,14 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $fields array NodePoint\Core\Library\EntityFieldInterface
 	 * @return array
 	 */
-	protected function _serializeFieldsToEntityRow(EntityTypeInterface $type, $fields, &$mapFieldNames)
+	protected function _serializeFieldsToEntityRow(EntityTypeInterface $type, $fields, &$mapFieldNames, $entityId)
 	{
 		// serialize existing fields
 		$entityRow = array('type' => $type->getTypeName());
+		if (isset($entityId))
+		{
+			$entityRow['id'] = $entityId;
+		}
 		$entityTableFields = &$this->tableFields['entities'];
 		foreach ($fields as $field)
 		{
@@ -342,7 +358,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	/*
 	 * @param $fieldRows array
 	 */
-	protected function	_updateEntityFieldRows(&$fieldRows)
+	protected function _saveEntityFieldRows(&$fieldRows)
 	{
 		$columInfo = &$this->tableColumns['entityFields'];
 		$columns = array('entity_id','field','type','lang','sortIndex','valueInt','valueFloat','valueText','keyInt','keyText');

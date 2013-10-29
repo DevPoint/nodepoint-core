@@ -144,22 +144,22 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		}
 
 		// if none of the given field names 
-		// could have been used, return a NULL result
-		if (empty($entityRow))
+		// could have been used
+		// and entity already exist
+		// return a NULL result
+		if (empty($entityRow) && isset($entityId))
 		{
 			return null;
 		}
 
-		// set columns which are only set 
-		// when row has been initial created
+		// set standard fields values
+		// set undefined columns to its null value
+		// unset field names which have been used
 		$entityRow['type'] = $type->getTypeName();
 		if (isset($entityId))
 		{
 			$entityRow['id'] = $entityId;
 		}
-
-		// set undefined columns to its null value
-		// unset field names which have been used
 		$columInfo = &$this->tableColumns['entities'];
 		foreach ($entityTableFields as $fieldName => $column)
 		{

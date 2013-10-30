@@ -2,7 +2,7 @@
 
 namespace NodePoint\Core\Storage\PDO\Library;
 
-class PDOColumnInfo {
+class ColumnInfo {
 
 	public $paramType;
 

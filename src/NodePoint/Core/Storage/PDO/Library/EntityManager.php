@@ -5,8 +5,8 @@ namespace NodePoint\Core\Storage\PDO\Library;
 use NodePoint\Core\Library\TypeInterface;
 use NodePoint\Core\Library\TypeFactoryInterface;
 use NodePoint\Core\Library\EntityInterface;
-use NodePoint\Core\Storage\Library\EntityRepositoryInfo;
 use NodePoint\Core\Storage\Library\EntityManagerInterface;
+use NodePoint\Core\Storage\Classes\EntityRepositoryInfo;
 use NodePoint\Core\Storage\PDO\Library\EntityStorageProxy;
 use NodePoint\Core\Storage\PDO\Classes\BaseEntityRepository;
 

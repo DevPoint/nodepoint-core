@@ -8,8 +8,8 @@ use NodePoint\Core\Library\EntityTypeInterface;
 use NodePoint\Core\Classes\EntityField;
 use NodePoint\Core\Classes\EntityArrayField;
 use NodePoint\Core\Storage\Library\EntityManagerInterface;
-use NodePoint\Core\Storage\Library\EntityRepositoryInterface;
-use NodePoint\Core\Storage\PDO\Library\PDOColumnInfo;
+use NodePoint\Core\Storage\PDO\Library\EntityRepositoryInterface;
+use NodePoint\Core\Storage\PDO\Library\ColumnInfo;
 
 abstract class AbstractEntityTableRepository implements EntityRepositoryInterface {
 
@@ -22,6 +22,11 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @var NodePoint\Core\Storage\Library\EntityManagerInterface
 	 */
 	protected $em;
+
+	/*
+	 * @var array of string with database table names
+	 */
+	protected $tables;
 
 	/*
 	 * @var array
@@ -48,6 +53,11 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		$this->em = $em;
 		$this->conn = $conn;
 
+		// name of database tables
+		$this->tables = array(
+			'entities' => 'np_entities',
+			'entityFields' => 'np_entity_fields');
+
 		// fields contained by entity table columns
 		$this->tableFields = array();
 		$this->tableFields['entities'] = array(
@@ -58,24 +68,24 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		// columns of entity table
 		$this->tableColumns = array();
 		$this->tableColumns['entities'] = array(
-			'id' => new PDOColumnInfo(\PDO::PARAM_INT, 0),
-			'parent_id' => new PDOColumnInfo(\PDO::PARAM_INT, null),
-			'field' => new PDOColumnInfo(\PDO::PARAM_STR, ''),
-			'type' => new PDOColumnInfo(\PDO::PARAM_STR, ''));
+			'id' => new ColumnInfo(\PDO::PARAM_INT, 0),
+			'parent_id' => new ColumnInfo(\PDO::PARAM_INT, null),
+			'field' => new ColumnInfo(\PDO::PARAM_STR, ''),
+			'type' => new ColumnInfo(\PDO::PARAM_STR, ''));
 
 		// columns of entity fields table
 		$this->tableColumns['entityFields'] = array(
-			'id' => new PDOColumnInfo(\PDO::PARAM_INT, 0),
-			'entity_id' => new PDOColumnInfo(\PDO::PARAM_STR, ''),
-			'field' => new PDOColumnInfo(\PDO::PARAM_STR, ''),
-			'type' => new PDOColumnInfo(\PDO::PARAM_STR, ''),
-			'lang' => new PDOColumnInfo(\PDO::PARAM_STR, ''),
-			'valueInt' => new PDOColumnInfo(\PDO::PARAM_INT, null),
-			'valueFloat' => new PDOColumnInfo(\PDO::PARAM_STR, null),
-			'valueText' => new PDOColumnInfo(\PDO::PARAM_STR, null),
-			'sortIndex' => new PDOColumnInfo(\PDO::PARAM_INT, 0),
-			'keyInt' => new PDOColumnInfo(\PDO::PARAM_INT, null),
-			'keyText' => new PDOColumnInfo(\PDO::PARAM_STR, ''));
+			'id' => new ColumnInfo(\PDO::PARAM_INT, 0),
+			'entity_id' => new ColumnInfo(\PDO::PARAM_STR, ''),
+			'field' => new ColumnInfo(\PDO::PARAM_STR, ''),
+			'type' => new ColumnInfo(\PDO::PARAM_STR, ''),
+			'lang' => new ColumnInfo(\PDO::PARAM_STR, ''),
+			'valueInt' => new ColumnInfo(\PDO::PARAM_INT, null),
+			'valueFloat' => new ColumnInfo(\PDO::PARAM_STR, null),
+			'valueText' => new ColumnInfo(\PDO::PARAM_STR, null),
+			'sortIndex' => new ColumnInfo(\PDO::PARAM_INT, 0),
+			'keyInt' => new ColumnInfo(\PDO::PARAM_INT, null),
+			'keyText' => new ColumnInfo(\PDO::PARAM_STR, ''));
 
 		// create inverse versions of all table fields arrays
 		$this->invTableFields = array();
@@ -96,6 +106,14 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	public function getEntityManager()
 	{
 		return $this->em;
+	}
+
+	/*
+	 * @return string
+	 */
+	public function getEntityTableName()
+	{
+		return $this->tables['entities'];
 	}
 
 	/*

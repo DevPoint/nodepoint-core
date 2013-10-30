@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Storage\PDO\Library;
 
 use NodePoint\Core\Library\TypeInterface;
+use NodePoint\Core\Library\TypeFactoryInterface;
 use NodePoint\Core\Library\EntityInterface;
 use NodePoint\Core\Storage\Library\EntityRepositoryInfo;
 use NodePoint\Core\Storage\Library\EntityManagerInterface;
@@ -22,22 +23,36 @@ class EntityManager implements EntityManagerInterface {
 	protected $repositories;
 
 	/*
+	 * @var NodePoint\Core\Library\TypeFactoryInterface
+	 */
+	protected $typeFactory;
+
+	/*
 	 * @var array of NodePoint\Core\Library\EntityInterface
 	 */
 	protected $entitiesToUpdate;
 
 	/*
-	 * @param $conn \PDO
+	 * @param $conn PDO
 	 */
-	public function __construct(\PDO $conn)
+	public function __construct(\PDO $conn, TypeFactoryInterface $typeFactory)
 	{
 		$this->conn = $conn;
+		$this->typeFactory = $typeFactory;
 		$this->repositories = array();
 		$this->entitiesToUpdate = array();
 	}
 
 	/*
-	 * @return \PDO
+	 * @return NodePoint\Core\Library\TypeFactoryInterface
+	 */
+	public function getTypeFactory()
+	{
+		return $this->typeFactory;
+	}
+
+	/*
+	 * @return PDO
 	 */
 	public function getConnection()
 	{

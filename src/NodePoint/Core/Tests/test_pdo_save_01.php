@@ -10,22 +10,24 @@ use NodePoint\Core\Type\Entity\Entity;
 use NodePoint\Core\Type\Node\Node;
 use NodePoint\Core\Type\Document\Document;
 
-// establish connection to database
-$dbuser = 'root';
-$dbpass = '';
-$conn = new PDO('mysql:host=localhost;dbname=nodepoint', $dbuser, $dbpass);
-$em = new \NodePoint\Core\Storage\PDO\Library\EntityManager($conn);
-
-// repository class names
-$nodeRepositoryClass = "\\NodePoint\\Core\\Storage\\PDO\\Type\\Node\\NodeRepository";
-
-// create types
+// register primitive types
 $typeFactory = new \NodePoint\Core\Library\TypeFactory();
 $typeFactory->registerTypeClass('NodePointCore/Integer', "\\NodePoint\\Core\\Type\\Integer\\IntegerType");
 $typeFactory->registerTypeClass('NodePointCore/Alias', "\\NodePoint\\Core\\Type\\Alias\\AliasType");
 $typeFactory->registerTypeClass('NodePointCore/String', "\\NodePoint\\Core\\Type\\String\\StringType");
+$typeFactory->registerTypeClass('NodePointCore/Text', "\\NodePoint\\Core\\Type\\Text\\TextType");
 $typeFactory->registerTypeClass('NodePointCore/Position2d', "\\NodePoint\\Core\\Type\\Position2d\\Position2dType");
 
+// establish connection to database
+$dbuser = 'root';
+$dbpass = '';
+$conn = new PDO('mysql:host=localhost;dbname=nodepoint', $dbuser, $dbpass);
+$em = new \NodePoint\Core\Storage\PDO\Library\EntityManager($conn, $typeFactory);
+
+// repository class names
+$nodeRepositoryClass = "\\NodePoint\\Core\\Storage\\PDO\\Type\\Node\\NodeRepository";
+
+// create entity types
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
 

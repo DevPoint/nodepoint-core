@@ -7,6 +7,11 @@ use NodePoint\Core\Library\EntityInterface;
 interface EntityManagerInterface {
 
 	/*
+	 * @return NodePoint\Core\Library\TypeFactoryInterface
+	 */
+	public function getTypeFactory();
+
+	/*
 	 * @param $typeName string
 	 * @param $repository NodePoint\Core\Storage\Library\EntityRepositoryInterface
 	 */

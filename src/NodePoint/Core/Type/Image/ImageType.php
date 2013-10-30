@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Type\Image;
 
 use NodePoint\Core\Classes\BaseNodeType;
+use NodePoint\Core\Library\EntityTypeInterface;
 
 class ImageType extends BaseNodeType {
 
@@ -10,10 +11,10 @@ class ImageType extends BaseNodeType {
 	 * Constructor
 	 *
 	 * @param $parentType NodePoint\Core\Library\EntityTypeInterface
-	 * @param $description array
 	 */
-	public function __construct()
+	public function __construct($typeFactory, $hasI18n=true)
 	{
-		parent::__construct('NodePointCore/Image');
+		$parentType = $typeFactory->getType('NodePointCore/Node');
+		parent::__construct('NodePointCore/Image', $typeFactory, $parentType);
 	}
 }

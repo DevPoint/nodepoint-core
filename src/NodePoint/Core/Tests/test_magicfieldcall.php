@@ -11,28 +11,33 @@ $langA = "de";
 $langB = "en";
 
 // create types
-$parentType = new \NodePoint\Core\Type\Entity\EntityType();
-$stringType = new \NodePoint\Core\Type\String\StringType();
-$position2dType = new \NodePoint\Core\Type\Position2d\Position2dType();
-$entityType = new \NodePoint\Core\Type\Node\NodeType($parentType);
-$entityType->setFieldType('alias', $stringType);
-$entityType->setFieldType('parent', $entityType);
-$entityType->setFieldType('name', $stringType);
-$entityType->setFieldDescription('name', array('hasOptions'=>true,'options'=>array('wilfried','carmen','david','julian','milena')));
-$entityType->setFieldType('body', $stringType);
-$entityType->setFieldDescription('body', array('i18n'=>true));
-$entityType->setFieldType('geolocation', $position2dType);
-$entityType->setFieldType('info', $stringType);
-$entityType->setFieldDescription('info', array('static'=>true, 'i18n'=>true));
-$entityType->finalize();
+$typeFactory = new \NodePoint\Core\Library\typeFactory();
+$typeFactory->registerTypeClass('NodePointCore/Integer', "\\NodePoint\\Core\\Type\\Integer\\IntegerType");
+$typeFactory->registerTypeClass('NodePointCore/Alias', "\\NodePoint\\Core\\Type\\Alias\\AliasType");
+$typeFactory->registerTypeClass('NodePointCore/String', "\\NodePoint\\Core\\Type\\String\\StringType");
+$typeFactory->registerTypeClass('NodePointCore/Position2d', "\\NodePoint\\Core\\Type\\Position2d\\Position2dType");
+
+$stringType = $typeFactory->getType('NodePointCore/String');
+$position2dType = $typeFactory->getType('NodePointCore/Position2d');
+
+$nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, false);
+$nodeType->setFieldType('name', $stringType);
+$nodeType->setFieldDescription('name', array('hasOptions'=>true,'options'=>array('wilfried','carmen','david','julian','milena')));
+$nodeType->setFieldType('body', $stringType);
+$nodeType->setFieldDescription('body', array('i18n'=>true));
+$nodeType->setFieldType('geolocation', $position2dType);
+$nodeType->setFieldType('info', $stringType);
+$nodeType->setFieldDescription('info', array('static'=>true, 'i18n'=>true));
+$nodeType->finalize();
+$typeFactory->registerType($nodeType);
 
 // set static values
-$entityStatic = $entityType->getStaticEntity();
+$entityStatic = $nodeType->getStaticEntity();
 $entityStatic->setInfo($langA, "Informationsunterlagen");
 $entityStatic->setInfo($langB, "Information material");
 
 // create object instance
-$parent = new Node($entityType);
+$parent = new Node($nodeType);
 $parent->setAlias("carmen-und-wilfried");
 $parent->setName("Carmen und Wilfried");
 $geolocation = new Position2d();
@@ -40,7 +45,7 @@ $geolocation->set(41.501, 14.502);
 $parent->setGeolocation($geolocation);
 
 $arrObjects = array();
-$object = new Node($entityType);
+$object = new Node($nodeType);
 $object->setParent($parent);
 $object->setAlias("julian-brabsche");
 $object->setName("Julian Brabsche");
@@ -51,7 +56,7 @@ $geolocation->set(43.001, 15.002);
 $object->setGeolocation($geolocation);
 $arrObjects[] = $object;
 
-$object = new Node($entityType);
+$object = new Node($nodeType);
 $object->setParent($parent);
 $object->setAlias("david-brabsche");
 $object->setName("David Brabsche");

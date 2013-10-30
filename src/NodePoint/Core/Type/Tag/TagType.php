@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Type\Tag;
 
 use NodePoint\Core\Classes\BaseEntityType;
+use NodePoint\Core\Library\EntityTypeInterface;
 
 class TagType extends BaseEntityType {
 
@@ -10,11 +11,10 @@ class TagType extends BaseEntityType {
 	 * Constructor
 	 *
 	 * @param $parentType NodePoint\Core\Library\EntityTypeInterface
-	 * @param $description array
 	 */
-	public function __construct()
+	public function __construct($typeFactory, $hasI18n=true)
 	{
-		parent::__construct('NodePointCore/Tag');
+		parent::__construct('NodePointCore/Tag', $typeFactory, null);
 	}
 }
 

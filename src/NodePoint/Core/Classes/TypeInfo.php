@@ -15,25 +15,13 @@ class TypeInfo {
 	public $className;
 
 	/*
-	 * @var string
-	 */
-	public $parentTypeName;
-
-	/*
-	 * @var boolean
-	 */
-	public $isEntity;
-
-	/*
 	 * @param $className string
 	 * @param $isEntity boolean
 	 * @param $parentTypeName string
 	 */
-	public function __construct($className, $isEntity=false, $parentTypeName=null)
+	public function __construct($className)
 	{
 		$this->className = $className;
-		$this->isEntity = $isEntity;
-		$this->parentTypeName = $parentTypeName;
 		$this->type = null;
 	}
 }

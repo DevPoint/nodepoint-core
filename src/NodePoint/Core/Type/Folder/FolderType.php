@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Type\Folder;
 
 use NodePoint\Core\Classes\BaseNodeType;
+use NodePoint\Core\Library\EntityTypeInterface;
 
 class FolderType extends BaseNodeType {
 
@@ -10,11 +11,11 @@ class FolderType extends BaseNodeType {
 	 * Constructor
 	 *
 	 * @param $parentType NodePoint\Core\Library\EntityTypeInterface
-	 * @param $description array
 	 */
-	public function __construct()
+	public function __construct($typeFactory, $hasI18n=true)
 	{
-		parent::__construct('NodePointCore/Folder');
+		$parentType = $typeFactory->getType('NodePointCore/Node');
+		parent::__construct('NodePointCore/Folder', $typeFactory, $parentType);
 	}
 }
 

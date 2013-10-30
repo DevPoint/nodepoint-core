@@ -21,9 +21,9 @@ class TypeFactory {
 
 	/*
 	 * @param $typeName string
-	 * @param $className string
+	 * @param $type NodePoint\Core\Library\TypeInterface
 	 */
-	public function registerPrimitiveType($typeName, $className)
+	public function registerTypeClass($typeName, $className)
 	{
 		$typeInfo = new TypeInfo($className);
 		$this->types[$typeName] = $typeInfo;
@@ -31,12 +31,13 @@ class TypeFactory {
 
 	/*
 	 * @param $typeName string
-	 * @param $className string
-	 * @param $parentTypeName string
+	 * @param $type NodePoint\Core\Library\TypeInterface
 	 */
-	public function registerEntityType($typeName, $className, $parentTypeName)
+	public function registerType($type)
 	{
-		$typeInfo = new TypeInfo($className, true, $parentTypeName);
+		$typeName = $type->getTypeName();
+		$typeInfo = new TypeInfo(null);
+		$typeInfo->type = $type;
 		$this->types[$typeName] = $typeInfo;
 	}
 
@@ -53,23 +54,10 @@ class TypeFactory {
 		}
 		// instantiate type if needed
 		$typeInfo = $this->types[$typeName];
-		if (null === $typeInfo->type)
+		if (null === $typeInfo->type && null !== $typeInfo->className)
 		{
 			$typeClass = $typeInfo->className;
-			if ($typeInfo->isEntity)
-			{
-				$parentType = null;
-				if (null !== $typeInfo->parentTypeName)
-				{
-					$parentType = $this->getType($typeInfo->parentTypeName);
-				}
-				$typeInfo->type = new $typeClass($typeName, $parentType);
-			}
-			else
-			{
-				$typeInfo->type = new $typeClass($typeName);
-			}
-
+			$typeInfo->type = new $typeClass();
 		}
 		return $typeInfo->type;
 	}

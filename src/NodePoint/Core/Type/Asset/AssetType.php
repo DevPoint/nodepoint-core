@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Type\Asset;
 
 use NodePoint\Core\Classes\BaseNodeType;
+use NodePoint\Core\Library\EntityTypeInterface;
 
 class AssetType extends BaseNodeType {
 
@@ -10,10 +11,10 @@ class AssetType extends BaseNodeType {
 	 * Constructor
 	 *
 	 * @param $parentType NodePoint\Core\Library\EntityTypeInterface
-	 * @param $description array
 	 */
-	public function __construct()
+	public function __construct($typeFactory, $hasI18n=true)
 	{
-		parent::__construct('NodePointCore/Asset');
+		$parentType = $typeFactory->getType('NodePointCore/Node');
+		parent::__construct('NodePointCore/Asset', $typeFactory, $parentType);
 	}
 }

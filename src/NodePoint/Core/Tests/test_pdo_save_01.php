@@ -20,35 +20,31 @@ $em = new \NodePoint\Core\Storage\PDO\Library\EntityManager($conn);
 $nodeRepositoryClass = "\\NodePoint\\Core\\Storage\\PDO\\Type\\Node\\NodeRepository";
 
 // create types
-$integerType = new \NodePoint\Core\Type\Integer\IntegerType();
-$aliasType = new \NodePoint\Core\Type\Alias\AliasType();
-$stringType = new \NodePoint\Core\Type\String\StringType();
-$position2dType = new \NodePoint\Core\Type\Position2d\Position2dType();
+$typeFactory = new \NodePoint\Core\Library\TypeFactory();
+$typeFactory->registerTypeClass('NodePointCore/Integer', "\\NodePoint\\Core\\Type\\Integer\\IntegerType");
+$typeFactory->registerTypeClass('NodePointCore/Alias', "\\NodePoint\\Core\\Type\\Alias\\AliasType");
+$typeFactory->registerTypeClass('NodePointCore/String', "\\NodePoint\\Core\\Type\\String\\StringType");
+$typeFactory->registerTypeClass('NodePointCore/Position2d', "\\NodePoint\\Core\\Type\\Position2d\\Position2dType");
 
-$nodeType = new \NodePoint\Core\Type\Node\NodeType();
-$nodeType->setFieldType('id', $integerType);
-$nodeType->setFieldType('parent', $nodeType);
-$nodeType->setFieldType('parentField', $stringType);
-$nodeType->setFieldType('alias', $aliasType);
-$nodeType->setFieldDescription('alias', array('i18n'=>true, 'searchable'=>true));
+$stringType = $typeFactory->getType('NodePointCore/String');
+$position2dType = $typeFactory->getType('NodePointCore/Position2d');
+
+$nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, true);
 $nodeType->setFieldType('name', $stringType);
 $nodeType->setFieldDescription('name', array('i18n'=>true));
-$em->registerRepositoryClass($nodeType->getTypeName(), $nodeRepositoryClass);
 $nodeType->finalize();
+$typeFactory->registerType($nodeType);
+$em->registerRepositoryClass($nodeType->getTypeName(), $nodeRepositoryClass);
 
-$documentType = new \NodePoint\Core\Type\Document\DocumentType();
-$documentType->setFieldType('id', $integerType);
-$documentType->setFieldType('parent', $nodeType);
-$documentType->setFieldType('parentField', $stringType);
-$documentType->setFieldType('alias', $aliasType);
-$documentType->setFieldDescription('alias', array('searchable'=>true));
+$documentType = new \NodePoint\Core\Type\Document\DocumentType($typeFactory, true);
 $documentType->setFieldType('name', $stringType);
-$documentType->setFieldType('geolocation', $position2dType);
 $documentType->setFieldDescription('name', array('i18n'=>true));
+$documentType->setFieldType('geolocation', $position2dType);
 $documentType->setFieldType('body', $stringType);
 $documentType->setFieldDescription('body', array('i18n'=>true));
-$em->registerRepositoryClass($documentType->getTypeName(), $nodeRepositoryClass);
 $documentType->finalize();
+$typeFactory->registerType($documentType);
+$em->registerRepositoryClass($documentType->getTypeName(), $nodeRepositoryClass);
 
 // language codes
 $langA = "de";
@@ -63,7 +59,7 @@ $em->persist($parent);
 $arrObjects = array();
 $object = new Document($documentType);
 $object->setParent($parent);
-$object->setAlias("julian-brabsche");
+$object->setAlias($langA, "julian-brabsche");
 $object->setName($langA, "Julian Brabsche");
 $object->setBody($langA, "Hier kommt Julian, unser Mathe-Genie!");
 $object->setBody($langB, "Here comes Julian, our Mathe-Genius!");
@@ -77,7 +73,7 @@ $object->setName($langA, "J. Brabsche");
 
 $object = new Document($documentType);
 $object->setParent($parent);
-$object->setAlias("david-brabsche");
+$object->setAlias($langA, "david-brabsche");
 $object->setName($langA, "David Brabsche");
 $object->setBody($langA, "Hier kommt unser lieber David!");
 $object->setBody($langB, "Here comes our cute David!");
@@ -91,6 +87,5 @@ $em->flush();
 // output test result
 echo "Test succeeded\n";
 echo "----------------\n";
-echo $documentType->getFieldStorageType('parent') . "\n";
 
 $conn = null;

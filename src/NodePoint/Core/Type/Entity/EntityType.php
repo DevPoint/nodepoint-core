@@ -3,19 +3,33 @@
 namespace NodePoint\Core\Type\Entity;
 
 use NodePoint\Core\Classes\BaseEntityType;
+use NodePoint\Core\Library\EntityTypeInterface;
 
 class EntityType extends BaseEntityType {
 
 	/*
 	 * Constructor
 	 *
-	 * @param $typeName string
 	 * @param $parentType NodePoint\Core\Library\EntityTypeInterface
-	 * @param $description array
 	 */
-	public function __construct()
+	public function __construct($typeFactory, $hasI18n=true)
 	{
-		parent::__construct('NodePointCore/Entity');
+		// call parent constructor
+		parent::__construct('NodePointCore/Entity', $typeFactory, null);
+	
+		// configure field name aliase
+		$this->fieldNameAliases['_id'] = 'id';
+		$this->fieldNameAliases['_parent'] = 'parent';
+		$this->fieldNameAliases['_parentField'] = 'parentField';
+
+		// get primitive types
+		$integerType = $typeFactory->getType('NodePointCore/Integer');
+		$stringType = $typeFactory->getType('NodePointCore/String');
+
+		// add standard fields
+		$this->setFieldType('id', $integerType);
+		$this->setFieldType('parent', $this);
+		$this->setFieldType('parentField', $stringType);
 	}
 }
 

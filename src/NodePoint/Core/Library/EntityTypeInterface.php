@@ -5,11 +5,6 @@ namespace NodePoint\Core\Library;
 interface EntityTypeInterface extends TypeInterface {
 
 	/*
-	 * @return boolean true if inheritance isn't possible
-	 */
-	public function isFinal();
-
-	/*
 	 * @return NodePoint\Core\Library\EntityTypeInterface
 	 */
 	public function getParentType();

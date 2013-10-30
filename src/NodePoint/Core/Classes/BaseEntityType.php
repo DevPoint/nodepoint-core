@@ -9,14 +9,14 @@ use NodePoint\Core\Library\EntityTypeInterface;
 abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
+	 * @var NodePoint\Core\Library\TypeFactory
+	 */
+	protected $typeFactory;
+
+	/*
 	 * @var NodePoint\Core\Library\EntityTypeInterface
 	 */
 	protected $parentType;
-
-	/*
-	 * @var boolean true if inheritance isn't possible
-	 */
-	protected $finalState;
 
 	/*
 	 * @var array indexed by fieldName
@@ -46,14 +46,14 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	/*
 	 * Constructor
 	 *
-	 * @param $typeFactory NodePoint\Core\Library\TypeFactory
 	 * @param $typeName string
+	 * @param $typeFactory NodePoint\Core\Library\TypeFactory
 	 */
-	protected function __construct($typeName)
+	protected function __construct($typeName, $typeFactory, EntityTypeInterface $parentType=null)
 	{
 		$this->typeName = $typeName;
-		$this->parentType = null;
-		$this->finalState = false;
+		$this->typeFactory = $typeFactory;
+		$this->parentType = $parentType;
 		$this->fields = array();
 		$this->fieldNameAliases = array();
 		$this->staticEntity = new StaticEntity($this);

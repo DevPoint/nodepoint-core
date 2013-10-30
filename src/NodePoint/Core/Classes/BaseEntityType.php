@@ -4,6 +4,7 @@ namespace NodePoint\Core\Classes;
 
 use NodePoint\Core\Library\MagicFieldCallInfo;
 use NodePoint\Core\Library\TypeInterface;
+use NodePoint\Core\Library\TypeFactoryInterface;
 use NodePoint\Core\Library\EntityTypeInterface;
 
 abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
@@ -49,7 +50,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 * @param $typeName string
 	 * @param $typeFactory NodePoint\Core\Library\TypeFactory
 	 */
-	protected function __construct($typeName, $typeFactory, EntityTypeInterface $parentType=null)
+	protected function __construct($typeName, TypeFactoryInterface $typeFactory, EntityTypeInterface $parentType=null)
 	{
 		$this->typeName = $typeName;
 		$this->typeFactory = $typeFactory;

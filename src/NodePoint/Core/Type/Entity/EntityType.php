@@ -3,16 +3,16 @@
 namespace NodePoint\Core\Type\Entity;
 
 use NodePoint\Core\Classes\BaseEntityType;
-use NodePoint\Core\Library\EntityTypeInterface;
+use NodePoint\Core\Library\TypeFactoryInterface;
 
 class EntityType extends BaseEntityType {
 
 	/*
 	 * Constructor
 	 *
-	 * @param $parentType NodePoint\Core\Library\EntityTypeInterface
+	 * @param $parentType NodePoint\Core\Library\TypeFactoryInterface
 	 */
-	public function __construct($typeFactory, $hasI18n=true)
+	public function __construct(TypeFactoryInterface $typeFactory, $hasI18n=true)
 	{
 		// call parent constructor
 		parent::__construct('NodePointCore/Entity', $typeFactory, null);
@@ -22,14 +22,10 @@ class EntityType extends BaseEntityType {
 		$this->fieldNameAliases['_parent'] = 'parent';
 		$this->fieldNameAliases['_parentField'] = 'parentField';
 
-		// get primitive types
-		$integerType = $typeFactory->getType('NodePointCore/Integer');
-		$stringType = $typeFactory->getType('NodePointCore/String');
-
 		// add standard fields
-		$this->setFieldType('id', $integerType);
+		$this->setFieldType('id', $typeFactory->getType('NodePointCore/Integer'));
+		$this->setFieldType('parentField', $typeFactory->getType('NodePointCore/String'));
 		$this->setFieldType('parent', $this);
-		$this->setFieldType('parentField', $stringType);
 	}
 }
 

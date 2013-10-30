@@ -4,7 +4,7 @@ namespace NodePoint\Core\Library;
 
 use NodePoint\Core\Classes\TypeInfo;
 
-class TypeFactory {
+class TypeFactory implements TypeFactoryInterface {
 
 	/*
 	 * @var array of NodePoint\Core\Classes\TypeIfno
@@ -33,7 +33,7 @@ class TypeFactory {
 	 * @param $typeName string
 	 * @param $type NodePoint\Core\Library\TypeInterface
 	 */
-	public function registerType($type)
+	public function registerType(TypeInterface $type)
 	{
 		$typeName = $type->getTypeName();
 		$typeInfo = new TypeInfo(null);
@@ -54,10 +54,14 @@ class TypeFactory {
 		}
 		// instantiate type if needed
 		$typeInfo = $this->types[$typeName];
-		if (null === $typeInfo->type && null !== $typeInfo->className)
+		if (null === $typeInfo->type)
 		{
-			$typeClass = $typeInfo->className;
-			$typeInfo->type = new $typeClass();
+			$className = $typeInfo->className;
+			if (null !== $className)
+			{
+				$typeClass = $typeInfo->className;
+				$typeInfo->type = new $typeClass();
+			}
 		}
 		return $typeInfo->type;
 	}

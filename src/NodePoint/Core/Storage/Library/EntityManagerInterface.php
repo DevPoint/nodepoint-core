@@ -7,9 +7,26 @@ use NodePoint\Core\Library\EntityInterface;
 interface EntityManagerInterface {
 
 	/*
+	 * @param $typeName string
+	 * @param $repository NodePoint\Core\Storage\Library\EntityRepositoryInterface
+	 */
+	public function registerRepositoryClass($typeName, $className);
+	
+	/*
+	 * @param $typeName string
+	 * @return NodePoint\Core\Storage\Library\EntityRepositoryInterface
+	 */
+	public function getRepository($typeName);
+
+	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
 	 */
 	public function persist(EntityInterface $entity);
+
+	/*
+	 * Writes all changes back to storage
+	 */
+	public function flush();
 
 	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
@@ -17,19 +34,14 @@ interface EntityManagerInterface {
 	public function update(EntityInterface $entity);
 	
 	/*
-	 * @param $typeName string
-	 * @param $entityId string
-	 * @return NodePoint\Core\Library\EntityInterface
-	 */
-	public function find($typeName, $entityId);
-
-	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
 	 */
 	public function save(EntityInterface $entity);
 
 	/*
-	 * Writes all changes back to storage
+	 * @param $typeName string
+	 * @param $entityId string
+	 * @return NodePoint\Core\Library\EntityInterface
 	 */
-	public function flush();
+	public function find($typeName, $entityId);
 }

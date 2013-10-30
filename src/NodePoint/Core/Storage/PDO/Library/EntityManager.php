@@ -4,6 +4,7 @@ namespace NodePoint\Core\Storage\PDO\Library;
 
 use NodePoint\Core\Library\TypeInterface;
 use NodePoint\Core\Library\EntityInterface;
+use NodePoint\Core\Storage\Library\EntityRepositoryInfo;
 use NodePoint\Core\Storage\Library\EntityManagerInterface;
 use NodePoint\Core\Storage\PDO\Library\EntityStorageProxy;
 use NodePoint\Core\Storage\PDO\Classes\BaseEntityRepository;
@@ -16,7 +17,7 @@ class EntityManager implements EntityManagerInterface {
 	protected $conn;
 
 	/*
-	 * @var array of NodePoint\Core\Storage\Library\EntityRepositoryInterface
+	 * @var array of NodePoint\Core\Storage\Library\RepositoryInfo indexed by typeName
 	 */
 	protected $repositories;
 
@@ -44,6 +45,35 @@ class EntityManager implements EntityManagerInterface {
 	}
 
 	/*
+	 * @param $typeName string
+	 * @param $className string
+	 */
+	public function registerRepositoryClass($typeName, $className)
+	{
+		$repositoryInfo = new EntityRepositoryInfo($className, null);
+		$this->repositories[$typeName] = $repositoryInfo;
+	}
+
+	/*
+	 * @param $typeName string
+	 * @return NodePoint\Core\Storage\Library\EntityRepositoryInterface
+	 */
+	public function getRepository($typeName)
+	{
+		if (!isset($this->repositories[$typeName]))
+		{
+			return null;
+		}
+		$repositoryInfo = $this->repositories[$typeName];
+		if (null === $repositoryInfo->object)
+		{
+			$repositoryClass = $repositoryInfo->className;
+			$repositoryInfo->object = new $repositoryClass($this->conn, $this);
+		}
+		return $repositoryInfo->object;
+	}
+
+	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
 	 */
 	public function persist(EntityInterface $entity)
@@ -51,21 +81,24 @@ class EntityManager implements EntityManagerInterface {
 		$storageProxy = $entity->_getStorageProxy();
 		if (!$storageProxy)
 		{
-			$type = $entity->_type();
-			$typeName = $type->getTypeName();
-			if (!isset($this->repositories[$typeName]))
-			{
-				$repositoryClass = $type->getStorageRepositoryClass();
-				if (!$repositoryClass)
-				{
-					$repositoryClass = "\\NodePoint\\Core\\Storage\\PDO\\Type\\Node\\NodeRepository";
-				}
-				$repository = new $repositoryClass($this->conn, $this);
-				$this->repositories[$typeName] = $repository;
-			}
 			$storageProxy = new EntityStorageProxy($this, $entity);
 			$entity->_setStorageProxy($storageProxy);
 			$storageProxy->updateAllFields();
+		}
+	}
+
+	/*
+	 * Writes all changes back to storage
+	 */
+	public function flush()
+	{
+		if (!empty($this->entitiesToUpdate))
+		{
+			foreach ($this->entitiesToUpdate as $entity)
+			{
+				$this->save($entity);
+			}
+			$this->entitiesToUpdate = array();
 		}
 	}
 
@@ -123,7 +156,8 @@ class EntityManager implements EntityManagerInterface {
 		foreach ($relatedEntityCanditates as $relatedEntity)
 		{
 			$relatedType = $relatedEntity->_type();
-			$magicCallGetId = $relatedType->getFieldMagicCallName($relatedType->getIdFieldName(), $callTypeGet);
+			$idFieldName = $relatedType->getFieldNameByAlias('_id');
+			$magicCallGetId = $relatedType->getFieldMagicCallName($idFieldName, $callTypeGet);
 			$relatedEntityId = $relatedEntity->{$magicCallGetId}();
 			if (null === $relatedEntityId)
 			{
@@ -138,18 +172,8 @@ class EntityManager implements EntityManagerInterface {
 
 		// save current entity
 		$typeName = $type->getTypeName();
-		$repository = $this->repositories[$typeName];
+		$repository = $this->getRepository($typeName);
 		$repository->save($entity);
-	}
-
-	/*
-	 * @param $typeName string
-	 * @param $entityId string
-	 * @return NodePoint\Core\Library\EntityInterface
-	 */
-	public function find($typeName, $entityId)
-	{
-		return null;
 	}
 
 	/*
@@ -166,17 +190,12 @@ class EntityManager implements EntityManagerInterface {
 	}
 
 	/*
-	 * Writes all changes back to storage
+	 * @param $typeName string
+	 * @param $entityId string
+	 * @return NodePoint\Core\Library\EntityInterface
 	 */
-	public function flush()
+	public function find($typeName, $entityId)
 	{
-		if (!empty($this->entitiesToUpdate))
-		{
-			foreach ($this->entitiesToUpdate as $entity)
-			{
-				$this->save($entity);
-			}
-			$this->entitiesToUpdate = array();
-		}
+		return null;
 	}
 }

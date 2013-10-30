@@ -42,6 +42,15 @@ class BaseEntity extends AbstractEntity {
 	}
 
 	/*
+	 * @param array of NodePoint\Core\Library\EntityFieldInterface
+	 */
+	final public function _addFields($fields)
+	{
+		$this->fields = array_merge($this->fields, $fields);
+		$this->_addFieldsToCache($fields);
+	}
+
+	/*
 	 * @return array of NodePoint\Core\Library\EntityFieldInterface
 	 */
 	final public function _fields()

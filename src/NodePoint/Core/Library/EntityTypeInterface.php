@@ -25,29 +25,14 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getStaticEntity();
 
 	/*
-	 * @return string language code
-	 */
-	public function getDefaultLanguage();
-	
-	/*
-	 * @return string with repository class name
-	 */
-	public function getStorageRepositoryClass();
-
-	/*
 	 * @return array of string with fieldNames
 	 */
 	public function getFieldNames();
 	
 	/*
-	 * @return mixd string or array of string with id fieldName(s)
+	 * @return string with fieldName
 	 */
-	public function getIdFieldName();
-
-	/*
-	 * @return string with alias fieldName(s)
-	 */
-	public function getAliasFieldName();
+	public function getFieldNameByAlias($fieldNameAlias);
 
 	/*
 	 * @param $fieldName string

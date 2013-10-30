@@ -10,8 +10,8 @@ class AssetRefType extends BaseEntityRefType {
 	 * Constructor
 	 * @param $referenceTypeName string
 	 */
-	public function __construct($referenceTypeName)
+	public function __construct()
 	{
-		parent::__construct('NodePointCore/AssetRef', $referenceTypeName);
+		parent::__construct('NodePointCore/AssetRef', 'NodePointCore/Asset');
 	}
 }

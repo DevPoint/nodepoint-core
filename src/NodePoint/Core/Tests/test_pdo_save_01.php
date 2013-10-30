@@ -16,6 +16,9 @@ $dbpass = '';
 $conn = new PDO('mysql:host=localhost;dbname=nodepoint', $dbuser, $dbpass);
 $em = new \NodePoint\Core\Storage\PDO\Library\EntityManager($conn);
 
+// repository class names
+$nodeRepositoryClass = "\\NodePoint\\Core\\Storage\\PDO\\Type\\Node\\NodeRepository";
+
 // create types
 $integerType = new \NodePoint\Core\Type\Integer\IntegerType();
 $aliasType = new \NodePoint\Core\Type\Alias\AliasType();
@@ -30,6 +33,7 @@ $nodeType->setFieldType('alias', $aliasType);
 $nodeType->setFieldDescription('alias', array('i18n'=>true, 'searchable'=>true));
 $nodeType->setFieldType('name', $stringType);
 $nodeType->setFieldDescription('name', array('i18n'=>true));
+$em->registerRepositoryClass($nodeType->getTypeName(), $nodeRepositoryClass);
 $nodeType->finalize();
 
 $documentType = new \NodePoint\Core\Type\Document\DocumentType();
@@ -43,6 +47,7 @@ $documentType->setFieldType('geolocation', $position2dType);
 $documentType->setFieldDescription('name', array('i18n'=>true));
 $documentType->setFieldType('body', $stringType);
 $documentType->setFieldDescription('body', array('i18n'=>true));
+$em->registerRepositoryClass($documentType->getTypeName(), $nodeRepositoryClass);
 $documentType->finalize();
 
 // language codes
@@ -80,6 +85,8 @@ $arrObjects[] = $object;
 $em->persist($object);
 
 $em->flush();
+
+
 
 // output test result
 echo "Test succeeded\n";

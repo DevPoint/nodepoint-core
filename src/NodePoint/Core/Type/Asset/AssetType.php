@@ -12,8 +12,8 @@ class AssetType extends BaseNodeType {
 	 * @param $parentType NodePoint\Core\Library\EntityTypeInterface
 	 * @param $description array
 	 */
-	public function __construct($parentType=null, $description=array())
+	public function __construct()
 	{
-		parent::__construct('NodePointCore/Asset', $parentType, $description);
+		parent::__construct('NodePointCore/Asset');
 	}
 }

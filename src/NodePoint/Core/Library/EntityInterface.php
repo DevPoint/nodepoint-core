@@ -17,6 +17,11 @@ interface EntityInterface {
 	public function _fieldType($fieldName);
 
 	/*
+	 * @param array of NodePoint\Core\Library\EntityFieldInterface
+	 */
+	public function _addFields($fields);
+
+	/*
 	 * @return array of NodePoint\Core\Library\EntityFieldInterface
 	 */
 	public function _fields();

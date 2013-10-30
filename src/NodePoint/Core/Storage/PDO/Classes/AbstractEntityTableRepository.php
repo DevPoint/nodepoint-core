@@ -115,7 +115,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _setEntityId($entity, $entityId)
 	{
 		$entityType = $entity->_type();
-		$idFieldName = $entityType->getIdFieldName();
+		$idFieldName = $entityType->getFieldNameByAlias('_id');
 		$magicCallSetId = $entityType->getFieldMagicCallName($idFieldName, 'set');
 		$entity->{$magicCallSetId}($entityId);
 	}
@@ -130,7 +130,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		{
 			$entity = $fieldValue;
 			$entityType = $entity->_type();
-			$idFieldName = $entityType->getIdFieldName();
+			$idFieldName = $entityType->getFieldNameByAlias('_id');
 			$magicCallGetId = $entityType->getFieldMagicCallName($idFieldName, 'get');
 			return $entity->{$magicCallGetId}();
 		}

@@ -10,8 +10,8 @@ class UserRefType extends BaseEntityRefType {
 	 * Constructor
 	 * @param $referenceTypeName string
 	 */
-	public function __construct($referenceTypeName)
+	public function __construct()
 	{
-		parent::__construct('NodePointCore/UserRef', $referenceTypeName);
+		parent::__construct('NodePointCore/UserRef', 'NodePointCore/User');
 	}
 }

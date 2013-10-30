@@ -11,8 +11,8 @@ class EntityRefType extends BaseEntityRefType {
 	 *
 	 * @param $referenceTypeName string
 	 */
-	public function __construct($referenceTypeName)
+	public function __construct()
 	{
-		parent::__construct('NodePointCore/EntityRef', $referenceTypeName);
+		parent::__construct('NodePointCore/EntityRef', 'NodePointCore/Entity');
 	}
 }

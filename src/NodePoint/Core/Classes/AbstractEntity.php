@@ -73,6 +73,13 @@ class AbstractEntity implements EntityInterface {
 	}
 
 	/*
+	 * @param array of NodePoint\Core\Library\EntityFieldInterface
+	 */
+	public function _addFields($fields)
+	{
+	}
+
+	/*
 	 * @return array of NodePoint\Core\Library\EntityFieldInterface
 	 */
 	public function _fields()
@@ -183,7 +190,8 @@ class AbstractEntity implements EntityInterface {
 			return $value;
 		}
 		$entityType = $value->_type();
-		$magicCallGetId = $entityType->getFieldMagicCallName($entityType->getIdFieldName(), 'get');
+		$idFieldName = $entityType->getFieldNameByAlias('_id');
+		$magicCallGetId = $entityType->getFieldMagicCallName($idFieldName, 'get');
 		return $value->{$magicCallGetId}();
 	}
 

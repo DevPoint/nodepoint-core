@@ -19,24 +19,14 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $finalState;
 
 	/*
-	 * @var string language code
-	 */
-	protected $defaultLanguage;
-
-	/*
 	 * @var array indexed by fieldName
 	 */
 	protected $fields;
 
 	/*
-	 * @var mixed string or array of string
+	 * @var array of string
 	 */
-	protected $idFieldName;
-
-	/*
-	 * @var string
-	 */
-	protected $aliasFieldName;
+	protected $fieldNameAliases;
 
 	/*
 	 * @var NodePoint\Core\Library\EntityInterface
@@ -54,27 +44,18 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $magicFieldStaticCallInfos;
 
 	/*
-	 * @var string repositories class name
-	 */
-	protected $storageRepositoryClass;
-
-	/*
 	 * Constructor
 	 *
+	 * @param $typeFactory NodePoint\Core\Library\TypeFactory
 	 * @param $typeName string
-	 * @param $parentType NodePoint\Core\Library\EntityTypeInterface
-	 * @param $description array
 	 */
-	protected function __construct($typeName, $parentType, $description)
+	protected function __construct($typeName)
 	{
 		$this->typeName = $typeName;
-		$this->parentType = $parentType;
-		$this->defaultLanguage = isset($description['defLang']) ? $description['defLang'] : 'en';
-		$this->idFieldName = isset($description['idField']) ? $description['idField'] : 'id';
-		$this->aliasFieldName = isset($description['aliasField']) ? $description['aliasField'] : 'alias';
-		$this->storageRepositoryClass = isset($description['storageRepository']) ? $description['storageRepository'] : null;
+		$this->parentType = null;
 		$this->finalState = false;
 		$this->fields = array();
+		$this->fieldNameAliases = array();
 		$this->staticEntity = new StaticEntity($this);
 		$this->magicFieldCallInfos = array();
 		$this->magicFieldStaticCallInfos = array();
@@ -93,7 +74,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$parentType = $this->getParentType();
 		while (null !== $parentType)
 		{
-			if ($typeName === $parentType->getTypeName())
+			if ($parentType->isTypeNameExact($typeName));
 			{
 				return true;
 			}
@@ -116,14 +97,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	final public function isObject()
 	{
 		return true;
-	}
-
-	/*
-	 * @return string language code
-	 */
-	final public function getDefaultLanguage()
-	{
-		return $this->defaultLanguage;
 	}
 
 	/*
@@ -168,14 +141,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * @return string with repository class name
-	 */
-	public function getStorageRepositoryClass()
-	{
-		return $this->storageRepositoryClass;
-	}
-
-	/*
 	 * @return array of string with fieldNames
 	 */
 	public function getFieldNames()
@@ -184,19 +149,20 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * @return mixd string or array of string with id fieldName(s)
+	 * @return string with fieldName
 	 */
-	public function getIdFieldName()
+	public function getFieldNameByAlias($fieldNameAlias)
 	{
-		return $this->idFieldName;
-	}
-
-	/*
-	 * @return string with alias fieldName(s)
-	 */
-	public function getAliasFieldName()
-	{
-		return $this->aliasFieldName;
+		if (!isset($this->fieldNameAliases[$fieldNameAlias]))
+		{
+			$parentType = $this->getParentType();
+			if (null !== $parentType)
+			{
+				return $parentType->getFieldNameByAlias($fieldNameAlias);
+			}
+			return null;
+		}
+		return $this->fieldNameAliases[$fieldNameAlias];
 	}
 
 	/*

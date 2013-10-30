@@ -10,8 +10,8 @@ class DocumentRefType extends BaseEntityRefType {
 	 * Constructor
 	 * @param $referenceTypeName string
 	 */
-	public function __construct(EntityTypeInterface $referenceTypeName)
+	public function __construct()
 	{
-		parent::__construct('NodePointCore/DocumentRef', $referenceTypeName);
+		parent::__construct('NodePointCore/DocumentRef', 'NodePointCore/Document');
 	}
 }

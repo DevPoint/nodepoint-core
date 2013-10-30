@@ -12,9 +12,16 @@ class NodeType extends BaseNodeType {
 	 * @param $parentType NodePoint\Core\Library\EntityTypeInterface
 	 * @param $description array
 	 */
-	public function __construct($parentType=null, $description=array())
+	public function __construct()
 	{
-		parent::__construct('NodePointCore/Node', $parentType, $description);
+		// call parent constructor
+		parent::__construct('NodePointCore/Node');
+
+		// configure field name aliase
+		$this->fieldNameAliases['_id'] = 'id';
+		$this->fieldNameAliases['_alias'] = 'alias';
+		$this->fieldNameAliases['_parent'] = 'parent';
+		$this->fieldNameAliases['_parentName'] = 'parentName';
 	}
 }
 

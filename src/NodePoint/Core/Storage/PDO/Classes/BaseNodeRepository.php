@@ -50,7 +50,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$storageProxy = $entity->_getStorageProxy();
 		$fieldNames = $storageProxy->getUpdateFieldNames();
 
-		// filter fields and update them intthe entity table
+		// filter fields and update them in the entity table
 		$mapFieldNames = array_fill_keys($fieldNames, true);
 		$entityId = $this->_getEntityId($entity);
 		$entityRow = $this->_serializeFieldsToEntityRow($type, $fields, $mapFieldNames, $entityId);
@@ -108,9 +108,13 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	 */
 	public function find($entityId)
 	{
-
-
-
-
+		$columInfos = &$this->tableColumns['entities'];
+		$sql = "SELECT * FROM np_entities WHERE id = :id";
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bindParam(':id', $entityId, $columInfos['id']->paramType);
+		$stmt->execute($params);
+		$entityRow = $stmt->fetch(PDO::FETCH_ASSOC);
+		echo implode(',', $entityRow) . ';';
+		return $entityRow;
 	}
 }

@@ -61,7 +61,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 			
 		// filter fields and update them in the entity fields table
 		$entityFieldRows = $this->_serializeFieldsToFieldRows($type, $fields, $mapFieldNames, $entityId);
-		$this->_saveEntityFieldRows($entityFieldRows);
+		$this->_saveFieldRows($entityFieldRows);
 	}
 
 	/*
@@ -82,7 +82,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 
 		// filter fields and insert them into the entity fields table
 		$entityFieldRows = $this->_serializeFieldsToFieldRows($type, $fields, $mapFieldNames, $entityId);
-		$this->_insertEntityFieldRows($entityFieldRows);
+		$this->_insertFieldRows($entityFieldRows);
 	}
 
 	/*
@@ -111,9 +111,17 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	 */
 	public function read($typeName, $row, $lang=null, $mapFieldNames=null)
 	{
+		$entityId = $row['id'];
 		$type = $this->em->getTypeFactory()->getType($typeName);
 		$fields = $this->_unserializeFieldsFromRow($type, $row);
-		return null;
+
+		$fieldRows = $this->_selectFieldRows($entityId, $lang);
+		$fields = array_merge($fields, $this->_unserializeFieldsFromFieldRows($type, $fieldRows));
+
+		$entityClass = $type->getClassName();
+		$entity = new $entityClass($type, $fields);
+		$this->em->persist($entity);
+		return $entity;
 	}
 
 	/*
@@ -123,7 +131,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	public function find($entityId)
 	{
 		// read entity table row
-		$row = $this->_findRow($entityId);
+		$row = $this->_selectRow($entityId);
 		if (null === $row)
 		{
 			return null;

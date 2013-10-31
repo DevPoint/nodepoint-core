@@ -84,11 +84,17 @@ $em->persist($object);
 
 $em->flush();
 
-$em->find('NodePointCore/Node', 2);
-
+$object = $em->find('NodePointCore/Node', 2);
 
 // output test result
 echo "Test succeeded\n";
 echo "----------------\n";
+if ($object != null)
+{
+	echo sprintf("Alias: %s\n", $object->getAlias($langA));
+	echo sprintf("Name: %s\n", $object->getName($langA));
+	echo sprintf("Body: %s\n", $object->getBody($langA));
+}
 
+// clear connection
 $conn = null;

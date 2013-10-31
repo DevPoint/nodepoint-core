@@ -16,5 +16,6 @@ class UserType extends BaseNodeType {
 	{
 		$parentType = $typeFactory->getType('NodePointCore/Node');
 		parent::__construct('NodePointCore/User', $typeFactory, $parentType);
+		$this->className = "\\NodePoint\\Core\\Type\\User\\User";
 	}
 }

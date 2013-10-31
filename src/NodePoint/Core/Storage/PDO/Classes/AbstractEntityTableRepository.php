@@ -275,7 +275,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $entityId string
 	 * @return array with entity row
 	 */
-	protected function _findRow($entityId)
+	protected function _selectRow($entityId)
 	{
 		$columInfos = &$this->tableColumns['entities'];
 		$sql = "SELECT * FROM np_entities WHERE id = :id";
@@ -339,13 +339,13 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 */
 	protected function _serializedFieldFromFieldRow(EntityTypeInterface $type, &$fieldRow)
 	{
-		$fieldName = $serializedField['name'];
+		$fieldName = $fieldRow['field'];
 		$storageType = $type->getFieldStorageType($fieldName);
 		$columInfos = &$this->tableColumns['entityFields'];
 		$serializedField = array(
 			'id' => $fieldRow['id'],
 			'name' => $fieldName,
-			'type' => $fieldRow['lang'],
+			'type' => $fieldRow['type'],
 			'lang' => ($fieldRow['lang'] != $columInfos['lang']->nullValue) ? $fieldRow['lang'] : null,
 			'sort' => ($fieldRow['sortIndex'] != $columInfos['sortIndex']->nullValue) ? $fieldRow['sortIndex'] : null);
 		switch ($storageType)
@@ -447,11 +447,13 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	{
 		$fields = array();
 		$hashFieldArrays = array();
-		foreach ($fieldRows as $fieldRow)
+		foreach ($fieldRows as &$fieldRow)
 		{
 			// unserialize value
 			$lazyLoaded = false;
 			$serializedField = $this->_serializedFieldFromFieldRow($type, $fieldRow);
+			$fieldName = $serializedField['name'];
+			$fieldType = $type->getFieldType($fieldName);
 			$value = $serializedField['value'];
 			if ($fieldType->isEntity())
 			{
@@ -463,9 +465,8 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			}
 
 			// unserialize array fields
-			$fieldName = $serializedField['name'];
 			$fieldLanguage = $serializedField['lang'];
-			if ($type->isFieldArray())
+			if ($type->isFieldArray($fieldName))
 			{
 				// create array field item
 				$field = new EntityField(null, null);
@@ -529,9 +530,24 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	}
 
 	/*
+	 * @param $entityId string
+	 * @param $lang mixed string or array of strings
+	 * @return array of fieldRows
+	 */
+	protected function _selectFieldRows($entityId, $lang)
+	{
+		$columInfos = &$this->tableColumns['entityFields'];
+		$sql = "SELECT * FROM np_entity_fields WHERE entity_id = :entity_id";
+		$stmt = $this->conn->prepare($sql);
+		$stmt->bindParam(':entity_id', $entityId, $columInfos['entity_id']->paramType);
+		$stmt->execute();
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+
+	/*
 	 * @param $fieldRows array
 	 */
-	protected function _insertEntityFieldRows(&$fieldRows)
+	protected function _insertFieldRows(&$fieldRows)
 	{
 		$columInfos = &$this->tableColumns['entityFields'];
 		$columns = array('entity_id','field','type','lang','sortIndex','valueInt','valueFloat','valueText','keyInt','keyText');
@@ -551,7 +567,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	/*
 	 * @param $fieldRows array
 	 */
-	protected function _saveEntityFieldRows(&$fieldRows)
+	protected function _saveFieldRows(&$fieldRows)
 	{
 		$columInfos = &$this->tableColumns['entityFields'];
 		$columns = array('entity_id','field','type','lang','sortIndex','valueInt','valueFloat','valueText','keyInt','keyText');

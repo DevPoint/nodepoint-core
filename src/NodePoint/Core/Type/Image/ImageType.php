@@ -16,5 +16,6 @@ class ImageType extends BaseNodeType {
 	{
 		$parentType = $typeFactory->getType('NodePointCore/Node');
 		parent::__construct('NodePointCore/Image', $typeFactory, $parentType);
+		$this->className = "\\NodePoint\\Core\\Type\\Image\\Image";
 	}
 }

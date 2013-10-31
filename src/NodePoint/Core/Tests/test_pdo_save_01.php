@@ -84,6 +84,7 @@ $em->persist($object);
 
 $em->flush();
 
+$em->find('NodePointCore/Node', 2);
 
 
 // output test result

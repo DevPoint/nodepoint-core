@@ -53,10 +53,10 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		// filter fields and update them in the entity table
 		$mapFieldNames = array_fill_keys($fieldNames, true);
 		$entityId = $this->_getEntityId($entity);
-		$entityRow = $this->_serializeFieldsToEntityRow($type, $fields, $mapFieldNames, $entityId);
+		$entityRow = $this->_serializeFieldsToRow($type, $fields, $mapFieldNames, $entityId);
 		if (!empty($entityRow))
 		{
-			$this->_updateEntityRow($entityRow);
+			$this->_updateRow($entityRow);
 		}
 			
 		// filter fields and update them in the entity fields table
@@ -76,8 +76,8 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$mapFieldNames = array_fill_keys($fieldNames, true);
 
 		// filter fields and insert them into the entity table
-		$entityRow = $this->_serializeFieldsToEntityRow($type, $fields, $mapFieldNames, null);
-		$entityId = $this->_insertEntityRow($entityRow);
+		$entityRow = $this->_serializeFieldsToRow($type, $fields, $mapFieldNames, null);
+		$entityId = $this->_insertRow($entityRow);
 		$this->_setEntityId($entity, $entityId);
 
 		// filter fields and insert them into the entity fields table
@@ -108,13 +108,13 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	 */
 	public function find($entityId)
 	{
-		$columInfos = &$this->tableColumns['entities'];
-		$sql = "SELECT * FROM np_entities WHERE id = :id";
-		$stmt = $this->conn->prepare($sql);
-		$stmt->bindParam(':id', $entityId, $columInfos['id']->paramType);
-		$stmt->execute($params);
-		$entityRow = $stmt->fetch(PDO::FETCH_ASSOC);
-		echo implode(',', $entityRow) . ';';
+		$entityRow = $this->_findRow($entityId);
+		if (null !== $entityRow)
+		{
+			$typeName = $entityRow['type'];
+			$type = $this->em->getTypeFactory()->getType($typeName);
+			$fields = $this->_unserializeFieldsFromRow($type, $entityRow);
+		}
 		return $entityRow;
 	}
 }

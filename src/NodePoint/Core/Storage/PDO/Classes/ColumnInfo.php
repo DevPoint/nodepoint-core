@@ -1,6 +1,6 @@
 <?php
 
-namespace NodePoint\Core\Storage\PDO\Library;
+namespace NodePoint\Core\Storage\PDO\Classes;
 
 class ColumnInfo {
 

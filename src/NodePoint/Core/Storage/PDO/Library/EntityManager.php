@@ -211,6 +211,11 @@ class EntityManager implements EntityManagerInterface {
 	 */
 	public function find($typeName, $entityId)
 	{
-		return null;
+		$repository = $this->getRepository($typeName);
+		if (null === $repository)
+		{
+			return null;
+		}
+		return $repository->find($entityId);
 	}
 }

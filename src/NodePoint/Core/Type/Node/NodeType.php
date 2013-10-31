@@ -16,6 +16,7 @@ class NodeType extends BaseNodeType {
 	{
 		// call parent constructor
 		parent::__construct('NodePointCore/Node', $typeFactory, null);
+		$this->className = "\\NodePoint\\Core\\Type\\Node\\Node";
 
 		// configure field name aliase
 		$this->fieldNameAliases['_id'] = 'id';

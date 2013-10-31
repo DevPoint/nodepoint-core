@@ -16,6 +16,7 @@ class FolderType extends BaseNodeType {
 	{
 		$parentType = $typeFactory->getType('NodePointCore/Node');
 		parent::__construct('NodePointCore/Folder', $typeFactory, $parentType);
+		$this->className = "\\NodePoint\\Core\\Type\\Folder\\Folder";
 	}
 }
 

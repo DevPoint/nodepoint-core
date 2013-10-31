@@ -162,7 +162,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _serializeFieldsToRow(EntityTypeInterface $type, $fields, &$mapFieldNames, $entityId)
 	{
 		// serialize existing fields
-		$entityRow = array();
+		$row = array();
 		$entityTableFields = &$this->tableFields['entities'];
 		foreach ($fields as $field)
 		{
@@ -180,7 +180,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				{
 					$value = $fieldType->objectToSerialized($value);
 				}
-				$entityRow[$column] = $value;
+				$row[$column] = $value;
 			}
 		}
 
@@ -191,42 +191,42 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		{
 			if (!empty($mapFieldNames[$fieldName]))
 			{
-				if (!isset($entityRow[$column]))
+				if (!isset($row[$column]))
 				{
-					$entityRow[$column] = $columInfos[$column]->nullValue;
+					$row[$column] = $columInfos[$column]->nullValue;
 				}
 				$mapFieldNames[$fieldName] = false;
 			}
 		}
 
 		// set standard fields values
-		if (!empty($entityRow))
+		if (!empty($row))
 		{
-			$entityRow['type'] = $type->getTypeName();
+			$row['type'] = $type->getTypeName();
 		}
-		return $entityRow;
+		return $row;
 	}
 
 	/*
 	 * @param $type NodePoint\Core\Library\EntityTypeInterface
-	 * @param $entityRow array
+	 * @param $row array
 	 * @return array of NodePoint\Core\Library\EntityFieldInterface
 	 */
-	protected function _unserializeFieldsFromRow(EntityTypeInterface $type, $entityRow)
+	protected function _unserializeFieldsFromRow(EntityTypeInterface $type, $row)
 	{
 		$fields = array();
 		$invEntityTableFields = &$this->invTableFields['entities'];
 		$columInfos = &$this->tableColumns['entities'];
 		foreach ($columInfos as $column => $columnInfo)
 		{
-			if (isset($entityRow[$column]))
+			if (isset($row[$column]))
 			{
 				$lazyLoaded = false;
 				if (isset($invEntityTableFields[$column]))
 				{
 					$fieldName = $invEntityTableFields[$column];
 					$fieldType = $type->getFieldType($fieldName);
-					$value = $entityRow[$column];
+					$value = $row[$column];
 					if ($fieldType->isEntity())
 					{
 						$lazyLoaded = true;
@@ -246,10 +246,10 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	}
 
 	/*
-	 * @param $entityRow array
+	 * @param $row array
 	 * @return int
 	 */
-	protected function _insertRow(&$entityRow)
+	protected function _insertRow(&$row)
 	{
 		$columInfos = &$this->tableColumns['entities'];
 		$columns = array('parent_id','field','type');
@@ -258,16 +258,16 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		$stmt = $this->conn->prepare("INSERT INTO np_entities ({$columnsNameStr}) VALUES ({$columnsVarStr})");
 		foreach ($columns as $column)
 		{
-			$stmt->bindParam(':'.$column, $entityRow[$column], $columInfos[$column]->paramType);
+			$stmt->bindParam(':'.$column, $row[$column], $columInfos[$column]->paramType);
 		}
 		$stmt->execute();
 		return $this->conn->lastInsertId();
 	}
 
 	/*
-	 * @param $entityRow array
+	 * @param $row array
 	 */
-	protected function _updateRow(&$entityRow)
+	protected function _updateRow(&$row)
 	{
 	}
 
@@ -282,8 +282,8 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bindParam(':id', $entityId, $columInfos['id']->paramType);
 		$stmt->execute();
-		$entityRow = $stmt->fetch(\PDO::FETCH_ASSOC);
-		return $entityRow;
+		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
+		return $row;
 	}
 
 	/*

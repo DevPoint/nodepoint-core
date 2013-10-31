@@ -103,18 +103,40 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	}
 
 	/*
+	 * @param $typeName string
+	 * @param $row entity table row
+	 * @param $mapFieldNames array indexed by fieldName
+	 * @param $lang mixed string or array of string
+	 * @return NodePoint\Core\Library\EntityInterface
+	 */
+	public function read($typeName, $row, $lang=null, $mapFieldNames=null)
+	{
+		$type = $this->em->getTypeFactory()->getType($typeName);
+		$fields = $this->_unserializeFieldsFromRow($type, $row);
+		return null;
+	}
+
+	/*
 	 * @param $entityId string 
 	 * @return NodePoint\Core\Library\EntityInterface
 	 */
 	public function find($entityId)
 	{
-		$entityRow = $this->_findRow($entityId);
-		if (null !== $entityRow)
+		// read entity table row
+		$row = $this->_findRow($entityId);
+		if (null === $row)
 		{
-			$typeName = $entityRow['type'];
-			$type = $this->em->getTypeFactory()->getType($typeName);
-			$fields = $this->_unserializeFieldsFromRow($type, $entityRow);
+			return null;
 		}
-		return $entityRow;
+		// select repository assigned to that type
+		$typeName = $row['type'];
+		$repository = $this->em->getRepository($typeName);
+		if (null === $repository)
+		{
+			// TODO: Exception: no repository for this type available
+			return null;
+		}
+		// create entity by reading this repository
+		return $repository->read($typeName, $row, null, null);
 	}
 }

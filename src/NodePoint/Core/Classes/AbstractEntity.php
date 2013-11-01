@@ -88,6 +88,17 @@ class AbstractEntity implements EntityInterface {
 	}
 
 	/*
+	 * Perform lazy loading of a field
+	 *
+	 * @param $field NodePoint\Core\Library\EntityFieldInterface
+	 * @return boolean
+	 */
+	public function _loadField(EntityFieldInterface $field)
+	{
+		return false;
+	}
+
+	/*
 	 * @param $repository NodePoint\Core\Storage\Library\EntityStorageProxyInterface
 	 */
 	public function _setStorageProxy(EntityStorageProxyInterface $storageProxy)
@@ -101,17 +112,6 @@ class AbstractEntity implements EntityInterface {
 	public function _getStorageProxy()
 	{
 		return null;
-	}
-
-	/*
-	 * Perform lazy loading of a field
-	 *
-	 * @param $field NodePoint\Core\Library\EntityFieldInterface
-	 * @return boolean
-	 */
-	public function _loadField($field)
-	{
-		return false;
 	}
 
 	/*

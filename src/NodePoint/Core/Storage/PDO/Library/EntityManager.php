@@ -34,6 +34,7 @@ class EntityManager implements EntityManagerInterface {
 
 	/*
 	 * @param $conn PDO
+	 * @param $typeFactory NodePoint\Core\Library\TypeFactoryInterface
 	 */
 	public function __construct(\PDO $conn, TypeFactoryInterface $typeFactory)
 	{
@@ -181,7 +182,7 @@ class EntityManager implements EntityManagerInterface {
 			$idFieldName = $relatedType->getFieldNameByAlias('_id');
 			$magicCallGetId = $relatedType->getFieldMagicCallName($idFieldName, $callTypeGet);
 			$relatedEntityId = $relatedEntity->{$magicCallGetId}();
-			if (null === $relatedEntityId)
+			if (empty($relatedEntityId))
 			{
 				$relatedStorageProxy = $relatedEntity->_getStorageProxy();
 				if (null !== $relatedStorageProxy)

@@ -96,9 +96,16 @@ class EntityManager implements EntityManagerInterface {
 		$storageProxy = $entity->_getStorageProxy();
 		if (!$storageProxy)
 		{
+			$type = $entity->_type();
 			$storageProxy = new EntityStorageProxy($this, $entity);
 			$entity->_setStorageProxy($storageProxy);
-			$storageProxy->updateAllFields();
+			$idFieldName = $type->getFieldNameByAlias('_id');
+			$magicCallGetId = $type->getFieldMagicCallName($idFieldName, 'get');
+			$entityId = $entity->{$magicCallGetId}();
+			if (empty($entityId))
+			{
+				$storageProxy->updateAllFields();
+			}
 		}
 	}
 

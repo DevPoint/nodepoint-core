@@ -16,8 +16,9 @@ class DocumentType extends BaseNodeType {
 	{
 		// call parent constructor
 		$parentType = $typeFactory->getType('NodePointCore/Node');
-		parent::__construct('NodePointCore/Document', $typeFactory, null);
-		$this->className = "\\NodePoint\\Core\\Type\\Document\\Document";
+		parent::__construct(
+			'NodePointCore/Document', "\\NodePoint\\Core\\Type\\Document\\Document", 
+			$typeFactory, $parentType);
 
 		// configure field name aliase
 		$this->fieldNameAliases['_id'] = 'id';

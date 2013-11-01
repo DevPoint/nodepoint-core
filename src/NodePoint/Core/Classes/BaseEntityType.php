@@ -48,12 +48,14 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 * Constructor
 	 *
 	 * @param $typeName string
+	 * @param $className string
 	 * @param $typeFactory NodePoint\Core\Library\TypeFactoryInterface
 	 * @param $typeFactory NodePoint\Core\Library\EntityTypeInterface
 	 */
-	protected function __construct($typeName, TypeFactoryInterface $typeFactory, EntityTypeInterface $parentType=null)
+	protected function __construct($typeName, $className, TypeFactoryInterface $typeFactory, EntityTypeInterface $parentType=null)
 	{
 		$this->typeName = $typeName;
+		$this->className = $className;
 		$this->typeFactory = $typeFactory;
 		$this->parentType = $parentType;
 		$this->fields = array();

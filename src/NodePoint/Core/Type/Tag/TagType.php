@@ -14,8 +14,10 @@ class TagType extends BaseEntityType {
 	 */
 	public function __construct(TypeFactoryInterface $typeFactory, $hasI18n=true)
 	{
-		parent::__construct('NodePointCore/Tag', $typeFactory, null);
-		$this->className = "\\NodePoint\\Core\\Type\\Tag\\Tag";
+		// call parent constructor
+		parent::__construct(
+			'NodePointCore/Tag', "\\NodePoint\\Core\\Type\\Tag\\Tag",
+			$typeFactory, null);
 	}
 }
 

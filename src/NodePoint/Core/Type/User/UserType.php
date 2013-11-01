@@ -14,8 +14,10 @@ class UserType extends BaseNodeType {
 	 */
 	public function __construct(TypeFactoryInterface $typeFactory)
 	{
+		// call parent constructor
 		$parentType = $typeFactory->getType('NodePointCore/Node');
-		parent::__construct('NodePointCore/User', $typeFactory, $parentType);
-		$this->className = "\\NodePoint\\Core\\Type\\User\\User";
+		parent::__construct(
+			'NodePointCore/User', "\\NodePoint\\Core\\Type\\User\\User",
+			$typeFactory, $parentType);
 	}
 }

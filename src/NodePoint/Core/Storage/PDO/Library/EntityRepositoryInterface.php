@@ -9,11 +9,6 @@ use NodePoint\Core\Storage\Library\EntityRepositoryInterface as BaseInterface;
 interface EntityRepositoryInterface extends BaseInterface {
 
 	/*
-	 * @return string
-	 */
-	public function getEntityTableName();
-
-	/*
 	 * @param $typeName string
 	 * @param $row entity table row
 	 * @param $mapFieldNames array indexed by fieldName

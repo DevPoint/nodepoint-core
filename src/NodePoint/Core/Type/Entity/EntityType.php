@@ -15,8 +15,9 @@ class EntityType extends BaseEntityType {
 	public function __construct(TypeFactoryInterface $typeFactory, $hasI18n=true)
 	{
 		// call parent constructor
-		parent::__construct('NodePointCore/Entity', $typeFactory, null);
-		$this->className = "\\NodePoint\\Core\\Type\\Entity\\Entity";
+		parent::__construct(
+			'NodePointCore/Entity', "\\NodePoint\\Core\\Type\\Entity\\Entity",
+			$typeFactory, null);
 
 		// configure field name aliase
 		$this->fieldNameAliases['_id'] = 'id';

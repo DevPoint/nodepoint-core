@@ -15,8 +15,9 @@ class NodeType extends BaseNodeType {
 	public function __construct(TypeFactoryInterface $typeFactory, $hasI18n=true)
 	{
 		// call parent constructor
-		parent::__construct('NodePointCore/Node', $typeFactory, null);
-		$this->className = "\\NodePoint\\Core\\Type\\Node\\Node";
+		parent::__construct(
+			'NodePointCore/Node', "\\NodePoint\\Core\\Type\\Node\\Node",
+			$typeFactory, null);
 
 		// configure field name aliase
 		$this->fieldNameAliases['_id'] = 'id';

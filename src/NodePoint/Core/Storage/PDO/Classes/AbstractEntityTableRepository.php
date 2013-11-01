@@ -108,14 +108,6 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	}
 
 	/*
-	 * @return string
-	 */
-	public function getEntityTableName()
-	{
-		return $this->tables['entities'];
-	}
-
-	/*
 	 * @param $fieldType NodePoint\Core\Library\TypeInterface
 	 * @param $entityId string
 	 * @return NodePoint\Core\Library\EntityInterface

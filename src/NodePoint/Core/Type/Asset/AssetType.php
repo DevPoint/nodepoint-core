@@ -14,8 +14,10 @@ class AssetType extends BaseNodeType {
 	 */
 	public function __construct(TypeFactoryInterface $typeFactory, $hasI18n=true)
 	{
+		// call parent constructor
 		$parentType = $typeFactory->getType('NodePointCore/Node');
-		parent::__construct('NodePointCore/Asset', $typeFactory, $parentType);
-		$this->className = "\\NodePoint\\Core\\Type\\Asset\\Asset";
+		parent::__construct(
+			'NodePointCore/Asset', "\\NodePoint\\Core\\Type\\Asset\\Asset", 
+			$typeFactory, $parentType);
 	}
 }

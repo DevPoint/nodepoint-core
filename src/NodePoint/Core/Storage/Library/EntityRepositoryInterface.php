@@ -21,4 +21,12 @@ interface EntityRepositoryInterface {
 	 * @param $entity NodePoint\Core\Library\EntityInterface
 	 */
 	public function save(EntityInterface $entity);
+
+	/*
+	 * @param $entity NodePoint\Core\Library\EntityInterface
+	 * @param $fieldName string
+	 * @param $lang mixed string or array of string
+	 * @return boolean
+	 */
+	public function loadField(EntityInterface $entity, $fieldName, $lang=null);
 }

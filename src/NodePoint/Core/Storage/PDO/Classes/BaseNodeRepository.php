@@ -125,6 +125,17 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	}
 
 	/*
+	 * @param $entity NodePoint\Core\Library\EntityInterface
+	 * @param $fieldName string
+	 * @param $lang mixed string or array of string
+	 * @return boolean
+	 */
+	public function loadField(EntityInterface $entity, $fieldName, $lang=null)
+	{
+		return false;		
+	}
+
+	/*
 	 * @param $entityId string 
 	 * @return NodePoint\Core\Library\EntityInterface
 	 */

@@ -18,4 +18,10 @@ interface EntityStorageProxyInterface {
 	 * @param $fieldName string
 	 */
 	public function onUpdateField($fieldName);
+
+	/*
+	 * @param $fieldName string
+	 * @param $lang mixed string or array of string
+	 */
+	public function loadField($fieldName, $lang=null);
 }

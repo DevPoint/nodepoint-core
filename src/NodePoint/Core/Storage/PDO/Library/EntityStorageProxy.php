@@ -116,4 +116,13 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	{
 		$this->updateFieldNames = null;
 	}	
+
+	/*
+	 * @param $fieldName string
+	 * @param $lang mixed string or array of string
+	 */
+	public function loadField($fieldName, $lang=null)
+	{
+		return false;
+	}
 }

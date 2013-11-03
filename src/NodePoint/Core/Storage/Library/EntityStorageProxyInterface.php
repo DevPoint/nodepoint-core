@@ -2,6 +2,8 @@
 
 namespace NodePoint\Core\Storage\Library;
 
+use NodePoint\Core\Library\EntityFieldInterface;
+
 interface EntityStorageProxyInterface {
 
 	/*
@@ -20,8 +22,7 @@ interface EntityStorageProxyInterface {
 	public function onUpdateField($fieldName);
 
 	/*
-	 * @param $fieldName string
-	 * @param $lang mixed string or array of string
+	 * @param $field NodePoint\Core\Library\EntityFieldInterface
 	 */
-	public function loadField($fieldName, $lang=null);
+	public function loadField(EntityFieldInterface $field);
 }

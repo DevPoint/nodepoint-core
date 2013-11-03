@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Storage\Library;
 
 use NodePoint\Core\Library\EntityInterface;
+use NodePoint\Core\Library\EntityFieldInterface;
 
 interface EntityRepositoryInterface {
 
@@ -24,9 +25,8 @@ interface EntityRepositoryInterface {
 
 	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
-	 * @param $fieldName string
-	 * @param $lang mixed string or array of string
+	 * @param $field NodePoint\Core\Library\EntityFieldInterface
 	 * @return boolean
 	 */
-	public function loadField(EntityInterface $entity, $fieldName, $lang=null);
+	public function loadField(EntityInterface $entity, EntityFieldInterface $field);
 }

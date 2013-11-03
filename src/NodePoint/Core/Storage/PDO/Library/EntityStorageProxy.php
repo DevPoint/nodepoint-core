@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Storage\PDO\Library;
 
 use NodePoint\Core\Library\EntityInterface;
+use NodePoint\Core\Library\EntityFieldInterface;
 use NodePoint\Core\Library\EntityTypeInterface;
 use NodePoint\Core\Storage\Library\EntityManagerInterface;
 use NodePoint\Core\Storage\Library\EntityStorageProxyInterface;
@@ -118,18 +119,18 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	}	
 
 	/*
-	 * @param $fieldName string
-	 * @param $lang mixed string or array of string
+	 * @param $field NodePoint\Core\Library\EntityFieldInterface
 	 */
-	public function loadField($fieldName, $lang=null)
+	public function loadField(EntityFieldInterface $field)
 	{
 		$entity = $this->getEntity();
-		$typeName = $entity->_type()->getTypeName();
+		$type = $entity->_type();
+		$typeName = $type->getTypeName();
 		$repository = $this->em->getRepository($typeName);
 		if (null === $repository)
 		{
 			return false;
 		}
-		return $repository->loadField($entiy, $fieldName, $lang);
+		return $repository->loadField($type, $field);
 	}
 }

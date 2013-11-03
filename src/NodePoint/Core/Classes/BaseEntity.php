@@ -71,15 +71,7 @@ class BaseEntity extends AbstractEntity {
 		{
 			return false;
 		}
-		$fieldName = $field->getName();
-		if ($this->type->hasFieldI18n($fieldName))
-		{
-			return $storageProxy->loadField($fieldName, $field->getLanguage());
-		}
-		else
-		{
-			return $storageProxy->loadField($fieldName, null);
-		}
+		return $storageProxy->loadField($field);
 	}
 
 	/*

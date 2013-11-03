@@ -4,6 +4,7 @@ namespace NodePoint\Core\Storage\PDO\Classes;
 
 use NodePoint\Core\Library\TypeInterface;
 use NodePoint\Core\Library\EntityInterface;
+use NodePoint\Core\Library\EntityFieldInterface;
 use NodePoint\Core\Library\EntityTypeInterface;
 use NodePoint\Core\Storage\Library\EntityManagerInterface;
 
@@ -126,13 +127,19 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 
 	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
-	 * @param $fieldName string
-	 * @param $lang mixed string or array of string
+	 * @param $field NodePoint\Core\Library\EntityFieldInterface
 	 * @return boolean
 	 */
-	public function loadField(EntityInterface $entity, $fieldName, $lang=null)
+	public function loadField(EntityInterface $entity, EntityFieldInterface $field)
 	{
-		return false;		
+		$type = $entity->_type();
+		$fieldName = $field->getName();
+		//if ($fieldName == $this->invTableFields['entities']['parent_id'])
+		//{
+		//}
+
+
+		return false;
 	}
 
 	/*

@@ -329,7 +329,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			$singularName = $fieldInfo->getSingularCapitalizedName();
 
 			// magic set function
-			$setCallName = 'set' . $singularName;
+			$setCallName = $fieldInfo->getMagicCallName('set');
 			if (!isset($this->magicFieldCallInfos[$setCallName]))
 			{
 				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_setMagicFieldCall' . $i18nStr);
@@ -345,10 +345,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 					$this->setMagicFieldCallInfo($setCallName, $magicFieldCallInfo);
 				}
 			}
-			$fieldInfo->setMagicCallName('set', $setCallName);
 
 			// magic get function
-			$getCallName = 'get' . $singularName;
+			$getCallName = $fieldInfo->getMagicCallName('get');
 			if (!isset($this->magicFieldCallInfos[$getCallName]))
 			{
 				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicFieldCall' . $i18nStr);
@@ -358,12 +357,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 					$this->setMagicFieldStaticCallInfo($getCallName, $magicFieldCallInfo);
 				}
 			}
-			$fieldInfo->setMagicCallName('get', $getCallName);
 
 			if ($fieldInfo->getType()->isEntity())
 			{
 				// entity magic get id function
-				$getIdCallName = 'get' . $singularName . 'Id';
+				$getIdCallName = $fieldInfo->getMagicCallName('getid');
 				if (!isset($this->magicFieldCallInfos[$getIdCallName]))
 				{
 					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicFieldEntityIdCall');
@@ -373,11 +371,10 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 						$this->setMagicFieldStaticCallInfo($getIdCallName, $magicFieldCallInfo);
 					}
 				}
-				$fieldInfo->setMagicCallName('getId', $getIdCallName);
 			}
 
 			// magic validate function
-			$validateCallName = 'validate' . $singularName;
+			$validateCallName = $fieldInfo->getMagicCallName('validate');
 			if (!isset($this->magicFieldCallInfos[$validateCallName]))
 			{
 				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_validateMagicFieldCall');
@@ -387,12 +384,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 					$this->setMagicFieldStaticCallInfo($validateCallName, $magicFieldCallInfo);
 				}
 			}
-			$fieldInfo->setMagicCallName('validate', $validateCallName);
 
 			if ($fieldInfo->isArray())
 			{
 				// array magic cnt function
-				$cntCallName = 'get' . $singularName . 'Count';
+				$cntCallName = $fieldInfo->getMagicCallName('cnt');
 				if (!isset($this->magicFieldCallInfos[$cntCallName]))
 				{
 					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'CountCall');
@@ -402,10 +398,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 						$this->setMagicFieldStaticCallInfo($cntCallName, $magicFieldCallInfo);
 					}
 				}
-				$fieldInfo->setMagicCallName('cnt', $cntCallName);
 
 				// array magic get item function
-				$getItemCallName = 'get' . $singularName;
+				$getItemCallName = $fieldInfo->getMagicCallName('getitem');
 				if (!isset($this->magicFieldCallInfos[$getItemCallName]))
 				{
 					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'ItemCall' . $i18nStr);
@@ -415,10 +410,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 						$this->setMagicFieldStaticCallInfo($getItemCallName, $magicFieldCallInfo);
 					}
 				}
-				$fieldInfo->setMagicCallName('getitem', $getItemCallName);
 
 				// array magic set item function
-				$setItemCallName = 'set' . $singularName;
+				$setItemCallName = $fieldInfo->getMagicCallName('setitem');
 				if (!isset($this->magicFieldCallInfos[$setItemCallName]) && empty($staticStr))
 				{
 					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_setMagicFieldItemCall' . $i18nStr);
@@ -434,7 +428,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 						$this->setMagicFieldCallInfo($setItemCallName, $magicFieldCallInfo);
 					}
 				}
-				$fieldInfo->setMagicCallName('setitem', $setItemCallName);
 			}
 		}
 	}

@@ -368,19 +368,32 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	}
 
 	/*
-	 * @param $callType string  
-	 * @param $funcName string  
-	 *			set, get, validate, 
-	 *			cnt, setitem, getitem,
-	 * @return string
+	 * Calculate magic call names
 	 */
-	public function setMagicCallName($callType, $funcName)
+	protected function _calculateMagicCallNames()
 	{
-		if (!isset($this->magicFuncs))
+		$this->magicFuncs = array();
+		$singularName = $this->getSingularCapitalizedName();
+		if ($this->isArray())		
 		{
-			$this->magicFuncs = array();
+			$pluralName = $this->getPluralCapitalizedName();
+			$this->magicFuncs['set'] = 'set' . $pluralName;
+			$this->magicFuncs['get'] = 'get' . $pluralName;
+			$this->magicFuncs['cnt'] = 'get' . $singularName . 'Count';
+			$this->magicFuncs['setitem'] = 'set' . $singularName;
+			$this->magicFuncs['getitem'] = 'get' . $singularName;
 		}
-		$this->magicFuncs[$callType] = $funcName;
+		else
+		{
+			$this->magicFuncs['set'] = 'set' . $singularName;
+			$this->magicFuncs['get'] = 'get' . $singularName;
+			$this->magicFuncs['validate'] = 'validate' . $singularName;
+			if ($this->type->isEntity())
+			{
+				$this->magicFuncs['getid'] = 'get' . $singularName . 'Id';
+			}
+		}
+		//echo "Field:" . $this->name . '(' . implode(',' , $this->magicFuncs) . ")\n";
 	}
 
 	/*
@@ -393,6 +406,14 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	{
 		if (!isset($this->magicFuncs[$callType]))
 		{
+			if (null === $this->magicFuncs)
+			{
+				$this->_calculateMagicCallNames();
+				if (isset($this->magicFuncs[$callType]))
+				{
+					return $this->magicFuncs[$callType];
+				}
+			}
 			return null;
 		}
 		return $this->magicFuncs[$callType];

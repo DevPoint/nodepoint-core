@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Classes;
 
 use NodePoint\Core\Library\EntityInterface;
+use NodePoint\Core\Library\EntityTypeInterface;
 use NodePoint\Core\Storage\Library\EntityStorageProxyInterface;
 
 class BaseEntity extends AbstractEntity {
@@ -23,7 +24,7 @@ class BaseEntity extends AbstractEntity {
 	 * @param $type NodePoint\Core\Library\EntityTypeInterface
 	 * @param $fields array pf NodePoint\Core\Library\EntityFieldInterface
 	 */
-	public function __construct($type, $fields=array())
+	public function __construct(EntityTypeInterface $type, $fields=array())
 	{
 		// basic construction
 		parent::__construct($type);

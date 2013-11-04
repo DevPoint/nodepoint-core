@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Classes;
 
 use NodePoint\Core\Library\EntityInterface;
+use NodePoint\Core\Library\EntityTypeInterface;
 use NodePoint\Core\Classes\EntityField;
 use NodePoint\Core\Classes\EntityArrayField;
 use NodePoint\Core\Storage\Library\EntityStorageProxyInterface;
@@ -21,8 +22,10 @@ class AbstractEntity implements EntityInterface {
 
 	/*
 	 * Constructor
+	 *
+	 * @param $type NodePoint\Core\Library\EntityTypeInterface
 	 */
-	protected function __construct($type)
+	protected function __construct(EntityTypeInterface $type)
 	{
 		$this->type = $type;
 		$this->cachedFields = array();

@@ -80,6 +80,7 @@ foreach ($arrObjects as $object)
 	$langOut = $langA;
 	echo $object->getName() . "\n";
 	echo $object->getBody($langOut) . "\n";
+	echo "Mein Zugriffsname: " . $object->getAlias() . "\n";
 	echo "Meine Eltern heißen " . $object->getParent()->getName() . "\n";
 	echo "Validate Field 'Name': " . $object->validateName("Carmen") . "\n";
 	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";

@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Classes;
 
 use NodePoint\Core\Library\EntityInterface;
+use NodePoint\Core\Library\EntityTypeInterface;
 use NodePoint\Core\Storage\Library\EntityStorageProxyInterface;
 
 class StaticEntity extends AbstractEntity {
@@ -18,10 +19,24 @@ class StaticEntity extends AbstractEntity {
 	 * @param $type NodePoint\Core\Library\EntityTypeInterface
 	 * @param $fields array pf NodePoint\Core\Library\EntityFieldInterface
 	 */
-	public function __construct($type, $fields=array())
+	public function __construct(EntityTypeInterface $type, $fields=array())
 	{
 		// basic construction
 		parent::__construct($type);
+
+		// add parent entity fields
+		$parentType = $type->getParentType();
+		if (null !== $parentType)
+		{
+			// ATTN: static entity of parent types
+			// must already be completely initialized, 
+			// in order to derive values correctly
+			$staticEntity = $parentType->getStaticEntity();
+			if (null !== $staticEntity)
+			{
+				$this->_addFieldsToCache($staticEntity->_fields());
+			}
+		}
 
 		// add entity fields
 		$this->fields = $fields;

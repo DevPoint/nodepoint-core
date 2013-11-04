@@ -73,6 +73,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	protected function __construct($typeName, $className, TypeFactoryInterface $typeFactory, EntityTypeInterface $parentType=null)
 	{
+		// basic properties
 		$this->typeName = $typeName;
 		$this->className = $className;
 		$this->typeFactory = $typeFactory;
@@ -82,6 +83,20 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->staticEntity = new StaticEntity($this);
 		$this->magicFieldCallInfos = array();
 		$this->magicFieldStaticCallInfos = array();
+
+		// copy field infos from the parent type
+		if (null !== $parentType)
+		{
+			$parentFieldNames = $parentType->getFieldNames();
+			foreach ($parentFieldNames as $fieldName)
+			{
+				$fieldInfo = $parentType->getFieldInfo($fieldName);
+				if (null !== $fieldInfo)
+				{
+					$this->fields[$fieldName] = $fieldInfo;
+				}
+			}
+		}
 	}
 
 	/*

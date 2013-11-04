@@ -124,19 +124,35 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	}
 
 	/*
-	 * @param $entity NodePoint\Core\Library\EntityInterface
+	 * @param $type NodePoint\Core\Library\EntityTypeInterface
 	 * @param $field NodePoint\Core\Library\EntityFieldInterface
 	 * @return boolean
 	 */
-	public function loadField(EntityInterface $entity, EntityFieldInterface $field)
+	public function loadField(EntityTypeInterface $type, EntityFieldInterface $field)
 	{
-		$type = $entity->_type();
 		$fieldName = $field->getName();
-		//if ($fieldName == $this->invTableFields['entities']['parent_id'])
-		//{
-		//}
-
-
+		$fieldType = $type->getFieldType($fieldName);
+		if ($fieldType->isEntity())
+		{
+			$fieldValue = $field->getValue();
+			if (is_string($fieldValue) || is_int($fieldValue))
+			{
+				$fieldTypeName = $field->getTypeName();
+				if (null === $fieldTypeName)
+				{
+					$fieldTypeName = 'NodePointCore/Node';
+				}
+				$repository = $this->em->getRepository($fieldTypeName);
+				if (null === $repository)
+				{
+					// TODO: Exception: no repository for this type available
+					return false;
+				}
+				$fieldEntity = $repository->find($fieldValue);
+				$field->setValue($fieldEntity);
+				return true;
+			}
+		}
 		return false;
 	}
 

@@ -9,6 +9,7 @@ use NodePoint\Core\Type\Entity\EntityType;
 use NodePoint\Core\Type\Entity\Entity;
 use NodePoint\Core\Type\Node\Node;
 use NodePoint\Core\Type\Document\Document;
+use NodePoint\Core\Type\User\User;
 
 // register primitive types
 $typeFactory = new \NodePoint\Core\Library\TypeFactory();
@@ -38,10 +39,15 @@ $nodeType->finalize();
 $typeFactory->registerType($nodeType);
 $em->registerRepositoryClass($nodeType->getTypeName(), $nodeRepositoryClass);
 
+// create user type
+$userType = new \NodePoint\Core\Type\User\UserType($typeFactory, true);
+$userType->finalize();
+$typeFactory->registerType($userType);
+$em->registerRepositoryClass($userType->getTypeName(), $nodeRepositoryClass);
+
 // create document type
 $documentType = new \NodePoint\Core\Type\Document\DocumentType($typeFactory, true);
-$documentType->setFieldType('name', $stringType);
-$documentType->setFieldDescription('name', array('i18n'=>true));
+$documentType->setFieldType('author', $userType);
 $documentType->setFieldType('geolocation', $position2dType);
 $documentType->setFieldType('body', $stringType);
 $documentType->setFieldDescription('body', array('i18n'=>true));
@@ -59,9 +65,20 @@ $parent->setAlias($langA, "root");
 $parent->setName($langA, "Root");
 $em->persist($parent);
 
+$userA = new User($userType);
+$userA->setAlias($langA, "wilfried");
+$userA->setName($langA, "Wilfried Reiter");
+$em->persist($userA);
+
+$userB = new User($userType);
+$userB->setAlias($langA, "carmen");
+$userB->setName($langA, "Carmen Brabsche");
+$em->persist($userB);
+
 $arrObjects = array();
 $object = new Document($documentType);
 $object->setParent($parent);
+$object->setAuthor($userA);
 $object->setAlias($langA, "julian-brabsche");
 $object->setName($langA, "Julian Brabsche");
 $object->setBody($langA, "Hier kommt Julian, unser Mathe-Genie!");
@@ -76,6 +93,7 @@ $object->setName($langA, "J. Brabsche");
 
 $object = new Document($documentType);
 $object->setParent($parent);
+$object->setAuthor($userB);
 $object->setAlias($langA, "david-brabsche");
 $object->setName($langA, "David Brabsche");
 $object->setBody($langA, "Hier kommt unser lieber David!");

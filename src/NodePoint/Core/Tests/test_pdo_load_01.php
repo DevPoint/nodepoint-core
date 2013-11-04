@@ -9,6 +9,7 @@ use NodePoint\Core\Type\Entity\EntityType;
 use NodePoint\Core\Type\Entity\Entity;
 use NodePoint\Core\Type\Node\Node;
 use NodePoint\Core\Type\Document\Document;
+use NodePoint\Core\Type\User\User;
 
 // register primitive types
 $typeFactory = new \NodePoint\Core\Library\TypeFactory();
@@ -38,10 +39,15 @@ $nodeType->finalize();
 $typeFactory->registerType($nodeType);
 $em->registerRepositoryClass($nodeType->getTypeName(), $nodeRepositoryClass);
 
+// create user type
+$userType = new \NodePoint\Core\Type\User\UserType($typeFactory, true);
+$userType->finalize();
+$typeFactory->registerType($userType);
+$em->registerRepositoryClass($userType->getTypeName(), $nodeRepositoryClass);
+
 // create document type
 $documentType = new \NodePoint\Core\Type\Document\DocumentType($typeFactory, true);
-$documentType->setFieldType('name', $stringType);
-$documentType->setFieldDescription('name', array('i18n'=>true));
+$documentType->setFieldType('author', $userType);
 $documentType->setFieldType('geolocation', $position2dType);
 $documentType->setFieldType('body', $stringType);
 $documentType->setFieldDescription('body', array('i18n'=>true));
@@ -54,12 +60,11 @@ $langA = "de";
 $langB = "en";
 $objects = array();
 
-$object = $em->find('NodePointCore/Node', 2);
-$objects[] = $object;
-
 $object = $em->find('NodePointCore/Node', 3);
 $objects[] = $object;
 
+$object = $em->find('NodePointCore/Node', 4);
+$objects[] = $object;
 
 $em->flush();
 
@@ -69,7 +74,8 @@ echo "Test succeeded\n";
 echo "----------------\n";
 foreach ($objects as $object)
 {
-	echo sprintf("Parent: %s\n", $object->getParentId());
+	echo sprintf("Parent: %s\n", $object->getParent()->getName($langA));
+	echo sprintf("Author: %s\n", $object->getAuthor()->getName($langA));
 	echo sprintf("Alias: %s\n", $object->getAlias($langA));
 	echo sprintf("Name: %s\n", $object->getName($langA));
 	echo sprintf("Body: %s\n", $object->getBody($langA));

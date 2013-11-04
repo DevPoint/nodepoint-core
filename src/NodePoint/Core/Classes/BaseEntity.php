@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Classes;
 
 use NodePoint\Core\Library\EntityInterface;
+use NodePoint\Core\Library\EntityFieldInterface;
 use NodePoint\Core\Library\EntityTypeInterface;
 use NodePoint\Core\Storage\Library\EntityStorageProxyInterface;
 

@@ -123,8 +123,7 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	 */
 	public function loadField(EntityFieldInterface $field)
 	{
-		$entity = $this->getEntity();
-		$type = $entity->_type();
+		$type = $this->entity->_type();
 		$typeName = $type->getTypeName();
 		$repository = $this->em->getRepository($typeName);
 		if (null === $repository)

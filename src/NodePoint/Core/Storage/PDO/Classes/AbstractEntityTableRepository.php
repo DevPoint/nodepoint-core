@@ -240,7 +240,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 					{
 						$lazyLoaded = true;
 					}
-					else if ($fieldType->isObject())
+					elseif ($fieldType->isObject())
 					{
 						$value = $fieldType->objectFromSerialized($value);
 					}
@@ -474,7 +474,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				$typeName = $serializedField['type'];
 				$lazyLoaded = true;
 			}
-			if ($fieldType->isObject())
+			elseif ($fieldType->isObject())
 			{
 				$value = $fieldType->objectFromSerialized($value);
 			}

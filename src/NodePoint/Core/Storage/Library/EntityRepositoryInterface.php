@@ -4,6 +4,7 @@ namespace NodePoint\Core\Storage\Library;
 
 use NodePoint\Core\Library\EntityInterface;
 use NodePoint\Core\Library\EntityFieldInterface;
+use NodePoint\Core\Library\EntityTypeInterface;
 
 interface EntityRepositoryInterface {
 
@@ -24,9 +25,9 @@ interface EntityRepositoryInterface {
 	public function save(EntityInterface $entity);
 
 	/*
-	 * @param $entity NodePoint\Core\Library\EntityInterface
+	 * @param $type NodePoint\Core\Library\EntityTypeInterface
 	 * @param $field NodePoint\Core\Library\EntityFieldInterface
 	 * @return boolean
 	 */
-	public function loadField(EntityInterface $entity, EntityFieldInterface $field);
+	public function loadField(EntityTypeInterface $type, EntityFieldInterface $field);
 }

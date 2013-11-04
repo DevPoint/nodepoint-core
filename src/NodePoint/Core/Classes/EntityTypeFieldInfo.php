@@ -13,7 +13,7 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	protected $name;
 
 	/*
-	 * @var NodePoint\Core\Library\EntityTypeInterface
+	 * @var NodePoint\Core\Library\TypeInterface
 	 */
 	protected $type;
 
@@ -35,9 +35,9 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	/*
 	 * Constructor
 	 *
-	 * @param $type NodePoint\Core\Library\EntityTypeInterface
+	 * @param $type NodePoint\Core\Library\TypeInterface
 	 */
-	public function __construct($name, $type)
+	public function __construct($name, TypeInterface $type=null)
 	{
 		$this->name = $name;
 		$this->type = $type;

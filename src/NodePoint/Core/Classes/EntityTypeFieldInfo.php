@@ -3,6 +3,7 @@
 namespace NodePoint\Core\Classes;
 
 use NodePoint\Core\Library\TypeInterface;
+use NodePoint\Core\Library\EntityTypeInterface;
 use NodePoint\Core\Library\EntityTypeFieldInfoInterface;
 
 class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
@@ -16,6 +17,11 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	 * @var NodePoint\Core\Library\TypeInterface
 	 */
 	protected $type;
+
+	/*
+	 * @var NodePoint\Core\Library\EntityTypeInterface
+	 */
+	protected $entityType;
 
 	/*
 	 * @var array
@@ -37,8 +43,9 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	 *
 	 * @param $type NodePoint\Core\Library\TypeInterface
 	 */
-	public function __construct($name, TypeInterface $type=null)
+	public function __construct(EntityTypeInterface $entityType, $name, TypeInterface $type=null)
 	{
+		$this->entityType = $entityType;
 		$this->name = $name;
 		$this->type = $type;
 		$this->description = null;
@@ -76,6 +83,14 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	public function getType()
 	{
 		return $this->type;
+	}
+
+	/*
+	 * @return string with entity type name
+	 */
+	public function getEntityTypeName()
+	{
+		return $this->entityType->getTypeName();
 	}
 
 	/*

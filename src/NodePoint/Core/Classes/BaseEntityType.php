@@ -50,7 +50,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 * @param $typeName string
 	 * @param $className string
 	 * @param $typeFactory NodePoint\Core\Library\TypeFactoryInterface
-	 * @param $typeFactory NodePoint\Core\Library\EntityTypeInterface
+	 * @param $parentType NodePoint\Core\Library\EntityTypeInterface
 	 */
 	protected function __construct($typeName, $className, TypeFactoryInterface $typeFactory, EntityTypeInterface $parentType=null)
 	{
@@ -188,7 +188,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function setFieldType($fieldName, TypeInterface $type)
 	{
-		$this->fields[$fieldName] = new EntityTypeFieldInfo($fieldName, $type);
+		$this->fields[$fieldName] = new EntityTypeFieldInfo($this, $fieldName, $type);
 	}
 
 	/*
@@ -215,7 +215,13 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception: no type for fieldName declared
 			return;
 		}
-		$this->fields[$fieldName]->setDescription($description);
+		$fieldInfo = $this->fields[$fieldName];
+		if ($fieldInfo->getEntityTypeName() !== $this->getTypeName())
+		{
+			// TODO: Exception: write access to derived field isn't allowed
+			return;
+		}
+		$fieldInfo->setDescription($description);
 	}
 
 	/*
@@ -242,7 +248,13 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception: no type for fieldName declared
 			return;
 		}
-		$this->fields[$fieldName]->setStorageDesc($storageDesc);
+		$fieldInfo = $this->fields[$fieldName];
+		if ($fieldInfo->getEntityTypeName() !== $this->getTypeName())
+		{
+			// TODO: Exception: write access to derived field isn't allowed
+			return;
+		}
+		$fieldInfo->setStorageDesc($storageDesc);
 	}
 
 	/*

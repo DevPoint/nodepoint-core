@@ -5,19 +5,9 @@ namespace NodePoint\Core\Library;
 interface EntityTypeFieldInfoInterface {
 
 	/*
-	 * @param $name string with fieldName
-	 */
-	public function setName($name);
-
-	/*
 	 * @return string with fieldName
 	 */
 	public function getName();
-
-	/*
-	 * @param $type NodePoint\Core\Library\TypeInterface
-	 */
-	public function setType(TypeInterface $type);
 
 	/*
 	 * @return NodePoint\Core\Library\TypeInterface
@@ -25,9 +15,9 @@ interface EntityTypeFieldInfoInterface {
 	public function getType();
 
 	/*
-	 * @param $description array
+	 * @return string with entity type name
 	 */
-	public function setDescription($description);
+	public function getEntityTypeName();
 
 	/*
 	 * @return array
@@ -115,23 +105,9 @@ interface EntityTypeFieldInfoInterface {
 	public function getSingularCapitalizedName();
 
 	/*
-	 * @param array
-	 */
-	public function setStorageDesc($storageDesc);
-
-	/*
 	 * @return array
 	 */
 	public function getStorageDesc();
-
-	/*
-	 * @param $callType string  
-	 * @param $funcName string  
-	 *			set, get, validate, getId
-	 *			cnt, setitem, getitem,
-	 * @return string
-	 */
-	public function setMagicCallName($callType, $funcName);
 
 	/*
 	 * @param $callType string  

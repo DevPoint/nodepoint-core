@@ -18,7 +18,7 @@ $typeFactory->registerTypeClass('NodePointCore/Position2d', "\\NodePoint\\Core\\
 $langA = "de";
 $langB = "en";
 
-// create entity types
+// create node type
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
 
@@ -33,10 +33,9 @@ $nodeType->setFieldDescription('info', array('static'=>true, 'i18n'=>true));
 $nodeType->finalize();
 $typeFactory->registerType($nodeType);
 
-// set static values
-$entityStatic = $nodeType->getStaticEntity();
-$entityStatic->setInfo($langA, "Informationsunterlagen");
-$entityStatic->setInfo($langB, "Information material");
+$nodeStatic = $nodeType->getStaticEntity();
+$nodeStatic->setInfo($langA, "Informationsunterlagen");
+$nodeStatic->setInfo($langB, "Information material");
 
 // create object instance
 $parent = new Node($nodeType);

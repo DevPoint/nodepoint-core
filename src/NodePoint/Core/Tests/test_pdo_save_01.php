@@ -27,7 +27,7 @@ $em = new \NodePoint\Core\Storage\PDO\Library\EntityManager($conn, $typeFactory)
 // repository class names
 $nodeRepositoryClass = "\\NodePoint\\Core\\Storage\\PDO\\Type\\Node\\NodeRepository";
 
-// create entity types
+// create node type
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
 
@@ -38,6 +38,7 @@ $nodeType->finalize();
 $typeFactory->registerType($nodeType);
 $em->registerRepositoryClass($nodeType->getTypeName(), $nodeRepositoryClass);
 
+// create document type
 $documentType = new \NodePoint\Core\Type\Document\DocumentType($typeFactory, true);
 $documentType->setFieldType('name', $stringType);
 $documentType->setFieldDescription('name', array('i18n'=>true));

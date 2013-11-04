@@ -352,7 +352,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			}
 			$fieldInfo->setMagicCallName('get', $getCallName);
 
-			if ($fieldInfo->getType()->isEntity($fieldName))
+			if ($fieldInfo->getType()->isEntity())
 			{
 				// entity magic get id function
 				$getIdCallName = 'get' . $singularName . 'Id';

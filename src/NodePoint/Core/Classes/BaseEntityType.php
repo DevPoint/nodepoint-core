@@ -188,11 +188,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function setFieldType($fieldName, TypeInterface $type)
 	{
-		if (!isset($this->fields[$fieldName]))
-		{
-			$this->fields[$fieldName] = new EntityTypeFieldInfo($fieldName, null);
-		}
-		$this->fields[$fieldName]->setType($type);
+		$this->fields[$fieldName] = new EntityTypeFieldInfo($fieldName, $type);
 	}
 
 	/*

@@ -350,9 +350,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 				$callName = $fieldInfo->getMagicCallName($callType);
 				if (null !== $callName)
 				{
-					if (!isset($this->magicFieldCallInfos[$callName]))
+					if (!$staticState || empty(self::$magicSetterTypes[$callType]))
 					{
-						if (!$staticState || empty(self::$magicSetterTypes[$callType]))
+						if (!isset($this->magicFieldCallInfos[$callName]))
 						{
 							$magicFieldCallInfo = (null !== $parentType) ? $parentType->getMagicFieldCallInfo($callName) : null;
 							if (null === $magicFieldCallInfo)

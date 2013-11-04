@@ -131,11 +131,11 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 		{
 			return $this->description['readOnly'];
 		}
-		if (!empty($this->description['isStatic']))
+		if (!empty($this->description['static']))
 		{
 			return true;
 		}
-		if (!empty($this->description['isConstructed']))
+		if (!empty($this->description['constructed']))
 		{
 			return true;
 		}

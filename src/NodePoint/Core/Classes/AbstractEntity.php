@@ -39,7 +39,7 @@ class AbstractEntity implements EntityInterface {
 		foreach ($fields as $field)
 		{
 			$fieldName = $field->getName();
-			if ($entityType->hasFieldI18n($fieldName))
+			if ($entityType->getFieldInfo($fieldName)->hasI18n())
 			{
 				if (!isset($this->cachedFields[$fieldName]))
 				{
@@ -133,7 +133,7 @@ class AbstractEntity implements EntityInterface {
 	{
 		if (!isset($this->cachedFields[$fieldName]))
 		{
-			if ($this->type->isFieldArray($fieldName))
+			if ($this->type->getFieldInfo($fieldName)->isArray())
 			{
 				$field = new EntityArrayField($fieldName, null);
 				$this->cachedFields[$fieldName] = $field;
@@ -191,7 +191,7 @@ class AbstractEntity implements EntityInterface {
 		}
 		$entityType = $value->_type();
 		$idFieldName = $entityType->getFieldNameByAlias('_id');
-		$magicCallGetId = $entityType->getFieldMagicCallName($idFieldName, 'get');
+		$magicCallGetId = $entityType->getFieldInfo($idFieldName)->getMagicCallName('get');
 		return $value->{$magicCallGetId}();
 	}
 
@@ -209,7 +209,7 @@ class AbstractEntity implements EntityInterface {
 		$lang = $args[0];
 		if (!isset($this->cachedFields[$fieldName][$lang]))
 		{
-			if ($this->type->isFieldArray($fieldName))
+			if ($this->type->getFieldInfo($fieldName)->isArray())
 			{
 				$field = new EntityArrayField($fieldName, $lang);
 				$this->cachedFields[$fieldName][$lang] = $field;

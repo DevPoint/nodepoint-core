@@ -125,7 +125,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	{
 		$entityType = $entity->_type();
 		$idFieldName = $entityType->getFieldNameByAlias('_id');
-		$magicCallSetId = $entityType->getFieldMagicCallName($idFieldName, 'set');
+		$magicCallSetId = $entityType->getFieldInfo($idFieldName)->getMagicCallName('set');
 		$entity->{$magicCallSetId}($entityId);
 	}
 
@@ -140,7 +140,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			$entity = $fieldValue;
 			$entityType = $entity->_type();
 			$idFieldName = $entityType->getFieldNameByAlias('_id');
-			$magicCallGetId = $entityType->getFieldMagicCallName($idFieldName, 'get');
+			$magicCallGetId = $entityType->getFieldInfo($idFieldName)->getMagicCallName('get');
 			return $entity->{$magicCallGetId}();
 		}
 		return $fieldValue;
@@ -287,7 +287,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _serializedFieldToFieldRow(EntityTypeInterface $type, &$serializedField, $entityId)
 	{
 		$fieldName = $serializedField['name'];
-		$storageType = $type->getFieldStorageType($fieldName);
+		$storageType = $type->getFieldInfo($fieldName)->getStorageType();
 		$columInfos = &$this->tableColumns['entityFields'];
 		$fieldRow = array(
 			'entity_id' => $entityId,
@@ -332,7 +332,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _serializedFieldFromFieldRow(EntityTypeInterface $type, &$fieldRow)
 	{
 		$fieldName = $fieldRow['field'];
-		$storageType = $type->getFieldStorageType($fieldName);
+		$storageType = $type->getFieldInfo($fieldName)->getStorageType();
 		$columInfos = &$this->tableColumns['entityFields'];
 		$serializedField = array(
 			'id' => $fieldRow['id'],
@@ -376,7 +376,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			if (!empty($mapFieldNames[$fieldName]))
 			{
 				$fieldType = $type->getFieldType($fieldName);
-				$fieldSearchable = $type->isFieldSearchable($fieldName);
+				$fieldSearchable = $type->getFieldInfo($fieldName)->isSearchable();
 				$fieldLanguage = $field->getLanguage();
 				if ($field->isArray())
 				{
@@ -458,7 +458,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 
 			// unserialize array fields
 			$fieldLanguage = $serializedField['lang'];
-			if ($type->isFieldArray($fieldName))
+			if ($type->getFieldInfo($fieldName)->isArray())
 			{
 				// create array field item
 				$field = new EntityField(null, null);

@@ -29,12 +29,10 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$fieldNames = $type->getFieldNames();
 		foreach ($fieldNames as $fieldName)
 		{
-			if (!$type->isFieldReadOnly($fieldName))
+			$fieldInfo = $type->getFieldInfo($fieldName);
+			if (!$fieldInfo->isReadOnly() && 0 != $fieldInfo->getStorageType())
 			{
-				if (0 != $type->getFieldStorageType($fieldName))
-				{
-					$result[] = $fieldName;
-				}
+				$result[] = $fieldName;
 			}
 		}
 		return $result;

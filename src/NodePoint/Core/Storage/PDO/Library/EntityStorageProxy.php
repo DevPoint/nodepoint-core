@@ -102,7 +102,7 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 		{
 			foreach ($fieldNames as $fieldName)
 			{
-				if (!$type->isFieldReadOnly($fieldName))
+				if (!$type->getFieldInfo($fieldName)->isReadOnly())
 				{
 					$this->onUpdateField($fieldName);
 				}

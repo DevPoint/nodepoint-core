@@ -171,11 +171,28 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
+	 * @return NodePoint\Core\Library\EntityTypeFieldInfoInterface
+	 */
+	public function getFieldInfo($fieldName)
+	{
+		if (!isset($this->fields[$fieldName]))
+		{
+			return null;
+		}
+		return $this->fields[$fieldName];
+	}
+
+	/*
+	 * @param $fieldName string
 	 * @param $type NodePoint\Core\Library\TypeInterface
 	 */
 	public function setFieldType($fieldName, TypeInterface $type)
 	{
-		$this->fields[$fieldName]['type'] = $type;
+		if (!isset($this->fields[$fieldName]))
+		{
+			$this->fields[$fieldName] = new EntityTypeFieldInfo($fieldName, null);
+		}
+		$this->fields[$fieldName]->setType($type);
 	}
 
 	/*
@@ -184,11 +201,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldType($fieldName)
 	{
-		if (!isset($this->fields[$fieldName]['type']))
+		if (!isset($this->fields[$fieldName]))
 		{ 
 			return null;
 		}
-		return $this->fields[$fieldName]['type'];
+		return $this->fields[$fieldName]->getType();
 	}
 
 	/*
@@ -197,7 +214,12 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function setFieldDescription($fieldName, $description)
 	{
-		$this->fields[$fieldName]['desc'] = $description;
+		if (!isset($this->fields[$fieldName]))
+		{
+			// TODO: Exception: no type for fieldName declared
+			return;
+		}
+		$this->fields[$fieldName]->setDescription($description);
 	}
 
 	/*
@@ -206,261 +228,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldDescription($fieldName)
 	{
-		if (!isset($this->fields[$fieldName]['desc']))
+		if (!isset($this->fields[$fieldName]))
 		{ 
 			return null;
 		}
-		return $this->fields[$fieldName]['desc'];
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean if field is array
-	 */
-	public function isFieldArray($fieldName)
-	{
-		return (!empty($this->fields[$fieldName]['desc']['isArray']));
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean if field is readOnly
-	 */
-	public function isFieldReadOnly($fieldName)
-	{
-		if (isset($this->fields[$fieldName]['desc']['readOnly']))
-		{
-			return $this->fields[$fieldName]['desc']['readOnly'];
-		}
-		if (!empty($this->fields[$fieldName]['desc']['isStatic']))
-		{
-			return true;
-		}
-		if (!empty($this->fields[$fieldName]['desc']['isConstructed']))
-		{
-			return true;
-		}
-		return false;
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean if field has multiple translations
-	 */
-	public function hasFieldI18n($fieldName)
-	{
-		return (!empty($this->fields[$fieldName]['desc']['i18n']));
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean if field is accessable without instance
-	 */
-	public function isFieldStatic($fieldName)
-	{
-		return (!empty($this->fields[$fieldName]['desc']['static']));
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean if field is constructed by the values of other fields
-	 */
-	public function isFieldConstructed($fieldName)
-	{
-		return (!empty($this->fields[$fieldName]['desc']['constructed']));
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean if field is accessable by find operations
-	 */
-	public function isFieldSearchable($fieldName)
-	{
-		return (!empty($this->fields[$fieldName]['desc']['searchable']));
-	}
-
-	/*
-	 * Base field names are used for constructed
-	 * fields and for fields which have dynamic options
-	 *
-	 * @param $fieldName string
-	 * @return mixed - string or array of string with fieldNames
-	 */
-	public function getFieldBaseField($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['desc']['baseField']))
-		{
-			return false;
-		}
-		return $this->fields[$fieldName]['desc']['baseField'];
-	}
-
-	/*
-	 * Calculate capitalized version of string
-	 *
-	 * @param string
-	 * @return string
-	 */
-	static protected function capitalizeString($string)
-	{
-		return strtoupper(substr($string, 0, 1)) . substr($string, 1);
-	}
-
-	/*
-	 * Retrieve or calculate fields plural name
-	 * based on the fieldName
-	 *
-	 * @param $fieldName string
-	 * @return string
-	 */
-	public function getFieldPluralName($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['desc']['plural']))
-		{
-			if ($this->isFieldArray($fieldName))
-			{
-				return $fieldName;
-			}
-			else
-			{
-				$fieldNameLen = strlen($fieldName);
-				if ($fieldNameLen - 1 == strrchr($fieldName, 's'))
-				{
-					return $fieldName . 'es';
-				}
-				elseif ($fieldNameLen - 1 == strrchr($fieldName, 'y'))
-				{
-					return substr($fieldName, 0, $fieldNameLen-1) . 'ies';
-				}
-				else
-				{
-					return $fieldName . 's';
-				}
-			}
-		}
-		return $this->fields[$fieldName]['desc']['plural'];
-	}
-
-	/*
-	 * Retrieve or calculate fields plural capitalized name
-	 * based on the fieldName
-	 *
-	 * @param $fieldName string
-	 * @return string
-	 */
-	public function getFieldPluralCapitalizedName($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['desc']['pluralCapitalize']))
-		{
-			$pluralName = $this->getFieldPluralName($fieldName);
-			return $this->capitalizeString($pluralName);
-		}
-		return $this->fields[$fieldName]['desc']['pluralCapitalize'];
-	}
-
-	/*
-	 * Retrieve or calculate fields singular name
-	 * based on the fieldName
-	 *
-	 * @param $fieldName string
-	 * @return string
-	 */
-	public function getFieldSingularName($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['desc']['singular']))
-		{
-			if (!$this->isFieldArray($fieldName))
-			{
-				return $fieldName;
-			}
-			else
-			{
-				$fieldNameLen = strlen($fieldName);
-				if ($fieldNameLen - 2 == strrpos($fieldName, 'es'))
-				{
-					return substr($fieldName, 0, $fieldNameLen-2);
-				}
-				elseif ($fieldNameLen - 3 == strrchr($fieldName, 'ies'))
-				{
-					return substr($fieldName, 0, $fieldNameLen-3) . 'y';
-				}
-				else
-				{
-					return substr($fieldName, 0, $fieldNameLen-1);
-				}
-			}
-		}
-		return $this->fields[$fieldName]['desc']['singular'];
-	}
-
-	/*
-	 * Retrieve or calculate fields singular capitalized name
-	 * based on the fieldName
-	 *
-	 * @param $fieldName string
-	 * @return string
-	 */
-	public function getFieldSingularCapitalizedName($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['desc']['singularCapitalize']))
-		{
-			$singularName = $this->getFieldSingularName($fieldName);
-			return $this->capitalizeString($singularName);
-		}
-		return $this->fields[$fieldName]['desc']['singularCapitalize'];
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @param $callType string  
-	 *			set, get, validate, 
-	 *			cnt, setitem, getitem,
-	 * @return string
-	 */
-	public function getFieldMagicCallName($fieldName, $callType)
-	{
-		if (!isset($this->fields[$fieldName]['magicFncs'][$callType]))
-		{
-			return null;
-		}
-		return $this->fields[$fieldName]['magicFncs'][$callType];
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean true if field is an Entity
-	 */
-	public function isFieldEntity($fieldName)
-	{
-		$type = $this->getFieldType($fieldName);
-		if (!$type)
-		{
-			// TODO: Exception: no type provided for field
-			return false;
-		}
-		return $type->isEntity();
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return boolean
-	 */
-	public function hasFieldOptions($fieldName)
-	{
-		return (!empty($this->fields[$fieldName]['desc']['hasOptions']));
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return mixed array or false
-	 */
-	public function getFieldOptions($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['desc']['options']))
-		{
-			return false;
-		}
-		return $this->fields[$fieldName]['desc']['options'];
+		return $this->fields[$fieldName]->getDescription();
 	}
 
 	/*
@@ -469,7 +241,12 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function setFieldStorageDesc($fieldName, $storageDesc)
 	{
-		$this->fields[$fieldName]['storage'] = $storageDesc;
+		if (!isset($this->fields[$fieldName]))
+		{
+			// TODO: Exception: no type for fieldName declared
+			return;
+		}
+		$this->fields[$fieldName]->setStorageDesc($storageDesc);
 	}
 
 	/*
@@ -478,24 +255,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function getFieldStorageDesc($fieldName)
 	{
-		if (!isset($this->fields[$fieldName]['storage']))
+		if (!isset($this->fields[$fieldName]))
 		{ 
 			return null;
 		}
-		return $this->fields[$fieldName]['storage'];
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return int - Int, Float, Text, Entity
-	 */
-	public function getFieldStorageType($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]['storage']['type']))
-		{ 
-			return $this->getFieldType($fieldName)->getStorageType();
-		}
-		return $this->fields[$fieldName]['storage']['type'];
+		return $this->fields[$fieldName]->setStorageDesc();
 	}
 
 	/*
@@ -551,10 +315,10 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		foreach ($fieldNames as $fieldName)
 		{
 			// required properties
-			$this->fields[$fieldName]['magicFncs'] = array();
-			$i18nStr = $this->hasFieldI18n($fieldName) ? 'I18n' : '';
-			$staticState = $this->isFieldStatic($fieldName);
-			$singularName = $this->getFieldSingularCapitalizedName($fieldName);
+			$fieldInfo = $this->fields[$fieldName];
+			$i18nStr = $fieldInfo->hasI18n() ? 'I18n' : '';
+			$staticState = $fieldInfo->isStatic();
+			$singularName = $fieldInfo->getSingularCapitalizedName();
 
 			// magic set function
 			$setCallName = 'set' . $singularName;
@@ -573,7 +337,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 					$this->setMagicFieldCallInfo($setCallName, $magicFieldCallInfo);
 				}
 			}
-			$this->fields[$fieldName]['magicFncs']['set'] = $setCallName;
+			$fieldInfo->setMagicCallName('set', $setCallName);
 
 			// magic get function
 			$getCallName = 'get' . $singularName;
@@ -586,9 +350,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 					$this->setMagicFieldStaticCallInfo($getCallName, $magicFieldCallInfo);
 				}
 			}
-			$this->fields[$fieldName]['magicFncs']['get'] = $getCallName;
+			$fieldInfo->setMagicCallName('get', $getCallName);
 
-			if ($this->isFieldEntity($fieldName))
+			if ($fieldInfo->getType()->isEntity($fieldName))
 			{
 				// entity magic get id function
 				$getIdCallName = 'get' . $singularName . 'Id';
@@ -601,7 +365,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 						$this->setMagicFieldStaticCallInfo($getIdCallName, $magicFieldCallInfo);
 					}
 				}
-				$this->fields[$fieldName]['magicFncs']['getId'] = $getIdCallName;
+				$fieldInfo->setMagicCallName('getId', $getIdCallName);
 			}
 
 			// magic validate function
@@ -615,9 +379,9 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 					$this->setMagicFieldStaticCallInfo($validateCallName, $magicFieldCallInfo);
 				}
 			}
-			$this->fields[$fieldName]['magicFncs']['validate'] = $validateCallName;
+			$fieldInfo->setMagicCallName('validate', $validateCallName);
 
-			if ($this->isFieldArray($fieldName))
+			if ($fieldInfo->isArray())
 			{
 				// array magic cnt function
 				$cntCallName = 'get' . $singularName . 'Count';
@@ -630,7 +394,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 						$this->setMagicFieldStaticCallInfo($cntCallName, $magicFieldCallInfo);
 					}
 				}
-				$this->fields[$fieldName]['magicFncs']['cnt'] = $cntCallName;
+				$fieldInfo->setMagicCallName('cnt', $cntCallName);
 
 				// array magic get item function
 				$getItemCallName = 'get' . $singularName;
@@ -643,7 +407,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 						$this->setMagicFieldStaticCallInfo($getItemCallName, $magicFieldCallInfo);
 					}
 				}
-				$this->fields[$fieldName]['magicFncs']['getitem'] = $getItemCallName;
+				$fieldInfo->setMagicCallName('getitem', $getItemCallName);
 
 				// array magic set item function
 				$setItemCallName = 'set' . $singularName;
@@ -662,7 +426,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 						$this->setMagicFieldCallInfo($setItemCallName, $magicFieldCallInfo);
 					}
 				}
-				$this->fields[$fieldName]['magicFncs']['setitem'] = $setItemCallName;
+				$fieldInfo->setMagicCallName('setitem', $setItemCallName);
 			}
 		}
 	}

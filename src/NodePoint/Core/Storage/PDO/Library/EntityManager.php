@@ -101,7 +101,7 @@ class EntityManager implements EntityManagerInterface {
 			$storageProxy = new EntityStorageProxy($this, $entity);
 			$entity->_setStorageProxy($storageProxy);
 			$idFieldName = $type->getFieldNameByAlias('_id');
-			$magicCallGetId = $type->getFieldMagicCallName($idFieldName, 'get');
+			$magicCallGetId = $type->getFieldInfo($idFieldName)->getMagicCallName('get');
 			$entityId = $entity->{$magicCallGetId}();
 			if (empty($entityId))
 			{
@@ -146,10 +146,11 @@ class EntityManager implements EntityManagerInterface {
 		$relatedEntityCanditates = array();
 		foreach ($fieldNames as $fieldName)
 		{
-			if ($type->isFieldEntity($fieldName) && 0 != $type->getFieldStorageType($fieldName))
+			$fieldInfo = $type->getFieldInfo($fieldName);
+			if ($fieldInfo->getType()->isEntity() && 0 != $fieldInfo->getStorageType())
 			{
-				$magicCallGetField = $type->getFieldMagicCallName($fieldName, $callTypeGet);
-				if ($type->isFieldArray($fieldName))
+				$magicCallGetField = $fieldInfo->getMagicCallName($callTypeGet);
+				if ($fieldInfo->isArray())
 				{
 					$relatedEntities = $entity->{$magicCallGetField}();
 					if (is_array($relatedEntities))
@@ -180,7 +181,7 @@ class EntityManager implements EntityManagerInterface {
 		{
 			$relatedType = $relatedEntity->_type();
 			$idFieldName = $relatedType->getFieldNameByAlias('_id');
-			$magicCallGetId = $relatedType->getFieldMagicCallName($idFieldName, $callTypeGet);
+			$magicCallGetId = $relatedType->getFieldInfo($idFieldName)->getMagicCallName($callTypeGet);
 			$relatedEntityId = $relatedEntity->{$magicCallGetId}();
 			if (empty($relatedEntityId))
 			{

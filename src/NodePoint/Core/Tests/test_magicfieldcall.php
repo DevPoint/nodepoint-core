@@ -85,6 +85,6 @@ foreach ($arrObjects as $object)
 	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";
 	echo "Static Value: " . $object->getInfo($langOut) . "\n";
 	echo "Du findest mich an folgenden Geokoordination: " . $arrGeolocation['x'] . ', ' . $arrGeolocation['y'] . "\n";
-	echo "Name Options: " . implode(', ', $object->_type()->getFieldOptions('name')) . "\n";
+	echo "Name Options: " . implode(', ', $object->_type()->getFieldInfo('name')->getOptions()) . "\n";
 	echo "\n";
 }

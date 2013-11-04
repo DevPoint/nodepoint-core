@@ -12,6 +12,11 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	protected $name;
 
 	/*
+	 * @var string with typeName
+	 */
+	protected $typeName;
+
+	/*
 	 * @var mixed string with language code
 	 */
 	protected $lang;
@@ -39,6 +44,7 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	{
 		$this->name = $name;
 		$this->lang = $lang;
+		$this->typeName = null;
 		$this->id = null;
 		$this->sortIndex = 0;
 		$this->lazyLoaded = false;
@@ -74,6 +80,22 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	/*
+	 * @param $name string
+	 */
+	public function setTypeName($typeName)
+	{
+		$this->typeName = $typeName;
+	}
+	
+	/*
+	 * @return string
+	 */
+	public function getTypeName()
+	{
+		return $this->typeName;
 	}
 
 	/*

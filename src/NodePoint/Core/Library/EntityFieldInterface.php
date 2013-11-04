@@ -25,6 +25,16 @@ interface EntityFieldInterface {
 	public function getName();
 
 	/*
+	 * @param $name string
+	 */
+	public function setTypeName($typeName);
+	
+	/*
+	 * @return string
+	 */
+	public function getTypeName();
+
+	/*
 	 * @param $lang string with language code
 	 */
 	public function setLanguage($lang);

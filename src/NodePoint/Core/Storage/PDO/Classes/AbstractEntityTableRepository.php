@@ -130,7 +130,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	}
 
 	/*
-	 * @param $entity NodePoint\Core\Library\EntityInterface
+	 * @param $fieldValue mixed NodePoint\Core\Library\EntityInterface or string
 	 * @return string
 	 */
 	protected function _getEntityId($fieldValue)
@@ -144,6 +144,23 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			return $entity->{$magicCallGetId}();
 		}
 		return $fieldValue;
+	}
+
+	/*
+	 * @param $fieldValue mixed NodePoint\Core\Library\EntityInterface or string
+	 * @param $field NodePoint\Core\Library\EntityFieldInterface
+	 * @return string
+	 */
+	protected function _getEntityTypeName($fieldValue, $field)
+	{
+		if (is_object($fieldValue))
+		{
+			return $fieldValue->_type()->getTypeName();
+		}
+		else
+		{
+			return $field->getTypeName();
+		}
 	}
 
 	/*
@@ -382,9 +399,11 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				{
 					foreach ($field->getArrayItems() as $arrayField)
 					{
+						$fieldTypeName = $fieldType->getTypeName();
 						$value = $arrayField->getValue();
 						if ($fieldType->isEntity())
 						{
+							$fieldTypeName = $this->_getEntityTypeName($value, $arrayField);
 							$value = $this->_getEntityId($value);
 						}
 						elseif ($fieldType->isObject())
@@ -394,7 +413,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 						$searchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($arrayField->getValue()) : null;
 						$serializedField = array(
 							'id' => $arrayField->getId(),
-							'type' => $fieldType->getTypeName(),
+							'type' => $fieldTypeName,
 							'name' => $fieldName,
 							'lang' => $fieldLanguage,
 							'sort' => $arrayField->getSortIndex(),
@@ -405,9 +424,11 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				}
 				else
 				{
+					$fieldTypeName = $fieldType->getTypeName();
 					$value = $field->getValue();
 					if ($fieldType->isEntity())
 					{
+						$fieldTypeName = $this->_getEntityTypeName($value, $field);
 						$value = $this->_getEntityId($value);
 					}
 					elseif ($fieldType->isObject())
@@ -417,7 +438,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 					$searchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($field->getValue()) : null;
 					$serializedField = array(
 						'id' => $field->getId(),
-						'type' => $fieldType->getTypeName(),
+						'type' => $fieldTypeName,
 						'name' => $fieldName,
 						'lang' => $fieldLanguage,
 						'sort' => $field->getSortIndex(),
@@ -442,6 +463,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		foreach ($fieldRows as &$fieldRow)
 		{
 			// unserialize value
+			$typeName = null;
 			$lazyLoaded = false;
 			$serializedField = $this->_serializedFieldFromFieldRow($type, $fieldRow);
 			$fieldName = $serializedField['name'];
@@ -449,6 +471,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			$value = $serializedField['value'];
 			if ($fieldType->isEntity())
 			{
+				$typeName = $serializedField['type'];
 				$lazyLoaded = true;
 			}
 			if ($fieldType->isObject())
@@ -464,6 +487,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				$field = new EntityField(null, null);
 				$field->setSortIndex($serializedField['sort']);
 				$field->setLazyLoadState($lazyLoaded);
+				$field->setTypeName($typeName);
 				$field->setValue($value);
 
 				// find matching array field
@@ -505,6 +529,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				$field = new EntityField($fieldName, $fieldLanguage);
 				$field->setSortIndex($serializedField['sort']);
 				$field->setLazyLoadState($lazyLoaded);
+				$field->setTypeName($typeName);
 				$field->setValue($value);
 				$fields[] = $field;
 			}

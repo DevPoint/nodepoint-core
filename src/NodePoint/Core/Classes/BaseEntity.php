@@ -103,7 +103,7 @@ class BaseEntity extends AbstractEntity {
 		{
 			return $this->{$magicFieldCallInfo->functionCall}($magicFieldCallInfo->field, $args);
 		}
-		
+
 		// TODO: Exception: unknown call
 		// .
 		// .

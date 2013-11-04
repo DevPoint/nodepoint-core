@@ -45,6 +45,25 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $magicFieldStaticCallInfos;
 
 	/*
+	 * @var array
+	 */
+	static protected $magicFuncNames = array(
+		'set' => '_setMagicFieldCall%s',
+		'get' => '_getMagicFieldCall%s',
+		'getid' => '_getMagicFieldEntityIdCall',
+		'validate' => '_validateMagicFieldCall',
+		'cnt' => '_getMagicFieldCountCall',
+		'setitem' => '_setMagicFieldItemCall%s',
+		'getitem' => '_getMagicFieldItemCall%s');
+
+	/*
+	 * @var array of boolean
+	 */
+	static protected $magicSetterTypes = array(
+		'set' => true, 
+		'setitem' => true);
+
+	/*
 	 * Constructor
 	 *
 	 * @param $typeName string
@@ -319,113 +338,38 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	protected function finalizeMagicCallNames()
 	{
+		$parentType = $this->getParentType();
 		$fieldNames = $this->getFieldNames();
 		foreach ($fieldNames as $fieldName)
 		{
-			// required properties
 			$fieldInfo = $this->fields[$fieldName];
 			$i18nStr = $fieldInfo->hasI18n() ? 'I18n' : '';
 			$staticState = $fieldInfo->isStatic();
-			$singularName = $fieldInfo->getSingularCapitalizedName();
-
-			// magic set function
-			$setCallName = $fieldInfo->getMagicCallName('set');
-			if (!isset($this->magicFieldCallInfos[$setCallName]))
+			foreach (self::$magicFuncNames as $callType => $magicFuncName)
 			{
-				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_setMagicFieldCall' . $i18nStr);
-				if ($staticState)
+				$callName = $fieldInfo->getMagicCallName($callType);
+				if (null !== $callName)
 				{
-					if (!isset($this->magicFieldStaticCallInfos[$setCallName]))
+					if (!isset($this->magicFieldCallInfos[$callName]))
 					{
-						$this->setMagicFieldStaticCallInfo($setCallName, $magicFieldCallInfo);
-					}
-				}
-				else
-				{
-					$this->setMagicFieldCallInfo($setCallName, $magicFieldCallInfo);
-				}
-			}
-
-			// magic get function
-			$getCallName = $fieldInfo->getMagicCallName('get');
-			if (!isset($this->magicFieldCallInfos[$getCallName]))
-			{
-				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicFieldCall' . $i18nStr);
-				$this->setMagicFieldCallInfo($getCallName, $magicFieldCallInfo);
-				if ($staticState && !isset($this->magicFieldStaticCallInfos[$getCallName]))
-				{
-					$this->setMagicFieldStaticCallInfo($getCallName, $magicFieldCallInfo);
-				}
-			}
-
-			if ($fieldInfo->getType()->isEntity())
-			{
-				// entity magic get id function
-				$getIdCallName = $fieldInfo->getMagicCallName('getid');
-				if (!isset($this->magicFieldCallInfos[$getIdCallName]))
-				{
-					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicFieldEntityIdCall');
-					$this->setMagicFieldCallInfo($getIdCallName, $magicFieldCallInfo);
-					if ($staticState && !isset($this->magicFieldStaticCallInfos[$getIdCallName]))
-					{
-						$this->setMagicFieldStaticCallInfo($getIdCallName, $magicFieldCallInfo);
-					}
-				}
-			}
-
-			// magic validate function
-			$validateCallName = $fieldInfo->getMagicCallName('validate');
-			if (!isset($this->magicFieldCallInfos[$validateCallName]))
-			{
-				$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_validateMagicFieldCall');
-				$this->setMagicFieldCallInfo($validateCallName, $magicFieldCallInfo);
-				if ($staticState && !isset($this->magicFieldStaticCallInfos[$validateCallName]))
-				{
-					$this->setMagicFieldStaticCallInfo($validateCallName, $magicFieldCallInfo);
-				}
-			}
-
-			if ($fieldInfo->isArray())
-			{
-				// array magic cnt function
-				$cntCallName = $fieldInfo->getMagicCallName('cnt');
-				if (!isset($this->magicFieldCallInfos[$cntCallName]))
-				{
-					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'CountCall');
-					$this->setMagicFieldCallInfo($cntCallName, $magicFieldCallInfo);
-					if ($staticState && !isset($this->magicFieldStaticCallInfos[$cntCallName]))
-					{
-						$this->setMagicFieldStaticCallInfo($cntCallName, $magicFieldCallInfo);
-					}
-				}
-
-				// array magic get item function
-				$getItemCallName = $fieldInfo->getMagicCallName('getitem');
-				if (!isset($this->magicFieldCallInfos[$getItemCallName]))
-				{
-					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_getMagicField' . $staticStr . 'ItemCall' . $i18nStr);
-					$this->setMagicFieldCallInfo($getItemCallName, $magicFieldCallInfo);
-					if ($staticState && !isset($this->magicFieldStaticCallInfos[$getItemCallName]))
-					{
-						$this->setMagicFieldStaticCallInfo($getItemCallName, $magicFieldCallInfo);
-					}
-				}
-
-				// array magic set item function
-				$setItemCallName = $fieldInfo->getMagicCallName('setitem');
-				if (!isset($this->magicFieldCallInfos[$setItemCallName]) && empty($staticStr))
-				{
-					$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, '_setMagicFieldItemCall' . $i18nStr);
-					if ($staticState)
-					{
-						if (!isset($this->magicFieldStaticCallInfos[$setItemCallName]))
+						if (!$staticState || empty(self::$magicSetterTypes[$callType]))
 						{
-							$this->setMagicFieldStaticCallInfo($setItemCallName, $magicFieldCallInfo);
+							$magicFieldCallInfo = (null !== $parentType) ? $parentType->getMagicFieldCallInfo($callName) : null;
+							if (null === $magicFieldCallInfo)
+							{
+								$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, sprintf($magicFuncName, $i18nStr));
+							}
+							$this->setMagicFieldCallInfo($callName, $magicFieldCallInfo);
 						}
 					}
-					else
+					if ($staticState && !isset($this->magicFieldStaticCallInfos[$callName]))
 					{
-						$this->setMagicFieldCallInfo($setItemCallName, $magicFieldCallInfo);
+						$magicFieldCallInfo = (null !== $parentType) ? $parentType->getMagicFieldStaticCallInfo($callName) : null;
+						if (null === $magicFieldCallInfo)
+						{
+							$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, sprintf($magicFuncName, $i18nStr));
+						}
+						$this->setMagicFieldStaticCallInfo($callName, $magicFieldCallInfo);
 					}
 				}
 			}

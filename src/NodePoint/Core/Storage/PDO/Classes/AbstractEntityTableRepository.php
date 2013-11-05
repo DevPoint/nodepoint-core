@@ -505,6 +505,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 						{
 							$fieldArray->addArrayItem($field);
 							$foundParent = true;
+							break;
 						}
 					}
 					if (!$foundParent)

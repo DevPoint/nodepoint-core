@@ -68,13 +68,12 @@ echo "Test succeeded\n";
 echo "----------------\n";
 foreach ($arrObjects as $object)
 {
-	$langOut = $langA;
+	$langOut = $langB;
 	echo $object->getName() . "\n";
 	echo $object->getBody($langOut) . "\n";
-	echo "Mein Zugriffsname: " . $object->getAlias() . "\n";
+	echo "Zugriffsname: " . $object->getAlias() . "\n";
 	echo "Meine Eltern heißen " . $object->getParent()->getName() . "\n";
 	echo "Validate Field 'Name': " . $object->validateName("Carmen") . "\n";
-	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";
 	echo "Du findest mich an folgenden Geokoordination: " . $arrGeolocation['x'] . ', ' . $arrGeolocation['y'] . "\n";
 	echo "Name Options: " . implode(', ', $object->_type()->getFieldInfo('name')->getOptions()) . "\n";
 	echo "\n";

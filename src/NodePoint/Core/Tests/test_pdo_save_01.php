@@ -28,10 +28,11 @@ $em = new \NodePoint\Core\Storage\PDO\Library\EntityManager($conn, $typeFactory)
 // repository class names
 $nodeRepositoryClass = "\\NodePoint\\Core\\Storage\\PDO\\Type\\Node\\NodeRepository";
 
-// create node type
+// get primitive types
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
 
+// create node type
 $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, true);
 $nodeType->setFieldInfo('name', $stringType, array('i18n'=>true));
 $nodeType->finalize();

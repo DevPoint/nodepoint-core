@@ -99,7 +99,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	final public function isTypeName($typeName)
 	{
-		if ($typeName == $this->getTypeName())
+		if ($typeName === $this->getTypeName())
 		{
 			return true;
 		}
@@ -234,7 +234,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			return;
 		}
 		$fieldInfo = $this->fields[$fieldName];
-		if ($fieldInfo->getEntityTypeName() !== $this->getTypeName())
+		if (!$this->isTypeNameExact($fieldInfo->getEntityTypeName()))
 		{
 			// TODO: Exception: write access to derived field isn't allowed
 			return;
@@ -267,7 +267,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			return;
 		}
 		$fieldInfo = $this->fields[$fieldName];
-		if ($fieldInfo->getEntityTypeName() !== $this->getTypeName())
+		if (!$this->isTypeNameExact($fieldInfo->getEntityTypeName()))
 		{
 			// TODO: Exception: write access to derived field isn't allowed
 			return;

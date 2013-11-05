@@ -18,10 +18,11 @@ $typeFactory->registerTypeClass('NodePointCore/Position2d', "\\NodePoint\\Core\\
 $langA = "de";
 $langB = "en";
 
-// create node type
+// get primitive types
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
 
+// create node type
 $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, false);
 $nodeType->setFieldInfo('name', $stringType, array('hasOptions'=>true, 'options'=>array('wilfried','carmen','david','julian','milena')));
 $nodeType->setFieldInfo('body', $stringType, array('i18n'=>true));

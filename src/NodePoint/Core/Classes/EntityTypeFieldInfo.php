@@ -130,14 +130,6 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	}
 
 	/*
-	 * @return boolean if field is accessable without instance
-	 */
-	public function isStatic()
-	{
-		return (!empty($this->description['static']));
-	}
-
-	/*
 	 * @return boolean if field is readOnly
 	 */
 	public function isReadOnly()
@@ -145,10 +137,6 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 		if (isset($this->description['readOnly']))
 		{
 			return $this->description['readOnly'];
-		}
-		if (!empty($this->description['static']))
-		{
-			return true;
 		}
 		if (!empty($this->description['constructed']))
 		{
@@ -180,13 +168,28 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	 *
 	 * @return mixed - string or array of string with fieldNames
 	 */
-	public function getBaseField()
+	public function getBaseFieldName()
 	{
 		if (!isset($this->description['baseField']))
 		{
 			return false;
 		}
 		return $this->description['baseField'];
+	}
+
+	/*
+	 * Alias names always starting with
+	 * underscore (_id,_parent,_alias)
+	 *
+	 * @return string with alias name
+	 */
+	public function getNameAlias()
+	{
+		if (!isset($this->description['alias']))
+		{
+			return false;
+		}
+		return $this->description['alias'];
 	}
 
 	/*
@@ -298,21 +301,6 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 			return $this->capitalizeString($singularName);
 		}
 		return $this->description['singularCapitalize'];
-	}
-
-	/*
-	 * Base field names are used for constructed
-	 * fields and for fields which have dynamic options
-	 *
-	 * @return mixed - string or array of string with field names
-	 */
-	public function getBaseFieldName()
-	{
-		if (!isset($this->description['baseField']))
-		{
-			return false;
-		}
-		return $this->description['baseField'];
 	}
 
 	/*

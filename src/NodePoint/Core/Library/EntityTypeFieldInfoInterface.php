@@ -35,11 +35,6 @@ interface EntityTypeFieldInfoInterface {
 	public function hasI18n();
 
 	/*
-	 * @return boolean if field is accessable without instance
-	 */
-	public function isStatic();
-
-	/*
 	 * @return boolean if field is readOnly
 	 */
 	public function isReadOnly();
@@ -72,6 +67,14 @@ interface EntityTypeFieldInfoInterface {
 	 */
 	public function getBaseFieldName();
 
+	/*
+	 * Alias names always starting with
+	 * underscore (_id,_parent,_alias)
+	 *
+	 * @return string with alias name
+	 */
+	public function getNameAlias();
+	
 	/*
 	 * Retrieve or calculate fields plural name
 	 * based on the fieldName

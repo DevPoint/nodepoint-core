@@ -30,11 +30,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $fieldNameAliases;
 
 	/*
-	 * @var NodePoint\Core\Library\EntityInterface
-	 */
-	protected $staticEntity;
-
-	/*
 	 * @var array of NodePoint\Core\Library\MagicFieldCallInfo indexed by callName
 	 */
 	protected $magicFieldCallInfos;
@@ -80,7 +75,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->parentType = $parentType;
 		$this->fields = array();
 		$this->fieldNameAliases = array();
-		$this->staticEntity = new StaticEntity($this);
 		$this->magicFieldCallInfos = array();
 		$this->magicFieldStaticCallInfos = array();
 
@@ -151,22 +145,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	final public function getParentType()
 	{
 		return $this->parentType;
-	}
-
-	/*
-	 * @param $entity NodePoint\Core\Library\EntityInterface
-	 */
-	public function setStaticEntity($entity)
-	{
-		$this->staticEntity = $entity;
-	}
-
-	/*
-	 * @return NodePoint\Core\Library\EntityInterface
-	 */
-	final public function getStaticEntity()
-	{
-		return $this->staticEntity;
 	}
 
 	/*
@@ -351,42 +329,42 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	/*
 	 * Calculate further magic function calls 
 	 */
-	protected function finalizeMagicCallNames()
+	protected function _finalizeMagicCallNames()
 	{
 		$parentType = $this->getParentType();
-		$fieldNames = $this->getFieldNames();
-		foreach ($fieldNames as $fieldName)
+		foreach ($this->fields as $fieldName => $fieldInfo)
 		{
-			$fieldInfo = $this->fields[$fieldName];
 			$i18nStr = $fieldInfo->hasI18n() ? 'I18n' : '';
-			$staticState = $fieldInfo->isStatic();
 			foreach (self::$magicFuncNames as $callType => $magicFuncName)
 			{
 				$callName = $fieldInfo->getMagicCallName($callType);
 				if (null !== $callName)
 				{
-					if (!$staticState || empty(self::$magicSetterTypes[$callType]))
+					if (!isset($this->magicFieldCallInfos[$callName]))
 					{
-						if (!isset($this->magicFieldCallInfos[$callName]))
-						{
-							$magicFieldCallInfo = (null !== $parentType) ? $parentType->getMagicFieldCallInfo($callName) : null;
-							if (null === $magicFieldCallInfo)
-							{
-								$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, sprintf($magicFuncName, $i18nStr));
-							}
-							$this->setMagicFieldCallInfo($callName, $magicFieldCallInfo);
-						}
-					}
-					if ($staticState && !isset($this->magicFieldStaticCallInfos[$callName]))
-					{
-						$magicFieldCallInfo = (null !== $parentType) ? $parentType->getMagicFieldStaticCallInfo($callName) : null;
+						$magicFieldCallInfo = (null !== $parentType) ? $parentType->getMagicFieldCallInfo($callName) : null;
 						if (null === $magicFieldCallInfo)
 						{
 							$magicFieldCallInfo = new MagicFieldCallInfo($fieldName, sprintf($magicFuncName, $i18nStr));
 						}
-						$this->setMagicFieldStaticCallInfo($callName, $magicFieldCallInfo);
+						$this->setMagicFieldCallInfo($callName, $magicFieldCallInfo);
 					}
 				}
+			}
+		}
+	}
+
+	/*
+	 * Create mapping table for fields alias names
+	 */
+	protected function _finalizeFieldNameAliases()
+	{
+		foreach ($this->fields as $fieldName => $fieldInfo)
+		{
+			$alias = $fieldInfo->getNameAlias();
+			if (null !== $alias)
+			{
+				$this->fieldNameAliases[$alias] = $fieldName;				
 			}
 		}
 	}
@@ -396,6 +374,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function finalize()
 	{
-		$this->finalizeMagicCallNames();
+		$this->_finalizeMagicCallNames();
+		$this->_finalizeFieldNameAliases();
 	}
 }

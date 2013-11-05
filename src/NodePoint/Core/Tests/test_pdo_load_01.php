@@ -60,10 +60,10 @@ $langA = "de";
 $langB = "en";
 $objects = array();
 
-$object = $em->find('NodePointCore/Node', 3);
+$object = $em->find('NodePointCore/Document', 4);
 $objects[] = $object;
 
-$object = $em->find('NodePointCore/Node', 4);
+$object = $em->find('NodePointCore/Document', 5);
 $objects[] = $object;
 
 $em->flush();

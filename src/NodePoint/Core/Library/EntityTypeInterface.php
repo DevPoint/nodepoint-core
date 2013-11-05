@@ -10,16 +10,6 @@ interface EntityTypeInterface extends TypeInterface {
 	public function getParentType();
 
 	/*
-	 * @param $entity NodePoint\Core\Library\EntityInterface
-	 */
-	public function setStaticEntity($entity);
-
-	/*
-	 * @return NodePoint\Core\Library\EntityInterface
-	 */
-	public function getStaticEntity();
-
-	/*
 	 * @return array of string with fieldNames
 	 */
 	public function getFieldNames();

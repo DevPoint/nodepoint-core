@@ -19,12 +19,6 @@ class NodeType extends BaseNodeType {
 			'NodePointCore/Node', "\\NodePoint\\Core\\Type\\Node\\Node",
 			$typeFactory, null);
 
-		// configure field name aliase
-		$this->fieldNameAliases['_id'] = 'id';
-		$this->fieldNameAliases['_alias'] = 'alias';
-		$this->fieldNameAliases['_parent'] = 'parent';
-		$this->fieldNameAliases['_parentField'] = 'parentField';
-
 		// get primitive types
 		$integerType = $typeFactory->getType('NodePointCore/Integer');
 		$aliasType = $typeFactory->getType('NodePointCore/Alias');
@@ -32,10 +26,16 @@ class NodeType extends BaseNodeType {
 
 		// add standard fields
 		$this->setFieldType('id', $integerType);
+		$this->setFieldDescription('id', array('alias'=>'_id'));
 		$this->setFieldType('parent', $this);
+		$this->setFieldDescription('parent', array('alias'=>'_parent'));
 		$this->setFieldType('parentField', $stringType);
+		$this->setFieldDescription('parentField', array('alias'=>'_parentField'));
 		$this->setFieldType('alias', $aliasType);
-		$this->setFieldDescription('alias', array('i18n'=>$hasI18n, 'searchable'=>true));
+		$this->setFieldDescription('alias', array(
+			'i18n' => $hasI18n, 
+			'searchable' => true, 
+			'alias' => '_alias'));
 	}
 }
 

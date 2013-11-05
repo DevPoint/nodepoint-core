@@ -31,13 +31,6 @@ class BaseEntity extends AbstractEntity {
 		parent::__construct($type);
 		$this->storageProxy = null;
 
-		// add static entity fields
-		$staticEntity = $type->getStaticEntity();
-		if (null !== $staticEntity)
-		{
-			$this->_addFieldsToCache($staticEntity->_fields());
-		}
-
 		// add entity fields
 		$this->fields = $fields;
 		$this->_addFieldsToCache($fields);

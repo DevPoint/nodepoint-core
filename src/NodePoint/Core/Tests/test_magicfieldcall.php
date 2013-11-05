@@ -28,14 +28,8 @@ $nodeType->setFieldDescription('name', array('hasOptions'=>true,'options'=>array
 $nodeType->setFieldType('body', $stringType);
 $nodeType->setFieldDescription('body', array('i18n'=>true));
 $nodeType->setFieldType('geolocation', $position2dType);
-$nodeType->setFieldType('info', $stringType);
-$nodeType->setFieldDescription('info', array('static'=>true, 'i18n'=>true));
 $nodeType->finalize();
 $typeFactory->registerType($nodeType);
-
-$nodeStatic = $nodeType->getStaticEntity();
-$nodeStatic->setInfo($langA, "Informationsunterlagen");
-$nodeStatic->setInfo($langB, "Information material");
 
 // create object instance
 $parent = new Node($nodeType);
@@ -83,7 +77,6 @@ foreach ($arrObjects as $object)
 	echo "Meine Eltern heißen " . $object->getParent()->getName() . "\n";
 	echo "Validate Field 'Name': " . $object->validateName("Carmen") . "\n";
 	echo "Validate Field 'Body': " . $object->validateBody("Carmen") . "\n";
-	echo "Static Value: " . $object->getInfo($langOut) . "\n";
 	echo "Du findest mich an folgenden Geokoordination: " . $arrGeolocation['x'] . ', ' . $arrGeolocation['y'] . "\n";
 	echo "Name Options: " . implode(', ', $object->_type()->getFieldInfo('name')->getOptions()) . "\n";
 	echo "\n";

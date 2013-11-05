@@ -25,17 +25,10 @@ class NodeType extends BaseNodeType {
 		$stringType = $typeFactory->getType('NodePointCore/String');
 
 		// add standard fields
-		$this->setFieldType('id', $integerType);
-		$this->setFieldDescription('id', array('alias'=>'_id'));
-		$this->setFieldType('parent', $this);
-		$this->setFieldDescription('parent', array('alias'=>'_parent'));
-		$this->setFieldType('parentField', $stringType);
-		$this->setFieldDescription('parentField', array('alias'=>'_parentField'));
-		$this->setFieldType('alias', $aliasType);
-		$this->setFieldDescription('alias', array(
-			'i18n' => $hasI18n, 
-			'searchable' => true, 
-			'alias' => '_alias'));
+		$this->setFieldInfo('id', $integerType, array('alias'=>'_id'));
+		$this->setFieldInfo('parent', $this, array('alias'=>'_parent'));
+		$this->setFieldInfo('parentField', $stringType, array('alias'=>'_parentField'));
+		$this->setFieldInfo('alias', $aliasType, array('i18n'=>$hasI18n, 'searchable'=>true, 'alias'=>'_alias'));
 	}
 }
 

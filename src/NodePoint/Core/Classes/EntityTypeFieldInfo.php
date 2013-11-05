@@ -43,7 +43,7 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	 *
 	 * @param $type NodePoint\Core\Library\TypeInterface
 	 */
-	public function __construct(EntityTypeInterface $entityType, $name, TypeInterface $type=null)
+	public function __construct(EntityTypeInterface $entityType, $name, TypeInterface $type)
 	{
 		$this->entityType = $entityType;
 		$this->name = $name;

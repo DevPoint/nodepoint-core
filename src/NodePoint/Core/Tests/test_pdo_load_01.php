@@ -33,8 +33,7 @@ $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
 
 $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, true);
-$nodeType->setFieldType('name', $stringType);
-$nodeType->setFieldDescription('name', array('i18n'=>true));
+$nodeType->setFieldInfo('name', $stringType, array('i18n'=>true));
 $nodeType->finalize();
 $typeFactory->registerType($nodeType);
 $em->registerRepositoryClass($nodeType->getTypeName(), $nodeRepositoryClass);
@@ -47,10 +46,9 @@ $em->registerRepositoryClass($userType->getTypeName(), $nodeRepositoryClass);
 
 // create document type
 $documentType = new \NodePoint\Core\Type\Document\DocumentType($typeFactory, true);
-$documentType->setFieldType('author', $userType);
-$documentType->setFieldType('geolocation', $position2dType);
-$documentType->setFieldType('body', $stringType);
-$documentType->setFieldDescription('body', array('i18n'=>true));
+$documentType->setFieldInfo('author', $userType);
+$documentType->setFieldInfo('geolocation', $position2dType);
+$documentType->setFieldInfo('body', $stringType, array('i18n'=>true));
 $documentType->finalize();
 $typeFactory->registerType($documentType);
 $em->registerRepositoryClass($documentType->getTypeName(), $nodeRepositoryClass);

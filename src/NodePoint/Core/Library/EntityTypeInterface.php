@@ -21,15 +21,17 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return NodePoint\Core\Library\EntityTypeFieldInfoInterface
+	 * @param $type NodePoint\Core\Library\TypeInterface
+	 * @param $description array
+	 * @param $storageDesc array
 	 */
-	public function getFieldInfo($fieldName);
+	public function setFieldInfo($fieldName, TypeInterface $type, $description=null, $storageDesc=null);
 
 	/*
 	 * @param $fieldName string
-	 * @param $type NodePoint\Core\Library\TypeInterface
+	 * @return NodePoint\Core\Library\EntityTypeFieldInfoInterface
 	 */
-	public function setFieldType($fieldName, TypeInterface $type);
+	public function getFieldInfo($fieldName);
 
 	/*
 	 * @param $fieldName string
@@ -39,7 +41,7 @@ interface EntityTypeInterface extends TypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $description array
+	 * @param array
 	 */
 	public function setFieldDescription($fieldName, $description);
 

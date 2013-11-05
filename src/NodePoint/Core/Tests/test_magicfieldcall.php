@@ -23,11 +23,9 @@ $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
 
 $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, false);
-$nodeType->setFieldType('name', $stringType);
-$nodeType->setFieldDescription('name', array('hasOptions'=>true,'options'=>array('wilfried','carmen','david','julian','milena')));
-$nodeType->setFieldType('body', $stringType);
-$nodeType->setFieldDescription('body', array('i18n'=>true));
-$nodeType->setFieldType('geolocation', $position2dType);
+$nodeType->setFieldInfo('name', $stringType, array('hasOptions'=>true, 'options'=>array('wilfried','carmen','david','julian','milena')));
+$nodeType->setFieldInfo('body', $stringType, array('i18n'=>true));
+$nodeType->setFieldInfo('geolocation', $position2dType);
 $nodeType->finalize();
 $typeFactory->registerType($nodeType);
 

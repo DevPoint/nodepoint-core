@@ -171,14 +171,29 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		if (!isset($this->fieldNameAliases[$fieldNameAlias]))
 		{
-			$parentType = $this->getParentType();
-			if (null !== $parentType)
-			{
-				return $parentType->getFieldNameByAlias($fieldNameAlias);
-			}
 			return null;
 		}
 		return $this->fieldNameAliases[$fieldNameAlias];
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @param $type NodePoint\Core\Library\TypeInterface
+	 * @param $description array
+	 * @param $storageDesc array
+	 */
+	public function setFieldInfo($fieldName, TypeInterface $type, $description=null, $storageDesc=null)
+	{
+		$fieldInfo = new EntityTypeFieldInfo($this, $fieldName, $type);
+		if (null !== $description)
+		{
+			$fieldInfo->setDescription($description);
+		}
+		if (null !== $storageDesc)
+		{
+			$fieldInfo->setStorageDesc($storageDesc);
+		}
+		$this->fields[$fieldName] = $fieldInfo;
 	}
 
 	/*
@@ -196,15 +211,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $type NodePoint\Core\Library\TypeInterface
-	 */
-	public function setFieldType($fieldName, TypeInterface $type)
-	{
-		$this->fields[$fieldName] = new EntityTypeFieldInfo($this, $fieldName, $type);
-	}
-
-	/*
-	 * @param $fieldName string
 	 * @return NodePoint\Core\Library\TypeInterface
 	 */
 	public function getFieldType($fieldName)
@@ -218,13 +224,13 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @param $description array
+	 * @param array
 	 */
 	public function setFieldDescription($fieldName, $description)
 	{
 		if (!isset($this->fields[$fieldName]))
 		{
-			// TODO: Exception: no type for fieldName declared
+			// TODO: Exception: no fieldInfo for fieldName available
 			return;
 		}
 		$fieldInfo = $this->fields[$fieldName];
@@ -257,7 +263,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	{
 		if (!isset($this->fields[$fieldName]))
 		{
-			// TODO: Exception: no type for fieldName declared
+			// TODO: Exception: no fieldInfo for fieldName available
 			return;
 		}
 		$fieldInfo = $this->fields[$fieldName];

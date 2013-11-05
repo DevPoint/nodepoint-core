@@ -207,13 +207,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception: no fieldInfo for fieldName available
 			return;
 		}
-		$fieldInfo = $this->fields[$fieldName];
-		if ($fieldInfo->locked())
-		{
-			// TODO: Exception: write access to derived fieldInfo isn't allowed
-			return;
-		}
-		$fieldInfo->setDescription($description);
+		$this->fields[$fieldName]->setDescription($description);
 	}
 
 	/*
@@ -240,13 +234,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			// TODO: Exception: no fieldInfo for fieldName available
 			return;
 		}
-		$fieldInfo = $this->fields[$fieldName];
-		if ($fieldInfo->locked())
-		{
-			// TODO: Exception: write access to derived fieldInfo isn't allowed
-			return;
-		}
-		$fieldInfo->setStorageDesc($storageDesc);
+		$this->fields[$fieldName]->setStorageDesc($storageDesc);
 	}
 
 	/*
@@ -328,7 +316,8 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
-	 * Create mapping table for fields alias names
+	 * After locking changing of the field
+	 * information isn't allowed anymore
 	 */
 	protected function _finalizeFieldInfos()
 	{

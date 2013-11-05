@@ -73,6 +73,11 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	 */
 	public function setType(TypeInterface $type)
 	{
+		if ($this->lockState)
+		{
+			// TODO: Exception: write access isn't allowed when locked
+			return;
+		}
 		$this->type = $type;
 	}
 
@@ -106,6 +111,11 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	 */
 	public function setDescription($description)
 	{
+		if ($this->lockState)
+		{
+			// TODO: Exception: write access isn't allowed when locked
+			return;
+		}
 		$this->description = $description;
 	}
 
@@ -336,6 +346,11 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	 */
 	public function setStorageDesc($storageDesc)
 	{
+		if ($this->lockState)
+		{
+			// TODO: Exception: write access isn't allowed when locked
+			return;
+		}
 		$this->storageDesc = $storageDesc;
 	}
 

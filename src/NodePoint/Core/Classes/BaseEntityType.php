@@ -35,11 +35,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	protected $magicFieldCallInfos;
 
 	/*
-	 * @var array of NodePoint\Core\Library\MagicFieldCallInfo indexed by callName
-	 */
-	protected $magicFieldStaticCallInfos;
-
-	/*
 	 * @var array
 	 */
 	static protected $magicFuncNames = array(
@@ -76,7 +71,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		$this->fields = array();
 		$this->fieldNameAliases = array();
 		$this->magicFieldCallInfos = array();
-		$this->magicFieldStaticCallInfos = array();
 
 		// copy field infos from the parent type
 		if (null !== $parentType)
@@ -308,28 +302,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			return null;
 		}
 		return $this->magicFieldCallInfos[$callName];
-	}
-
-	/*
-	 * @param $callName string
-	 * @param $magicFieldCallInfo NodePoint\Core\Library\MagicFieldCallInfo
-	 */
-	public function setMagicFieldStaticCallInfo($callName, MagicFieldCallInfo $magicFieldCallInfo)
-	{
-		$this->magicFieldStaticCallInfos[$callName] = $magicFieldCallInfo;
-	}
-
-	/*
-	 * @param $callName string
-	 * @return NodePoint\Core\Library\MagicFieldCallInfo
-	 */
-	public function getMagicFieldStaticCallInfo($callName)
-	{
-		if (!isset($this->magicFieldStaticCallInfos[$callName]))
-		{
-			return null;
-		}
-		return $this->magicFieldStaticCallInfos[$callName];
 	}
 
 	/*

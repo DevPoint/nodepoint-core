@@ -15,9 +15,15 @@ interface EntityTypeFieldInfoInterface {
 	public function getType();
 
 	/*
-	 * @return string with entity type name
+	 * Function lock will be called from
+	 * the finalize function
 	 */
-	public function getEntityTypeName();
+	public function lock();
+
+	/*
+	 * @return boolean if field info can't be changed
+	 */
+	public function locked();
 
 	/*
 	 * @return array

@@ -3,7 +3,6 @@
 namespace NodePoint\Core\Classes;
 
 use NodePoint\Core\Library\TypeInterface;
-use NodePoint\Core\Library\EntityTypeInterface;
 use NodePoint\Core\Library\EntityTypeFieldInfoInterface;
 
 class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
@@ -19,9 +18,9 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	protected $type;
 
 	/*
-	 * @var NodePoint\Core\Library\EntityTypeInterface
+	 * @var boolean
 	 */
-	protected $entityType;
+	protected $lockState;
 
 	/*
 	 * @var array
@@ -43,14 +42,14 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	 *
 	 * @param $type NodePoint\Core\Library\TypeInterface
 	 */
-	public function __construct(EntityTypeInterface $entityType, $name, TypeInterface $type)
+	public function __construct($name, TypeInterface $type)
 	{
-		$this->entityType = $entityType;
 		$this->name = $name;
 		$this->type = $type;
 		$this->description = null;
 		$this->storageDesc = null;
 		$this->magicFuncs = null;
+		$this->lockState = false;
 	}
 
 	/*
@@ -86,11 +85,20 @@ class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
 	}
 
 	/*
-	 * @return string with entity type name
+	 * Function lock will be called from
+	 * the finalize function
 	 */
-	public function getEntityTypeName()
+	public function lock()
 	{
-		return $this->entityType->getTypeName();
+		$this->lockState = true;
+	}
+
+	/*
+	 * @return boolean if field info can't be changed
+	 */
+	public function locked()
+	{
+		return $this->lockState;
 	}
 
 	/*

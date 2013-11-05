@@ -158,7 +158,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	public function setFieldInfo($fieldName, TypeInterface $type, $description=null, $storageDesc=null)
 	{
-		$fieldInfo = new EntityTypeFieldInfo($this, $fieldName, $type);
+		$fieldInfo = new EntityTypeFieldInfo($fieldName, $type);
 		if (null !== $description)
 		{
 			$fieldInfo->setDescription($description);
@@ -208,7 +208,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			return;
 		}
 		$fieldInfo = $this->fields[$fieldName];
-		if (!$this->isTypeNameExact($fieldInfo->getEntityTypeName()))
+		if ($fieldInfo->locked())
 		{
 			// TODO: Exception: write access to derived fieldInfo isn't allowed
 			return;
@@ -241,7 +241,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			return;
 		}
 		$fieldInfo = $this->fields[$fieldName];
-		if (!$this->isTypeNameExact($fieldInfo->getEntityTypeName()))
+		if ($fieldInfo->locked())
 		{
 			// TODO: Exception: write access to derived fieldInfo isn't allowed
 			return;
@@ -328,11 +328,26 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	}
 
 	/*
+	 * Create mapping table for fields alias names
+	 */
+	protected function _finalizeFieldInfos()
+	{
+		foreach ($this->fields as $fieldInfo)
+		{
+			if (!$fieldInfo->locked())
+			{
+				$fieldInfo->lock();
+			}
+		}
+	}
+
+	/*
 	 * Calculate further values from the given properties
 	 */
 	public function finalize()
 	{
 		$this->_finalizeMagicCallNames();
 		$this->_finalizeFieldNameAliases();
+		$this->_finalizeFieldInfos();
 	}
 }

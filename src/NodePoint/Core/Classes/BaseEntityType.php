@@ -97,14 +97,10 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		{
 			return true;
 		}
-		$parentType = $this->getParentType();
-		while (null !== $parentType)
+		$parentType = $this->parentType;
+		if (null !== $parentType)
 		{
-			if ($parentType->isTypeNameExact($typeName));
-			{
-				return true;
-			}
-			$parentType = $parentType->getParentType();
+			return $parentType->isTypeName($typeName);
 		}
 		return false;
 	}
@@ -123,22 +119,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	final public function isObject()
 	{
 		return true;
-	}
-
-	/*
-	 * @return boolean true if inheritance isn't possible
-	 */
-	final public function isFinal()
-	{
-		return $this->finalState;
-	}
-
-	/*
-	 * @return NodePoint\Core\Library\EntityTypeInterface
-	 */
-	final public function getParentType()
-	{
-		return $this->parentType;
 	}
 
 	/*
@@ -309,7 +289,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 */
 	protected function _finalizeMagicCallNames()
 	{
-		$parentType = $this->getParentType();
+		$parentType = $this->parentType;
 		foreach ($this->fields as $fieldName => $fieldInfo)
 		{
 			$i18nStr = $fieldInfo->hasI18n() ? 'I18n' : '';

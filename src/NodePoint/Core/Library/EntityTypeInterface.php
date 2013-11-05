@@ -5,11 +5,6 @@ namespace NodePoint\Core\Library;
 interface EntityTypeInterface extends TypeInterface {
 
 	/*
-	 * @return NodePoint\Core\Library\EntityTypeInterface
-	 */
-	public function getParentType();
-
-	/*
 	 * @return array of string with fieldNames
 	 */
 	public function getFieldNames();

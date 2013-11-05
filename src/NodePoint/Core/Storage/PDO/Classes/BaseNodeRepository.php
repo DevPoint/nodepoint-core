@@ -104,8 +104,8 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	/*
 	 * @param $typeName string
 	 * @param $row entity table row
-	 * @param $mapFieldNames array indexed by fieldName
 	 * @param $lang mixed string or array of string
+	 * @param $mapFieldNames array indexed by fieldName
 	 * @return NodePoint\Core\Library\EntityInterface
 	 */
 	public function read($typeName, $row, $lang=null, $mapFieldNames=null)
@@ -120,15 +120,21 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$entityClass = $type->getClassName();
 		$entity = new $entityClass($type, $fields);
 		$this->em->persist($entity);
+		$storageProxy = $entity->_getStorageProxy();
+		if (null !== $lang)
+		{
+			$storageProxy->addLoadedLanguage($lang);
+		}
 		return $entity;
 	}
 
 	/*
 	 * @param $type NodePoint\Core\Library\EntityTypeInterface
 	 * @param $field NodePoint\Core\Library\EntityFieldInterface
+	 * @param $lang mixed string or array of string
 	 * @return boolean
 	 */
-	public function loadField(EntityTypeInterface $type, EntityFieldInterface $field)
+	public function loadField(EntityTypeInterface $type, EntityFieldInterface $field, $lang=null)
 	{
 		$fieldName = $field->getName();
 		$fieldType = $type->getFieldType($fieldName);
@@ -148,7 +154,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 					// TODO: Exception: no repository for this type available
 					return false;
 				}
-				$fieldEntity = $repository->find($fieldValue);
+				$fieldEntity = $repository->find($fieldValue, $lang);
 				$field->setValue($fieldEntity);
 				return true;
 			}
@@ -158,9 +164,11 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 
 	/*
 	 * @param $entityId string 
+	 * @param $lang mixed string or array of string
+	 * @param $mapFieldNames array indexed by fieldName
 	 * @return NodePoint\Core\Library\EntityInterface
 	 */
-	public function find($entityId)
+	public function find($entityId, $lang=null, $mapFieldNames=null)
 	{
 		// read entity table row
 		$row = $this->_selectRow($entityId);

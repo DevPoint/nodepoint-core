@@ -26,6 +26,11 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	protected $updateFieldNames;
 
 	/*
+	 * @var array of string with language codes
+	 */
+	protected $loadedLanguages;
+
+	/*
 	 * Constructor
 	 */
 	public function __construct(EntityManagerInterface $em, EntityInterface $entity)
@@ -33,6 +38,7 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 		$this->em = $em;
 		$this->entity = $entity;
 		$this->updateFieldNames = null;
+		$this->loadedLanguages = null;
 	}
 
 	/*
@@ -119,7 +125,41 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	}	
 
 	/*
+	 * Maintain list of all languages 
+	 * already be loaded from storage
+	 *
+	 * @param $lang mixed string or array of strings
+	 */
+	public function addLoadedLanguage($lang)
+	{
+		if (null === $this->loadedLanguages)
+		{
+			$this->loadedLanguages = array();
+		}
+		if (is_array($lang))
+		{
+			foreach ($lang as $langItem)
+			{
+				$this->loadedLanguages[] = $langItem;
+			}
+		}
+		else 
+		{
+			$this->loadedLanguages[] = $lang;
+		}
+	}
+
+	/*
+	 * @return array of strings with language codes
+	 */
+	public function getLoadedLanguages()
+	{
+		return $this->loadedLanguages;
+	}
+
+	/*
 	 * @param $field NodePoint\Core\Library\EntityFieldInterface
+	 * @return boolean
 	 */
 	public function loadField(EntityFieldInterface $field)
 	{
@@ -130,6 +170,6 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 		{
 			return false;
 		}
-		return $repository->loadField($type, $field);
+		return $repository->loadField($type, $field, $this->loadedLanguages);
 	}
 }

@@ -23,6 +23,7 @@ interface EntityStorageProxyInterface {
 
 	/*
 	 * @param $field NodePoint\Core\Library\EntityFieldInterface
+	 * @return boolean
 	 */
 	public function loadField(EntityFieldInterface $field);
 }

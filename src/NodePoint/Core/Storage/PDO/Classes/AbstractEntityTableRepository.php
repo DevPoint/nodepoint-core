@@ -4,6 +4,7 @@ namespace NodePoint\Core\Storage\PDO\Classes;
 
 use NodePoint\Core\Library\TypeInterface;
 use NodePoint\Core\Library\EntityInterface;
+use NodePoint\Core\Library\EntityFieldInterface;
 use NodePoint\Core\Library\EntityTypeInterface;
 use NodePoint\Core\Classes\EntityField;
 use NodePoint\Core\Classes\EntityArrayField;
@@ -151,7 +152,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $field NodePoint\Core\Library\EntityFieldInterface
 	 * @return string
 	 */
-	protected function _getEntityTypeName($fieldValue, $field)
+	protected function _getEntityTypeName($fieldValue, EntityFieldInterface $field)
 	{
 		if (is_object($fieldValue))
 		{

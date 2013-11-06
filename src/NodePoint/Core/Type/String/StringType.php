@@ -34,4 +34,12 @@ class StringType extends BaseType {
 		return (!empty($errors)) ? $errors : true;
 	}
 
+	/*
+	 * @param $value mixed
+	 * @return mixed string or int
+	 */
+	public function searchKeyFromValue($value)
+	{
+		return mb_strtolower($value, 'UTF-8');
+	}
 }

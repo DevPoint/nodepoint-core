@@ -13,4 +13,13 @@ class EmailType extends BaseType {
 	{
 		$this->typeName = 'NodePointCore/Email';
 	}
+
+	/*
+	 * @param $value mixed
+	 * @return mixed string or int
+	 */
+	public function searchKeyFromValue($value)
+	{
+		return mb_strtolower($value, 'UTF-8');
+	}
 }

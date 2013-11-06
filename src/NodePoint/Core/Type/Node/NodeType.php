@@ -28,7 +28,6 @@ class NodeType extends BaseNodeType {
 		$this->setFieldInfo('id', $integerType, array('alias'=>'_id'));
 		$this->setFieldInfo('parent', $this, array('alias'=>'_parent'));
 		$this->setFieldInfo('parentField', $stringType, array('alias'=>'_parentField'));
-		$this->setFieldInfo('alias', $aliasType, array('i18n'=>$hasI18n, 'searchable'=>true, 'alias'=>'_alias'));
 	}
 }
 

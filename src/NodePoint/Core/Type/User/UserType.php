@@ -19,5 +19,13 @@ class UserType extends BaseNodeType {
 		parent::__construct(
 			'NodePointCore/User', "\\NodePoint\\Core\\Type\\User\\User",
 			$typeFactory, $parentType);
+
+		// get primitive types
+		$aliasType = $typeFactory->getType('NodePointCore/Alias');
+		$emailType = $typeFactory->getType('NodePointCore/Email');
+
+		// add standard fields
+		$this->setFieldInfo('alias', $aliasType, array('searchable'=>true, 'alias'=>'_alias'));
+		$this->setFieldInfo('email', $emailType, array('searchable'=>true));
 	}
 }

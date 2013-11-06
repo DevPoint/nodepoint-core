@@ -24,16 +24,18 @@ $integerType = $typeFactory->getType('NodePointCore/Integer');
 $numberType = $typeFactory->getType('NodePointCore/Number');
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
+$aliasType = $typeFactory->getType('NodePointCore/Alias');
 
 // create node type
 $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, false);
+$nodeType->setFieldInfo('alias', $aliasType, array('searchable'=>true, 'alias'=>'_alias'));
 $nodeType->setFieldInfo('name', $stringType)
 				->setDescription(array('hasOptions'=>true, 'options'=>array('wilfried','carmen','david','julian','milena')))
 				->setRules(array('minLength'=>3,'maxLength'=>32));
 $nodeType->setFieldInfo('body', $stringType, array('i18n'=>true));
 $nodeType->setFieldInfo('geolocation', $position2dType);
 $nodeType->setFieldInfo('weight', $numberType)
-				->setRules(array('minValue'=>'15.405'));
+				->setRules(array('maxValue'=>'300.0'));
 $nodeType->finalize();
 $typeFactory->registerType($nodeType);
 
@@ -56,7 +58,7 @@ $object->setBody($langB, "Here comes Julian, our mathematics genious!");
 $geolocation = new Position2d();
 $geolocation->set(43.001, 15.002);
 $object->setGeolocation($geolocation);
-$object->setWeight(17.5);
+$object->setWeight(17.81);
 $arrObjects[] = $object;
 
 $object = new Node($nodeType);

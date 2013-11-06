@@ -18,6 +18,7 @@ $typeFactory->registerTypeClass('NodePointCore/Number', "\\NodePoint\\Core\\Type
 $typeFactory->registerTypeClass('NodePointCore/Alias', "\\NodePoint\\Core\\Type\\Alias\\AliasType");
 $typeFactory->registerTypeClass('NodePointCore/String', "\\NodePoint\\Core\\Type\\String\\StringType");
 $typeFactory->registerTypeClass('NodePointCore/Text', "\\NodePoint\\Core\\Type\\Text\\TextType");
+$typeFactory->registerTypeClass('NodePointCore/Email', "\\NodePoint\\Core\\Type\\Email\\EmailType");
 $typeFactory->registerTypeClass('NodePointCore/Position2d', "\\NodePoint\\Core\\Type\\Position2d\\Position2dType");
 
 // establish connection to database
@@ -33,9 +34,11 @@ $nodeRepositoryClass = "\\NodePoint\\Core\\Storage\\PDO\\Type\\Node\\NodeReposit
 $numberType = $typeFactory->getType('NodePointCore/Number');
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
+$aliasType = $typeFactory->getType('NodePointCore/Alias');
 
 // create node type
 $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, true);
+$nodeType->setFieldInfo('alias', $aliasType, array('searchable'=>true, 'alias'=>'_alias'));
 $nodeType->setFieldInfo('name', $stringType, array('i18n'=>true));
 $nodeType->finalize();
 $typeFactory->registerType($nodeType);
@@ -65,18 +68,20 @@ $langB = "en";
 
 // create object instance
 $parent = new Node($nodeType);
-$parent->setAlias($langA, "root");
+$parent->setAlias("root");
 $parent->setName($langA, "Root");
 $em->persist($parent);
 
 $userA = new User($userType);
-$userA->setAlias($langA, "wilfried");
+$userA->setAlias("wilfried");
 $userA->setName($langA, "Wilfried Reiter");
+$userA->setEmail("wilfried@creativity4me.com");
 $em->persist($userA);
 
 $userB = new User($userType);
-$userB->setAlias($langA, "carmen");
 $userB->setName($langA, "Carmen Brabsche");
+$userB->setAlias("carmen");
+$userB->setEmail("carmen.1978@gmx.at");
 $em->persist($userB);
 
 $arrObjects = array();

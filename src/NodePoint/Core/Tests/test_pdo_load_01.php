@@ -18,6 +18,7 @@ $typeFactory->registerTypeClass('NodePointCore/Number', "\\NodePoint\\Core\\Type
 $typeFactory->registerTypeClass('NodePointCore/Alias', "\\NodePoint\\Core\\Type\\Alias\\AliasType");
 $typeFactory->registerTypeClass('NodePointCore/String', "\\NodePoint\\Core\\Type\\String\\StringType");
 $typeFactory->registerTypeClass('NodePointCore/Text', "\\NodePoint\\Core\\Type\\Text\\TextType");
+$typeFactory->registerTypeClass('NodePointCore/Email', "\\NodePoint\\Core\\Type\\Email\\EmailType");
 $typeFactory->registerTypeClass('NodePointCore/Position2d', "\\NodePoint\\Core\\Type\\Position2d\\Position2dType");
 
 // establish connection to database
@@ -33,9 +34,11 @@ $nodeRepositoryClass = "\\NodePoint\\Core\\Storage\\PDO\\Type\\Node\\NodeReposit
 $numberType = $typeFactory->getType('NodePointCore/Number');
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
+$aliasType = $typeFactory->getType('NodePointCore/Alias');
 
 // create node type
 $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, true);
+$nodeType->setFieldInfo('alias', $aliasType, array('searchable'=>true, 'alias'=>'_alias'));
 $nodeType->setFieldInfo('name', $stringType, array('i18n'=>true));
 $nodeType->finalize();
 $typeFactory->registerType($nodeType);
@@ -77,7 +80,7 @@ echo "----------------\n";
 foreach ($objects as $object)
 {
 	echo sprintf("Parent: %s\n", $object->getParent()->getName($langA));
-	echo sprintf("Author: %s\n", $object->getAuthor()->getName($langA));
+	echo sprintf("Author: %s\n", $object->getAuthor()->getEmail());
 	echo sprintf("Alias: %s\n", $object->getAlias($langA));
 	echo sprintf("Name: %s\n", $object->getName($langA));
 	echo sprintf("Body: %s\n", $object->getBody($langA));

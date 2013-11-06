@@ -119,14 +119,14 @@ class AbstractEntity implements EntityInterface {
 
 	/*
 	 * @param $fieldName string 
-	 * @param $args array(0=>value)
+	 * @param $value mixed
 	 * @return boolean
 	 */
-	protected function _validateMagicFieldCall($fieldName, &$args)
+	protected function _validateFieldValue($fieldName, &$value)
 	{
 		$fieldInfo = $this->type->getFieldInfo($fieldName);
 		$rules = $fieldInfo->getRules();
-		$result = $fieldInfo->getType()->validate($args[0], $rules);
+		$result = $fieldInfo->getType()->validate($value, $rules);
 		return $result;
 	}
 
@@ -162,6 +162,25 @@ class AbstractEntity implements EntityInterface {
 	}
 
 	/*
+	 * Validate and set value to field
+	 *
+	 * @param $fieldName string 
+	 * @param $args array(0=>value)
+	 * @return boolean
+	 */
+	protected function _validateMagicFieldCall($fieldName, &$args)
+	{
+		$result = $this->_validateFieldValue($fieldName, $args[0]);
+		if (true === $result)
+		{
+			$this->_setMagicFieldCall($fieldName, $args);
+		}
+		return $result;
+	}
+
+	/*
+	 * Get value from field
+	 *
 	 * @param $fieldName string 
 	 * @return mixed field value
 	 */
@@ -180,6 +199,8 @@ class AbstractEntity implements EntityInterface {
 	}
 
 	/*
+	 * Get Entity id from field
+	 *
 	 * @param $fieldName string 
 	 * @return string with entity id
 	 */
@@ -202,6 +223,8 @@ class AbstractEntity implements EntityInterface {
 	}
 
 	/*
+	 * Set value to field
+	 *
 	 * @param $fieldName string 
 	 * @param $args array(0=>language, 1=>value)
 	 * @return NodePoint\Core\Library\EntityInstance
@@ -238,6 +261,25 @@ class AbstractEntity implements EntityInterface {
 	}
 
 	/*
+	 * Validate and set value to field
+	 *
+	 * @param $fieldName string 
+	 * @param $args array(0=>language, 1=>value)
+	 * @return boolean
+	 */
+	protected function _validateMagicFieldCallI18n($fieldName, &$args)
+	{
+		$result = $this->_validateFieldValue($fieldName, $args[1]);
+		if (true === $result)
+		{
+			$this->_setMagicFieldCallI18n($fieldName, $args);
+		}
+		return $result;
+	}
+
+	/*
+	 * Get value from field
+	 *
 	 * @param $fieldName string 
 	 * @param $args array(0=>language)
 	 * @return mixed field value

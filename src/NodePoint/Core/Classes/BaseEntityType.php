@@ -41,7 +41,7 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		'set' => '_setMagicFieldCall%s',
 		'get' => '_getMagicFieldCall%s',
 		'getid' => '_getMagicFieldEntityIdCall',
-		'validate' => '_validateMagicFieldCall',
+		'validate' => '_validateMagicFieldCall%s',
 		'cnt' => '_getMagicFieldCountCall',
 		'setitem' => '_setMagicFieldItemCall%s',
 		'getitem' => '_getMagicFieldItemCall%s');

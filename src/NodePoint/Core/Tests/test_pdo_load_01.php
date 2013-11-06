@@ -14,6 +14,7 @@ use NodePoint\Core\Type\User\User;
 // register primitive types
 $typeFactory = new \NodePoint\Core\Library\TypeFactory();
 $typeFactory->registerTypeClass('NodePointCore/Integer', "\\NodePoint\\Core\\Type\\Integer\\IntegerType");
+$typeFactory->registerTypeClass('NodePointCore/Number', "\\NodePoint\\Core\\Type\\Number\\NumberType");
 $typeFactory->registerTypeClass('NodePointCore/Alias', "\\NodePoint\\Core\\Type\\Alias\\AliasType");
 $typeFactory->registerTypeClass('NodePointCore/String', "\\NodePoint\\Core\\Type\\String\\StringType");
 $typeFactory->registerTypeClass('NodePointCore/Text', "\\NodePoint\\Core\\Type\\Text\\TextType");
@@ -29,7 +30,7 @@ $em = new \NodePoint\Core\Storage\PDO\Library\EntityManager($conn, $typeFactory)
 $nodeRepositoryClass = "\\NodePoint\\Core\\Storage\\PDO\\Type\\Node\\NodeRepository";
 
 // get primitive types
-$integerType = $typeFactory->getType('NodePointCore/Integer');
+$numberType = $typeFactory->getType('NodePointCore/Number');
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
 
@@ -50,7 +51,7 @@ $em->registerRepositoryClass($userType->getTypeName(), $nodeRepositoryClass);
 $documentType = new \NodePoint\Core\Type\Document\DocumentType($typeFactory, true);
 $documentType->setFieldInfo('author', $userType);
 $documentType->setFieldInfo('geolocation', $position2dType);
-$documentType->setFieldInfo('weight', $integerType)->setRules(array('maxValue'=>999));
+$documentType->setFieldInfo('weight', $numberType)->setRules(array('maxValue'=>999));
 $documentType->setFieldInfo('body', $stringType, array('i18n'=>true));
 $documentType->finalize();
 $typeFactory->registerType($documentType);
@@ -88,7 +89,7 @@ foreach ($objects as $object)
 	$weight = $object->getWeight();
 	if (null !== $weight)
 	{
-		echo sprintf("Gewicht: %d\n", $weight);
+		echo sprintf("Gewicht: %0.1f\n", $weight);
 	}
 
 	echo "\n";

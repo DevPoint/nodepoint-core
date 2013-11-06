@@ -9,6 +9,7 @@ use NodePoint\Core\Type\Position2d\Position2d;
 // register primitive types
 $typeFactory = new \NodePoint\Core\Library\TypeFactory();
 $typeFactory->registerTypeClass('NodePointCore/Integer', "\\NodePoint\\Core\\Type\\Integer\\IntegerType");
+$typeFactory->registerTypeClass('NodePointCore/Number', "\\NodePoint\\Core\\Type\\Number\\NumberType");
 $typeFactory->registerTypeClass('NodePointCore/Alias', "\\NodePoint\\Core\\Type\\Alias\\AliasType");
 $typeFactory->registerTypeClass('NodePointCore/String', "\\NodePoint\\Core\\Type\\String\\StringType");
 $typeFactory->registerTypeClass('NodePointCore/Text', "\\NodePoint\\Core\\Type\\Text\\TextType");
@@ -20,6 +21,7 @@ $langB = "en";
 
 // get primitive types
 $integerType = $typeFactory->getType('NodePointCore/Integer');
+$numberType = $typeFactory->getType('NodePointCore/Number');
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
 
@@ -30,8 +32,8 @@ $nodeType->setFieldInfo('name', $stringType)
 				->setRules(array('minLength'=>3,'maxLength'=>32));
 $nodeType->setFieldInfo('body', $stringType, array('i18n'=>true));
 $nodeType->setFieldInfo('geolocation', $position2dType);
-$nodeType->setFieldInfo('weight', $integerType)
-				->setRules(array('maxValue'=>999,'minValue'=>10));
+$nodeType->setFieldInfo('weight', $numberType)
+				->setRules(array('minValue'=>'15.405'));
 $nodeType->finalize();
 $typeFactory->registerType($nodeType);
 
@@ -43,6 +45,7 @@ $geolocation = new Position2d();
 $geolocation->set(41.501, 14.502);
 $parent->setGeolocation($geolocation);
 
+$validateErrors = array();
 $arrObjects = array();
 $object = new Node($nodeType);
 $object->setParent($parent);
@@ -53,6 +56,7 @@ $object->setBody($langB, "Here comes Julian, our mathematics genious!");
 $geolocation = new Position2d();
 $geolocation->set(43.001, 15.002);
 $object->setGeolocation($geolocation);
+$object->setWeight(17.5);
 $arrObjects[] = $object;
 
 $object = new Node($nodeType);
@@ -64,6 +68,11 @@ $object->setBody($langB, "Here comes our cute David!");
 $geolocation = new Position2d();
 $geolocation->set(43.001, 15.002);
 $object->setGeolocation($geolocation);
+$errors = $object->validateWeight('15.4');
+if (true !== $errors)
+{
+	$validateErrors['weight'] = $errors;
+}
 $arrObjects[] = $object;
 
 $arrGeolocation = $object->_fieldType('geolocation')->objectToArray($object->getGeolocation());
@@ -79,16 +88,18 @@ foreach ($arrObjects as $object)
 	echo $object->getBody($langOut) . "\n";
 	echo "Zugriffsname: " . $object->getAlias() . "\n";
 	echo "Meine Eltern heißen " . $object->getParent()->getName() . "\n";
+	echo "Ich wiege " . $object->getWeight() . "kg\n";
 	echo "Du findest mich an folgenden Geokoordination: " . $arrGeolocation['x'] . ', ' . $arrGeolocation['y'] . "\n";
-	echo "Name Options: " . implode(', ', $object->_type()->getFieldInfo('name')->getOptions()) . "\n";
-	$validateErrors = $object->validateName('Die Rosi steigt bei mir auf');
-	if (true !== $validateErrors)
+	echo "\n";
+}
+if (!empty($validateErrors))
+{
+	foreach ($validateErrors as $field => $arrError)
 	{
-		foreach ($validateErrors as $error)
+		foreach ($arrError as $error)
 		{
-			printf("Error Validate 'Name': %s\n", $error);
+			printf("Error Validate '%s': %s\n", $field, $error);
 		}
 	}
-
 	echo "\n";
 }

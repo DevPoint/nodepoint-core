@@ -19,6 +19,7 @@ $langA = "de";
 $langB = "en";
 
 // get primitive types
+$integerType = $typeFactory->getType('NodePointCore/Integer');
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
 
@@ -27,6 +28,7 @@ $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, false);
 $nodeType->setFieldInfo('name', $stringType, array('hasOptions'=>true, 'options'=>array('wilfried','carmen','david','julian','milena')));
 $nodeType->setFieldInfo('body', $stringType, array('i18n'=>true));
 $nodeType->setFieldInfo('geolocation', $position2dType);
+$nodeType->setFieldInfo('weight', $integerType)->setRules(array('maxValue'=>999,'minValue'=>10));
 $nodeType->finalize();
 $typeFactory->registerType($nodeType);
 
@@ -74,8 +76,16 @@ foreach ($arrObjects as $object)
 	echo $object->getBody($langOut) . "\n";
 	echo "Zugriffsname: " . $object->getAlias() . "\n";
 	echo "Meine Eltern heißen " . $object->getParent()->getName() . "\n";
-	echo "Validate Field 'Name': " . $object->validateName("Carmen") . "\n";
 	echo "Du findest mich an folgenden Geokoordination: " . $arrGeolocation['x'] . ', ' . $arrGeolocation['y'] . "\n";
 	echo "Name Options: " . implode(', ', $object->_type()->getFieldInfo('name')->getOptions()) . "\n";
+	$validateErrors = $object->validateWeight('W9.9');
+	if (true !== $validateErrors)
+	{
+		foreach ($validateErrors as $error)
+		{
+			printf("Error Validate 'Weight': %s\n", $error);
+		}
+	}
+
 	echo "\n";
 }

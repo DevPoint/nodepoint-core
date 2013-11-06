@@ -78,6 +78,13 @@ interface TypeInterface {
 
 	/*
 	 * @param $value mixed
+	 * @param $rules array indexed by rule type
+	 * @return mixed boolean true or array with errors
+	 */
+	public function validate(&$value, &$rules=null);
+
+	/*
+	 * @param $value mixed
 	 * @return mixed string or int
 	 */
 	public function searchKeyFromValue($value);

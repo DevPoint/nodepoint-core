@@ -326,8 +326,8 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		{
 			case TypeInterface::STORAGE_INT:
 			case TypeInterface::STORAGE_ENTITY:
-				$fieldRow['valueInt'] = $serializedField['value'];
-				$fieldRow['keyInt'] = isset($serializedField['key']) ? $serializedField['key'] : $columInfos['keyInt']->nullValue;
+				$fieldRow['valueInt'] = intval($serializedField['value']);
+				$fieldRow['keyInt'] = isset($serializedField['key']) ? intval($serializedField['key']) : $columInfos['keyInt']->nullValue;
 				break;
 			case TypeInterface::STORAGE_FLOAT:
 				$fieldRow['valueFloat'] = $serializedField['value'];

@@ -28,6 +28,11 @@ class EntityFieldInfo implements EntityFieldInfoInterface {
 	protected $description;
 
 	/*
+	 * @var array indexed by rule type
+	 */
+	protected $rules;
+
+	/*
 	 * @var array
 	 */
 	protected $storageDesc;
@@ -48,6 +53,7 @@ class EntityFieldInfo implements EntityFieldInfoInterface {
 		$this->name = $name;
 		$this->type = $type;
 		$this->description = null;
+		$this->rules = null;
 		$this->storageDesc = null;
 		$this->magicFuncs = null;
 		$this->lockState = false;
@@ -88,15 +94,17 @@ class EntityFieldInfo implements EntityFieldInfoInterface {
 
 	/*
 	 * @param $description array
+	 * @return NodePoint\Core\Library EntityFieldInfoInterface
 	 */
 	public function setDescription($description)
 	{
 		if ($this->lockState)
 		{
-			// TODO: Exception: write access isn't allowed when locked
+			// TODO: Exception: write access isn't allowed if locked
 			return;
 		}
 		$this->description = $description;
+		return $this;
 	}
 
 	/*
@@ -311,15 +319,56 @@ class EntityFieldInfo implements EntityFieldInfoInterface {
 
 	/*
 	 * @param array
+	 * @return NodePoint\Core\Library EntityFieldInfoInterface
 	 */
 	public function setStorageDesc($storageDesc)
 	{
 		if ($this->lockState)
 		{
-			// TODO: Exception: write access isn't allowed when locked
+			// TODO: Exception: write access isn't allowed if locked
 			return;
 		}
 		$this->storageDesc = $storageDesc;
+		return $this;
+	}
+
+	/*
+	 * @param $rules array indexed by rule type
+	 * @return NodePoint\Core\Library EntityFieldInfoInterface
+	 */
+	public function setRules($rules)
+	{
+		if ($this->lockState)
+		{
+			// TODO: Exception: write access isn't allowed if locked
+			return;
+		}
+		$this->rules = $rules;
+		return $this;
+	}
+
+	/*
+	 * @return array indexed by rule type
+	 */
+	public function getRules()
+	{
+		if (!isset($this->rules))
+		{ 
+			return null;
+		}
+		return $this->rules;
+	}
+
+	/*
+	 * @return mixed
+	 */
+	public function getRule($ruleType)
+	{
+		if (!isset($this->rules[$ruleType]))
+		{ 
+			return null;
+		}
+		return $this->rules[$ruleType];
 	}
 
 	/*

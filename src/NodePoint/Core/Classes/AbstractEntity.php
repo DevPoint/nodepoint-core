@@ -124,7 +124,10 @@ class AbstractEntity implements EntityInterface {
 	 */
 	protected function _validateMagicFieldCall($fieldName, &$args)
 	{
-		return true;
+		$fieldInfo = $this->type->getFieldInfo($fieldName);
+		$rules = $fieldInfo->getRules();
+		$result = $fieldInfo->getType()->validate($args[0], $rules);
+		return $result;
 	}
 
 	/*

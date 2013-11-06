@@ -29,6 +29,7 @@ $em = new \NodePoint\Core\Storage\PDO\Library\EntityManager($conn, $typeFactory)
 $nodeRepositoryClass = "\\NodePoint\\Core\\Storage\\PDO\\Type\\Node\\NodeRepository";
 
 // get primitive types
+$integerType = $typeFactory->getType('NodePointCore/Integer');
 $stringType = $typeFactory->getType('NodePointCore/String');
 $position2dType = $typeFactory->getType('NodePointCore/Position2d');
 
@@ -48,6 +49,7 @@ $em->registerRepositoryClass($userType->getTypeName(), $nodeRepositoryClass);
 // create document type
 $documentType = new \NodePoint\Core\Type\Document\DocumentType($typeFactory, true);
 $documentType->setFieldInfo('author', $userType);
+$documentType->setFieldInfo('weight', $integerType)->setRules(array('maxValue'=>999));
 $documentType->setFieldInfo('geolocation', $position2dType);
 $documentType->setFieldInfo('body', $stringType, array('i18n'=>true));
 $documentType->finalize();
@@ -82,6 +84,7 @@ $object->setAlias($langA, "julian-brabsche");
 $object->setName($langA, "Julian Brabsche");
 $object->setBody($langA, "Hier kommt Julian, unser Mathe-Genie!");
 $object->setBody($langB, "Here comes Julian, our Mathe-Genius!");
+$object->setWeight(17.8);
 $geolocation = new Position2d();
 $geolocation->set(43.001, 15.002);
 $object->setGeolocation($geolocation);
@@ -97,6 +100,7 @@ $object->setAlias($langA, "david-brabsche");
 $object->setName($langA, "David Brabsche");
 $object->setBody($langA, "Hier kommt unser lieber David!");
 $object->setBody($langB, "Here comes our cute David!");
+$object->setWeight(14.2);
 $arrObjects[] = $object;
 $em->persist($object);
 

@@ -15,6 +15,32 @@ class IntegerType extends BaseType {
 	}
 
 	/*
+	 * @param $value mixed
+	 * @param $rules array indexed by rule type
+	 * @return mixed boolean true or array with errors
+	 */
+	public function validate(&$value, &$rules=null)
+	{
+		$errors = array();
+		if (!is_numeric($value))
+		{
+			$errors[] = 'notNumeric';
+		}
+		else
+		{
+			if (isset($rules['minValue']) && $value < $rules['minValue'])
+			{
+				$errors[] = 'minValue';
+			}
+			if (isset($rules['maxValue']) && $value > $rules['maxValue'])
+			{
+				$errors[] = 'maxValue';
+			}
+		}
+		return (!empty($errors)) ? $errors : true;
+	}
+
+	/*
 	 * @param $fieldName string
 	 * @return int - Int, Float, Text
 	 */

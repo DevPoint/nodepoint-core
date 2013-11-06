@@ -26,6 +26,12 @@ interface EntityFieldInfoInterface {
 	public function locked();
 
 	/*
+	 * @param $description array
+	 * @return NodePoint\Core\Library EntityFieldInfoInterface
+	 */
+	public function setDescription($description);
+
+	/*
 	 * @return array
 	 */
 	public function getDescription();
@@ -107,6 +113,28 @@ interface EntityFieldInfoInterface {
 	 * @return string
 	 */
 	public function getSingularCapitalizedName();
+
+	/*
+	 * @param $rules array indexed by rule type
+	 * @return NodePoint\Core\Library EntityFieldInfoInterface
+	 */
+	public function setRules($rules);
+
+	/*
+	 * @return array indexed by rule type
+	 */
+	public function getRules();
+
+	/*
+	 * @return mixed
+	 */
+	public function getRule($ruleType);
+
+	/*
+	 * @param array
+	 * @return NodePoint\Core\Library EntityFieldInfoInterface
+	 */
+	public function setStorageDesc($storageDesc);
 
 	/*
 	 * @return array

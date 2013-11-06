@@ -148,13 +148,13 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 				{
 					$fieldTypeName = 'NodePointCore/Node';
 				}
-				$repository = $this->em->getRepository($fieldTypeName);
-				if (null === $repository)
+				$fieldRepository = $this->em->getRepository($fieldTypeName);
+				if (null === $fieldRepository)
 				{
 					// TODO: Exception: no repository for this type available
 					return false;
 				}
-				$fieldEntity = $repository->find($fieldValue, $lang);
+				$fieldEntity = $fieldRepository->find($fieldValue, $lang);
 				if (null === $fieldEntity)
 				{
 					// TODO: Exception: lazy loading of entity failed

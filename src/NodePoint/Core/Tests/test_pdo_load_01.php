@@ -38,11 +38,16 @@ $aliasType = $typeFactory->getType('NodePointCore/Alias');
 
 // create node type
 $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, true);
-$nodeType->setFieldInfo('alias', $aliasType, array('searchable'=>true, 'alias'=>'_alias'));
-$nodeType->setFieldInfo('name', $stringType, array('i18n'=>true));
 $nodeType->finalize();
 $typeFactory->registerType($nodeType);
 $em->registerRepositoryClass($nodeType->getTypeName(), $nodeRepositoryClass);
+
+// create folder type
+$folderType = new \NodePoint\Core\Type\Folder\FolderType($typeFactory, true);
+$folderType->setFieldInfo('name', $stringType, array('i18n'=>true));
+$folderType->finalize();
+$typeFactory->registerType($folderType);
+$em->registerRepositoryClass($folderType->getTypeName(), $nodeRepositoryClass);
 
 // create user type
 $userType = new \NodePoint\Core\Type\User\UserType($typeFactory, true);

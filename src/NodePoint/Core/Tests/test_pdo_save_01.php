@@ -8,6 +8,7 @@ use NodePoint\Core\Type\Position2d\Position2d;
 use NodePoint\Core\Type\Entity\EntityType;
 use NodePoint\Core\Type\Entity\Entity;
 use NodePoint\Core\Type\Node\Node;
+use NodePoint\Core\Type\Folder\Folder;
 use NodePoint\Core\Type\Document\Document;
 use NodePoint\Core\Type\User\User;
 
@@ -38,11 +39,16 @@ $aliasType = $typeFactory->getType('NodePointCore/Alias');
 
 // create node type
 $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, true);
-$nodeType->setFieldInfo('alias', $aliasType, array('searchable'=>true, 'alias'=>'_alias'));
-$nodeType->setFieldInfo('name', $stringType, array('i18n'=>true));
 $nodeType->finalize();
 $typeFactory->registerType($nodeType);
 $em->registerRepositoryClass($nodeType->getTypeName(), $nodeRepositoryClass);
+
+// create folder type
+$folderType = new \NodePoint\Core\Type\Folder\FolderType($typeFactory, true);
+$folderType->setFieldInfo('name', $stringType, array('searchable'=>true, 'i18n'=>true));
+$folderType->finalize();
+$typeFactory->registerType($folderType);
+$em->registerRepositoryClass($folderType->getTypeName(), $nodeRepositoryClass);
 
 // create user type
 $userType = new \NodePoint\Core\Type\User\UserType($typeFactory, true);
@@ -52,6 +58,7 @@ $em->registerRepositoryClass($userType->getTypeName(), $nodeRepositoryClass);
 
 // create document type
 $documentType = new \NodePoint\Core\Type\Document\DocumentType($typeFactory, true);
+$documentType->setFieldInfo('name', $stringType, array('i18n'=>true));
 $documentType->setFieldInfo('author', $userType);
 $documentType->setFieldInfo('weight', $numberType)
 					->setDescription(array('searchable'=>true))
@@ -67,8 +74,7 @@ $langA = "de";
 $langB = "en";
 
 // create object instance
-$parent = new Node($nodeType);
-$parent->setAlias("root");
+$parent = new Folder($folderType);
 $parent->setName($langA, "Root");
 $em->persist($parent);
 

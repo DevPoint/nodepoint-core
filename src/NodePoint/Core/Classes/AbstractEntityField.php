@@ -12,11 +12,6 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	protected $name;
 
 	/*
-	 * @var string with typeName
-	 */
-	protected $typeName;
-
-	/*
 	 * @var mixed string with language code
 	 */
 	protected $lang;
@@ -37,6 +32,11 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	protected $lazyLoaded;
 
 	/*
+	 * @var string with type name
+	 */
+	protected $lazyLoadTypeName;
+
+	/*
 	 * @param $name string with fieldName
 	 * @param mixed string with language code
 	 */
@@ -44,10 +44,10 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	{
 		$this->name = $name;
 		$this->lang = $lang;
-		$this->typeName = null;
 		$this->id = null;
 		$this->sortIndex = 0;
 		$this->lazyLoaded = false;
+		$this->lazyLoadTypeName = null;
 	}
 
 	/*
@@ -83,22 +83,6 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	}
 
 	/*
-	 * @param $name string
-	 */
-	public function setTypeName($typeName)
-	{
-		$this->typeName = $typeName;
-	}
-	
-	/*
-	 * @return string
-	 */
-	public function getTypeName()
-	{
-		return $this->typeName;
-	}
-
-	/*
 	 * @param mixed string with language code
 	 */
 	public function setLanguage($lang)
@@ -131,11 +115,19 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	}
 
 	/*
-	 * @param $state boolean
+	 * @param $name string
 	 */
-	public function setLazyLoadState($state)
+	public function setLazyLoadTypeName($typeName)
 	{
-		$this->lazyLoaded = $state;
+		$this->lazyLoadTypeName = $typeName;
+	}
+	
+	/*
+	 * @return string
+	 */
+	public function getLazyLoadTypeName()
+	{
+		return $this->lazyLoadTypeName;
 	}
 
 	/*
@@ -143,7 +135,7 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	 */
 	public function isLazyLoaded()
 	{
-		return $this->lazyLoaded;
+		return (null !== $this->lazyLoadTypeName);
 	}
 
 	/*

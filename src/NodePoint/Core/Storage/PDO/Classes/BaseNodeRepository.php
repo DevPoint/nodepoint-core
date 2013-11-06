@@ -143,27 +143,25 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 			$fieldValue = $field->getValue();
 			if (is_string($fieldValue) || is_int($fieldValue))
 			{
-				$fieldTypeName = $field->getTypeName();
-				if (null === $fieldTypeName)
+				$fieldTypeName = $field->getLazyLoadTypeName();
+				if (null !== $fieldTypeName)
 				{
-					$fieldTypeName = 'NodePointCore/Node';
+					$fieldRepository = $this->em->getRepository($fieldTypeName);
+					if (null === $fieldRepository)
+					{
+						// TODO: Exception: no repository for this type available
+						return false;
+					}
+					$fieldEntity = $fieldRepository->find($fieldValue, $lang);
+					if (null === $fieldEntity)
+					{
+						// TODO: Exception: lazy loading of entity failed
+						return false;
+					}
+					$field->setValue($fieldEntity);
+					$field->setLazyLoadTypeName(null);
+					return true;
 				}
-				$fieldRepository = $this->em->getRepository($fieldTypeName);
-				if (null === $fieldRepository)
-				{
-					// TODO: Exception: no repository for this type available
-					return false;
-				}
-				$fieldEntity = $fieldRepository->find($fieldValue, $lang);
-				if (null === $fieldEntity)
-				{
-					// TODO: Exception: lazy loading of entity failed
-					return false;
-				}
-				$field->setLazyLoadState(false);
-				$field->setTypeName(null);
-				$field->setValue($fieldEntity);
-				return true;
 			}
 		}
 		return false;

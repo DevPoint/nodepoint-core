@@ -142,12 +142,8 @@ class AbstractEntity implements EntityInterface {
 			}
 		}
 		$field = $this->cachedFields[$fieldName];
-		$field ->setValue($args[0]);
-		if ($field->isLazyLoaded())
-		{
-			$field->setLazyLoadState(false);
-			$field->setTypeName(null);
-		}
+		$field->setValue($args[0]);
+		$field->setLazyLoadTypeName(null);
 		$storageProxy = $this->_getStorageProxy();
 		if (null !== $storageProxy)
 		{
@@ -251,7 +247,9 @@ class AbstractEntity implements EntityInterface {
 				$this->fields[] = $field;
 			}
 		}
-		$this->cachedFields[$fieldName][$lang]->setValue($args[1]);
+		$field = $this->cachedFields[$fieldName][$lang];
+		$field->setValue($args[1]);
+		$field->setLazyLoadTypeName(null);
 		$storageProxy = $this->_getStorageProxy();
 		if (null !== $storageProxy)
 		{

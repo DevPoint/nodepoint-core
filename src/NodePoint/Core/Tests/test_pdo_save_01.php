@@ -87,7 +87,7 @@ $object->setAlias($langA, "julian-brabsche");
 $object->setName($langA, "Julian Brabsche");
 $object->setBody($langA, "Hier kommt Julian, unser Mathe-Genie!");
 $object->setBody($langB, "Here comes Julian, our Mathe-Genius!");
-$object->setWeight('17.81');
+$object->setWeight('17.8');
 $geolocation = new Position2d();
 $geolocation->set(43.001, 15.002);
 $object->setGeolocation($geolocation);
@@ -103,7 +103,7 @@ $object->setAlias($langA, "david-brabsche");
 $object->setName($langA, "David Brabsche");
 $object->setBody($langA, "Hier kommt unser lieber David!");
 $object->setBody($langB, "Here comes our cute David!");
-$object->setWeight('-141234567890.2333');
+$object->setWeight('14.333');
 $arrObjects[] = $object;
 $em->persist($object);
 

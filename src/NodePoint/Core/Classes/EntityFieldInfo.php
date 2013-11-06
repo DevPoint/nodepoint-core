@@ -3,9 +3,9 @@
 namespace NodePoint\Core\Classes;
 
 use NodePoint\Core\Library\TypeInterface;
-use NodePoint\Core\Library\EntityTypeFieldInfoInterface;
+use NodePoint\Core\Library\EntityFieldInfoInterface;
 
-class EntityTypeFieldInfo implements EntityTypeFieldInfoInterface {
+class EntityFieldInfo implements EntityFieldInfoInterface {
 
 	/*
 	 * @var string

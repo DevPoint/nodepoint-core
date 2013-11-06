@@ -155,10 +155,11 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 	 * @param $type NodePoint\Core\Library\TypeInterface
 	 * @param $description array
 	 * @param $storageDesc array
+	 * @return NodePoint\Core\Library\EntityFieldInfoInterface
 	 */
 	public function setFieldInfo($fieldName, TypeInterface $type, $description=null, $storageDesc=null)
 	{
-		$fieldInfo = new EntityTypeFieldInfo($fieldName, $type);
+		$fieldInfo = new EntityFieldInfo($fieldName, $type);
 		if (null !== $description)
 		{
 			$fieldInfo->setDescription($description);
@@ -168,11 +169,12 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			$fieldInfo->setStorageDesc($storageDesc);
 		}
 		$this->fields[$fieldName] = $fieldInfo;
+		return $fieldInfo;
 	}
 
 	/*
 	 * @param $fieldName string
-	 * @return NodePoint\Core\Library\EntityTypeFieldInfoInterface
+	 * @return NodePoint\Core\Library\EntityFieldInfoInterface
 	 */
 	public function getFieldInfo($fieldName)
 	{
@@ -194,60 +196,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 			return null;
 		}
 		return $this->fields[$fieldName]->getType();
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @param array
-	 */
-	public function setFieldDescription($fieldName, $description)
-	{
-		if (!isset($this->fields[$fieldName]))
-		{
-			// TODO: Exception: no fieldInfo for fieldName available
-			return;
-		}
-		$this->fields[$fieldName]->setDescription($description);
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return array
-	 */
-	public function getFieldDescription($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]))
-		{ 
-			return null;
-		}
-		return $this->fields[$fieldName]->getDescription();
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @param array
-	 */
-	public function setFieldStorageDesc($fieldName, $storageDesc)
-	{
-		if (!isset($this->fields[$fieldName]))
-		{
-			// TODO: Exception: no fieldInfo for fieldName available
-			return;
-		}
-		$this->fields[$fieldName]->setStorageDesc($storageDesc);
-	}
-
-	/*
-	 * @param $fieldName string
-	 * @return array
-	 */
-	public function getFieldStorageDesc($fieldName)
-	{
-		if (!isset($this->fields[$fieldName]))
-		{ 
-			return null;
-		}
-		return $this->fields[$fieldName]->setStorageDesc();
 	}
 
 	/*

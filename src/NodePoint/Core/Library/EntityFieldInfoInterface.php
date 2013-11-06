@@ -2,7 +2,7 @@
 
 namespace NodePoint\Core\Library;
 
-interface EntityTypeFieldInfoInterface {
+interface EntityFieldInfoInterface {
 
 	/*
 	 * @return string with fieldName

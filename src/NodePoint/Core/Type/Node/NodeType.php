@@ -21,7 +21,6 @@ class NodeType extends BaseNodeType {
 
 		// get primitive types
 		$integerType = $typeFactory->getType('NodePointCore/Integer');
-		$aliasType = $typeFactory->getType('NodePointCore/Alias');
 		$stringType = $typeFactory->getType('NodePointCore/String');
 
 		// add standard fields

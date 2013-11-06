@@ -52,6 +52,7 @@ $em->registerRepositoryClass($folderType->getTypeName(), $nodeRepositoryClass);
 
 // create user type
 $userType = new \NodePoint\Core\Type\User\UserType($typeFactory, true);
+$userType->setFieldInfo('name', $stringType);
 $userType->finalize();
 $typeFactory->registerType($userType);
 $em->registerRepositoryClass($userType->getTypeName(), $nodeRepositoryClass);
@@ -80,12 +81,12 @@ $em->persist($parent);
 
 $userA = new User($userType);
 $userA->setAlias("wilfried");
-$userA->setName($langA, "Wilfried Reiter");
+$userA->setName("Wilfried Reiter");
 $userA->setEmail("wilfried@creativity4me.com");
 $em->persist($userA);
 
 $userB = new User($userType);
-$userB->setName($langA, "Carmen Brabsche");
+$userB->setName("Carmen Brabsche");
 $userB->setAlias("carmen");
 $userB->setEmail("carmen.1978@gmx.at");
 $em->persist($userB);

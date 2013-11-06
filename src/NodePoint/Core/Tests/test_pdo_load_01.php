@@ -44,22 +44,26 @@ $em->registerRepositoryClass($nodeType->getTypeName(), $nodeRepositoryClass);
 
 // create folder type
 $folderType = new \NodePoint\Core\Type\Folder\FolderType($typeFactory, true);
-$folderType->setFieldInfo('name', $stringType, array('i18n'=>true));
+$folderType->setFieldInfo('name', $stringType, array('searchable'=>true, 'i18n'=>true));
 $folderType->finalize();
 $typeFactory->registerType($folderType);
 $em->registerRepositoryClass($folderType->getTypeName(), $nodeRepositoryClass);
 
 // create user type
 $userType = new \NodePoint\Core\Type\User\UserType($typeFactory, true);
+$userType->setFieldInfo('name', $stringType);
 $userType->finalize();
 $typeFactory->registerType($userType);
 $em->registerRepositoryClass($userType->getTypeName(), $nodeRepositoryClass);
 
 // create document type
 $documentType = new \NodePoint\Core\Type\Document\DocumentType($typeFactory, true);
+$documentType->setFieldInfo('name', $stringType, array('i18n'=>true));
 $documentType->setFieldInfo('author', $userType);
+$documentType->setFieldInfo('weight', $numberType)
+					->setDescription(array('searchable'=>true))
+					->setRules(array('maxValue'=>999));
 $documentType->setFieldInfo('geolocation', $position2dType);
-$documentType->setFieldInfo('weight', $numberType)->setRules(array('maxValue'=>999));
 $documentType->setFieldInfo('body', $stringType, array('i18n'=>true));
 $documentType->finalize();
 $typeFactory->registerType($documentType);

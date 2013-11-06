@@ -46,11 +46,6 @@ interface EntityFieldInfoInterface {
 	public function isReadOnly();
 
 	/*
-	 * @return boolean if field is constructed by the values of other fields
-	 */
-	public function isConstructed();
-
-	/*
 	 * @return boolean if field is accessable by find operations
 	 */
 	public function isSearchable();

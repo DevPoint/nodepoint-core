@@ -40,6 +40,7 @@ class EntityFieldInfo implements EntityFieldInfoInterface {
 	/*
 	 * Constructor
 	 *
+	 * @param $name string with fieldName
 	 * @param $type NodePoint\Core\Library\TypeInterface
 	 */
 	public function __construct($name, TypeInterface $type)
@@ -53,32 +54,11 @@ class EntityFieldInfo implements EntityFieldInfoInterface {
 	}
 
 	/*
-	 * @param $name string with fieldName
-	 */
-	public function setName($name)
-	{
-		$this->name = $name;
-	}
-
-	/*
 	 * @return string with fieldName
 	 */
 	public function getName()
 	{
 		return $this->name;
-	}
-
-	/*
-	 * @param $type NodePoint\Core\Library\TypeInterface
-	 */
-	public function setType(TypeInterface $type)
-	{
-		if ($this->lockState)
-		{
-			// TODO: Exception: write access isn't allowed when locked
-			return;
-		}
-		$this->type = $type;
 	}
 
 	/*
@@ -156,19 +136,7 @@ class EntityFieldInfo implements EntityFieldInfoInterface {
 		{
 			return $this->description['readOnly'];
 		}
-		if (!empty($this->description['constructed']))
-		{
-			return true;
-		}
 		return false;
-	}
-
-	/*
-	 * @return boolean if field is constructed by the values of other fields
-	 */
-	public function isConstructed()
-	{
-		return (!empty($this->description['constructed']));
 	}
 
 	/*

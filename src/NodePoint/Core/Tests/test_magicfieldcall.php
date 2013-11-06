@@ -28,7 +28,8 @@ $aliasType = $typeFactory->getType('NodePointCore/Alias');
 
 // create node type
 $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, false);
-$nodeType->setFieldInfo('alias', $aliasType, array('searchable'=>true, 'alias'=>'_alias'));
+$nodeType->setFieldInfo('alias', $aliasType)
+				->setDescription(array('searchable'=>true, 'alias'=>'_alias'));
 $nodeType->setFieldInfo('name', $stringType)
 				->setDescription(array('hasOptions'=>true, 'options'=>array('wilfried','carmen','david','julian','milena')))
 				->setRules(array('minLength'=>3,'maxLength'=>32));

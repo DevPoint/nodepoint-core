@@ -41,6 +41,24 @@ class NumberType extends BaseType {
 	}
 
 	/*
+	 * @param $value mixed
+	 * @return mixed string or int
+	 */
+	public function searchKeyFromValue($value)
+	{
+		$maxInteger = 2147483647;
+		if (0 > bccomp($value, -$maxInteger))
+		{
+			$value = -$maxInteger;
+		}
+		elseif (0 < bccomp($value, $maxInteger))
+		{
+			$value = $maxInteger;
+		}
+		return intval($value);
+	}
+
+	/*
 	 * @param $fieldName string
 	 * @return int - Int, Float, Text
 	 */

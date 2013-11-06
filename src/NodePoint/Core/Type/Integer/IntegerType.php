@@ -41,6 +41,15 @@ class IntegerType extends BaseType {
 	}
 
 	/*
+	 * @param $value mixed
+	 * @return mixed string or int
+	 */
+	public function searchKeyFromValue($value)
+	{
+		return intval($value);
+	}
+
+	/*
 	 * @param $fieldName string
 	 * @return int - Int, Float, Text
 	 */

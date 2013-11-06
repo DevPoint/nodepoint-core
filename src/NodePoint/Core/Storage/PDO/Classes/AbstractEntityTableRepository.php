@@ -331,7 +331,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				break;
 			case TypeInterface::STORAGE_FLOAT:
 				$fieldRow['valueFloat'] = $serializedField['value'];
-				$fieldRow['keyText'] = isset($serializedField['key']) ? $serializedField['key'] : $columInfos['keyText']->nullValue;
+				$fieldRow['keyInt'] = isset($serializedField['key']) ? $serializedField['key'] : $columInfos['keyInt']->nullValue;
 				break;
 			default:
 				$fieldRow['valueText'] = $serializedField['value'];
@@ -367,7 +367,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				break;
 			case TypeInterface::STORAGE_FLOAT:
 				$serializedField['value'] = $fieldRow['valueFloat'];
-				$serializedField['key'] = ($fieldRow['keyText'] != $columInfos['keyText']->nullValue) ? $fieldRow['keyText'] : null;
+				$serializedField['key'] = ($fieldRow['keyInt'] != $columInfos['keyInt']->nullValue) ? $fieldRow['keyInt'] : null;
 				break;
 			default:
 				$serializedField['value'] = $fieldRow['valueText'];

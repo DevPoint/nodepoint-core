@@ -50,7 +50,9 @@ $em->registerRepositoryClass($userType->getTypeName(), $nodeRepositoryClass);
 // create document type
 $documentType = new \NodePoint\Core\Type\Document\DocumentType($typeFactory, true);
 $documentType->setFieldInfo('author', $userType);
-$documentType->setFieldInfo('weight', $numberType)->setRules(array('maxValue'=>999));
+$documentType->setFieldInfo('weight', $numberType)
+					->setDescription(array('searchable'=>true))
+					->setRules(array('maxValue'=>999));
 $documentType->setFieldInfo('geolocation', $position2dType);
 $documentType->setFieldInfo('body', $stringType, array('i18n'=>true));
 $documentType->finalize();
@@ -101,7 +103,7 @@ $object->setAlias($langA, "david-brabsche");
 $object->setName($langA, "David Brabsche");
 $object->setBody($langA, "Hier kommt unser lieber David!");
 $object->setBody($langB, "Here comes our cute David!");
-$object->setWeight('14.2333');
+$object->setWeight('-141234567890.2333');
 $arrObjects[] = $object;
 $em->persist($object);
 

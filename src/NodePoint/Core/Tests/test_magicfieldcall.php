@@ -69,7 +69,7 @@ $object->setName("David Brabsche");
 $object->setBody($langA, "Hier kommt unser lieber David!");
 $object->setBody($langB, "Here comes our cute David!");
 $geolocation = new Position2d();
-$geolocation->set(43.001, 15.002);
+$geolocation->set(43.351, 15.203);
 $object->setGeolocation($geolocation);
 $errors = $object->validateWeight('15.4');
 if (true !== $errors)
@@ -77,9 +77,6 @@ if (true !== $errors)
 	$validateErrors['weight'] = $errors;
 }
 $arrObjects[] = $object;
-
-$arrGeolocation = $object->_fieldType('geolocation')->objectToArray($object->getGeolocation());
-
 
 // output test result
 echo "Test succeeded\n";
@@ -92,6 +89,7 @@ foreach ($arrObjects as $object)
 	echo "Zugriffsname: " . $object->getAlias() . "\n";
 	echo "Meine Eltern heißen " . $object->getParent()->getName() . "\n";
 	echo "Ich wiege " . $object->getWeight() . "kg\n";
+	$arrGeolocation = $object->_fieldType('geolocation')->objectToArray($object->getGeolocation());
 	echo "Du findest mich an folgenden Geokoordination: " . $arrGeolocation['x'] . ', ' . $arrGeolocation['y'] . "\n";
 	echo "\n";
 }

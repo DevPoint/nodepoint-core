@@ -155,6 +155,13 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 					return false;
 				}
 				$fieldEntity = $repository->find($fieldValue, $lang);
+				if (null === $fieldEntity)
+				{
+					// TODO: Exception: lazy loading of entity failed
+					return false;
+				}
+				$field->setLazyLoadState(false);
+				$field->setTypeName(null);
 				$field->setValue($fieldEntity);
 				return true;
 			}

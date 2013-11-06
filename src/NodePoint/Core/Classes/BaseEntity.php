@@ -54,22 +54,6 @@ class BaseEntity extends AbstractEntity {
 	}
 
 	/*
-	 * Perform lazy loading of a field
-	 *
-	 * @param $field NodePoint\Core\Library\EntityFieldInterface
-	 * @return boolean
-	 */
-	public function _loadField(EntityFieldInterface $field)
-	{
-		$storageProxy = $this->_getStorageProxy();
-		if (!$storageProxy)
-		{
-			return false;
-		}
-		return $storageProxy->loadField($field);
-	}
-
-	/*
 	 * @param $repository NodePoint\Core\Storage\Library\EntityStorageProxyInterface
 	 */
 	public function _setStorageProxy(EntityStorageProxyInterface $storageProxy)

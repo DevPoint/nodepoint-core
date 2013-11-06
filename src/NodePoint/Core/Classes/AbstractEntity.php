@@ -91,17 +91,6 @@ class AbstractEntity implements EntityInterface {
 	}
 
 	/*
-	 * Perform lazy loading of a field
-	 *
-	 * @param $field NodePoint\Core\Library\EntityFieldInterface
-	 * @return boolean
-	 */
-	public function _loadField(EntityFieldInterface $field)
-	{
-		return false;
-	}
-
-	/*
 	 * @param $repository NodePoint\Core\Storage\Library\EntityStorageProxyInterface
 	 */
 	public function _setStorageProxy(EntityStorageProxyInterface $storageProxy)
@@ -152,7 +141,13 @@ class AbstractEntity implements EntityInterface {
 				$this->fields[] = $field;
 			}
 		}
-		$this->cachedFields[$fieldName]->setValue($args[0]);
+		$field = $this->cachedFields[$fieldName];
+		$field ->setValue($args[0]);
+		if ($field->isLazyLoaded())
+		{
+			$field->setLazyLoadState(false);
+			$field->setTypeName(null);
+		}
 		$storageProxy = $this->_getStorageProxy();
 		if (null !== $storageProxy)
 		{
@@ -191,9 +186,13 @@ class AbstractEntity implements EntityInterface {
 			return null;
 		}
 		$field = $this->cachedFields[$fieldName];
-		if ($field->isLazyLoaded() && !$this->_loadField($field))
+		if ($field->isLazyLoaded())
 		{
-			return null;
+			$storageProxy = $this->_getStorageProxy();
+			if (null === $storageProxy || !$storageProxy->loadField($field))
+			{
+				return null;
+			}
 		}
 		return $field->getValue();
 	}
@@ -224,6 +223,7 @@ class AbstractEntity implements EntityInterface {
 
 	/*
 	 * Set value to field
+	 * i18n - version
 	 *
 	 * @param $fieldName string 
 	 * @param $args array(0=>language, 1=>value)
@@ -262,6 +262,7 @@ class AbstractEntity implements EntityInterface {
 
 	/*
 	 * Validate and set value to field
+	 * i18n - version
 	 *
 	 * @param $fieldName string 
 	 * @param $args array(0=>language, 1=>value)
@@ -279,6 +280,7 @@ class AbstractEntity implements EntityInterface {
 
 	/*
 	 * Get value from field
+	 * i18n - version
 	 *
 	 * @param $fieldName string 
 	 * @param $args array(0=>language)
@@ -292,9 +294,13 @@ class AbstractEntity implements EntityInterface {
 			return null;
 		}
 		$field = $this->cachedFields[$fieldName][$lang];
-		if ($field->isLazyLoaded() && !$this->_loadField($field))
+		if ($field->isLazyLoaded())
 		{
-			return null;
+			$storageProxy = $this->_getStorageProxy();
+			if (null === $storageProxy || !$storageProxy->loadField($field))
+			{
+				return null;
+			}
 		}
 		return $field->getValue();
 	}

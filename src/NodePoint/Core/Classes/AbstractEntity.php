@@ -210,11 +210,15 @@ class AbstractEntity implements EntityInterface {
 		{
 			return $field->getLazyLoadInfo()->entityId;
 		}
-		$value = $field->getValue();
-		$entityType = $value->_type();
+		$entity = $field->getValue();
+		if (null === $entity)
+		{
+			return null;
+		}
+		$entityType = $entity->_type();
 		$idFieldName = $entityType->getFieldNameByAlias('_id');
 		$magicCallGetId = $entityType->getFieldInfo($idFieldName)->getMagicCallName('get');
-		return $value->{$magicCallGetId}();
+		return $entity->{$magicCallGetId}();
 	}
 
 	/*

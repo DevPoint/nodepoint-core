@@ -129,45 +129,6 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	}
 
 	/*
-	 * @param $type NodePoint\Core\Library\EntityTypeInterface
-	 * @param $field NodePoint\Core\Library\EntityFieldInterface
-	 * @param $lang mixed string or array of string
-	 * @return boolean
-	 */
-	public function loadField(EntityTypeInterface $type, EntityFieldInterface $field, $lang=null)
-	{
-		$fieldName = $field->getName();
-		$fieldType = $type->getFieldType($fieldName);
-		if ($fieldType->isEntity())
-		{
-			$fieldValue = $field->getValue();
-			if (is_string($fieldValue) || is_int($fieldValue))
-			{
-				$fieldTypeName = $field->getLazyLoadTypeName();
-				if (null !== $fieldTypeName)
-				{
-					$fieldRepository = $this->em->getRepository($fieldTypeName);
-					if (null === $fieldRepository)
-					{
-						// TODO: Exception: no repository for this type available
-						return false;
-					}
-					$fieldEntity = $fieldRepository->find($fieldValue, $lang);
-					if (null === $fieldEntity)
-					{
-						// TODO: Exception: lazy loading of entity failed
-						return false;
-					}
-					$field->setValue($fieldEntity);
-					$field->setLazyLoadTypeName(null);
-					return true;
-				}
-			}
-		}
-		return false;
-	}
-
-	/*
 	 * @param $entityId string 
 	 * @param $lang mixed string or array of string
 	 * @param $mapFieldNames array indexed by fieldName

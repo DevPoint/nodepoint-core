@@ -45,14 +45,14 @@ interface EntityFieldInterface {
 	public function getSortIndex();
 
 	/*
-	 * @param $name string
+	 * @param $lazyLoadInfo NodePoint\Core\Library\EntityLazyLoadInfo
 	 */
-	public function setLazyLoadTypeName($typeName);
+	public function setLazyLoadInfo($lazyLoadInfo);
 	
 	/*
-	 * @return string
+	 * @return NodePoint\Core\Library\EntityLazyLoadInfo
 	 */
-	public function getLazyLoadTypeName();
+	public function getLazyLoadInfo();
 
 	/*
 	 * @return boolean

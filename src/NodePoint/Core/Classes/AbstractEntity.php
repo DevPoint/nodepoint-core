@@ -143,7 +143,7 @@ class AbstractEntity implements EntityInterface {
 		}
 		$field = $this->cachedFields[$fieldName];
 		$field->setValue($args[0]);
-		$field->setLazyLoadTypeName(null);
+		$field->setLazyLoadInfo(null);
 		$storageProxy = $this->_getStorageProxy();
 		if (null !== $storageProxy)
 		{
@@ -206,11 +206,11 @@ class AbstractEntity implements EntityInterface {
 			return null;
 		}
 		$field = $this->cachedFields[$fieldName];
-		$value = $field->getValue();
 		if ($field->isLazyLoaded())
 		{
-			return $value;
+			return $field->getLazyLoadInfo()->entityId;
 		}
+		$value = $field->getValue();
 		$entityType = $value->_type();
 		$idFieldName = $entityType->getFieldNameByAlias('_id');
 		$magicCallGetId = $entityType->getFieldInfo($idFieldName)->getMagicCallName('get');
@@ -249,7 +249,7 @@ class AbstractEntity implements EntityInterface {
 		}
 		$field = $this->cachedFields[$fieldName][$lang];
 		$field->setValue($args[1]);
-		$field->setLazyLoadTypeName(null);
+		$field->setLazyLoadInfo(null);
 		$storageProxy = $this->_getStorageProxy();
 		if (null !== $storageProxy)
 		{

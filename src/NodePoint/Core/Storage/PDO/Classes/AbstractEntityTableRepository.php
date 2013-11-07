@@ -6,6 +6,7 @@ use NodePoint\Core\Library\TypeInterface;
 use NodePoint\Core\Library\EntityInterface;
 use NodePoint\Core\Library\EntityFieldInterface;
 use NodePoint\Core\Library\EntityTypeInterface;
+use NodePoint\Core\Library\EntityLazyLoadInfo;
 use NodePoint\Core\Classes\EntityField;
 use NodePoint\Core\Classes\EntityArrayField;
 use NodePoint\Core\Storage\Library\EntityManagerInterface;
@@ -231,13 +232,14 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		{
 			if (isset($row[$column]) && isset($invEntityTableFields[$column]))
 			{
-				$lazyLoadTypeName = null;
+				$lazyLoadInfo = null;
 				$fieldName = $invEntityTableFields[$column];
 				$fieldType = $type->getFieldType($fieldName);
 				$value = $row[$column];
 				if ($fieldType->isEntity())
 				{
-					$lazyLoadTypeName = 'NodePointCore/Node';
+					$lazyLoadInfo = new EntityLazyLoadInfo($value, 'NodePointCore/Node');
+					$value = null;
 				}
 				elseif ($fieldType->isObject())
 				{
@@ -245,7 +247,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				}
 				$field = new EntityField($fieldName, null);
 				$field->setValue($value);
-				$field->setLazyLoadTypeName($lazyLoadTypeName);
+				$field->setLazyLoadInfo($lazyLoadInfo);
 				$fields[] = $field;
 			}
 		}
@@ -461,14 +463,15 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		foreach ($fieldRows as &$fieldRow)
 		{
 			// unserialize value
-			$lazyLoadTypeName = null;
+			$lazyLoadInfo = null;
 			$serializedField = $this->_serializedFieldFromFieldRow($type, $fieldRow);
 			$fieldName = $serializedField['name'];
 			$fieldType = $type->getFieldType($fieldName);
 			$value = $serializedField['value'];
 			if ($fieldType->isEntity())
 			{
-				$lazyLoadTypeName = $serializedField['type'];
+				$lazyLoadInfo = new EntityLazyLoadInfo($value, $serializedField['type']);
+				$value = null;
 			}
 			elseif ($fieldType->isObject())
 			{
@@ -483,7 +486,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				$field = new EntityField(null, null);
 				$field->setSortIndex($serializedField['sort']);
 				$field->setValue($value);
-				$field->setLazyLoadTypeName($lazyLoadTypeName);
+				$field->setLazyLoadInfo($lazyLoadInfo);
 
 				// find matching array field
 				// or create new array field
@@ -525,7 +528,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				$field = new EntityField($fieldName, $fieldLanguage);
 				$field->setSortIndex($serializedField['sort']);
 				$field->setValue($value);
-				$field->setLazyLoadTypeName($lazyLoadTypeName);
+				$field->setLazyLoadInfo($lazyLoadInfo);
 				$fields[] = $field;
 			}
 		}

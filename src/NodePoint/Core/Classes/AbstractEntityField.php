@@ -27,14 +27,9 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	protected $id;
 
 	/*
-	 * @var boolean
+	 * @var NodePoint\Core\Library\EntityLazyLoadInfo
 	 */
-	protected $lazyLoaded;
-
-	/*
-	 * @var string with type name
-	 */
-	protected $lazyLoadTypeName;
+	protected $lazyLoadInfo;
 
 	/*
 	 * @param $name string with fieldName
@@ -46,8 +41,7 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 		$this->lang = $lang;
 		$this->id = null;
 		$this->sortIndex = 0;
-		$this->lazyLoaded = false;
-		$this->lazyLoadTypeName = null;
+		$this->lazyLoadInfo = null;
 	}
 
 	/*
@@ -114,20 +108,22 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 		return $this->sortIndex;
 	}
 
+
 	/*
-	 * @param $name string
+	 * @param $lazyLoadInfo NodePoint\Core\Library\EntityLazyLoadInfo
 	 */
-	public function setLazyLoadTypeName($typeName)
+	public function setLazyLoadInfo($lazyLoadInfo)
 	{
-		$this->lazyLoadTypeName = $typeName;
+		$this->lazyLoadInfo = $lazyLoadInfo;
 	}
+
 	
 	/*
-	 * @return string
+	 * @return NodePoint\Core\Library\LazyLoadInfo
 	 */
-	public function getLazyLoadTypeName()
+	public function getLazyLoadInfo()
 	{
-		return $this->lazyLoadTypeName;
+		return $this->lazyLoadInfo;
 	}
 
 	/*
@@ -135,7 +131,7 @@ abstract class AbstractEntityField implements EntityFieldInterface {
 	 */
 	public function isLazyLoaded()
 	{
-		return (null !== $this->lazyLoadTypeName);
+		return (null !== $this->lazyLoadInfo);
 	}
 
 	/*

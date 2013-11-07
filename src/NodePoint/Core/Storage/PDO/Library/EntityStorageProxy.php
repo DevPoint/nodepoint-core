@@ -163,13 +163,28 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	 */
 	public function loadField(EntityFieldInterface $field)
 	{
-		$type = $this->entity->_type();
-		$typeName = $type->getTypeName();
-		$repository = $this->em->getRepository($typeName);
-		if (null === $repository)
+		$lazyLoadInfo = $field->getLazyLoadInfo();
+		if (null === $lazyLoadInfo)
 		{
 			return false;
 		}
-		return $repository->loadField($type, $field, $this->loadedLanguages);
+		$entityId = $lazyLoadInfo->entityId;
+		$entityTypeName = $lazyLoadInfo->typeName;
+		$fieldRepository = $this->em->getRepository($entityTypeName);
+		if (null === $fieldRepository)
+		{
+			// TODO: Exception: no repository for this entity type available
+			return false;
+		}
+		$lang = $this->getLoadedLanguages();
+		$entity = $fieldRepository->find($entityId, $lang);
+		if (null == $entity)
+		{
+			// TODO: Exception: lazy loading of entity failed
+			return false;
+		}
+		$field->setValue($fieldRepository->find($entityId, $lang));
+		$field->setLazyLoadInfo(null);
+		return true;
 	}
 }

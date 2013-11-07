@@ -119,10 +119,6 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 
 		$entityClass = $type->getClassName();
 		$entity = new $entityClass($type, $fields);
-
-		echo "EntityId: " . $entity->getId() . "Rows:" . count($fieldRows) . "\n";
-
-
 		$this->em->persist($entity);
 		if (null !== $lang)
 		{

@@ -580,7 +580,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bindParam(':entity_id', $entityId, $columInfos['entity_id']->paramType);
 		$stmt->execute();
-		return $stmt->fetch(\PDO::FETCH_ASSOC);
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 
 	/*
@@ -623,7 +623,6 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 					$commaStr = ',';
 				}
 				$sql .= " WHERE id=:id";
-				echo $fieldRow['id'] . ':sql:' . $sql . "\n";
 				$stmt = $this->conn->prepare($sql);
 				foreach ($columns as $column)
 				{

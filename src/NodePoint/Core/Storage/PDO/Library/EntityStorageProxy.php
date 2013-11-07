@@ -178,7 +178,7 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 		}
 		$lang = $this->getLoadedLanguages();
 		$entity = $fieldRepository->find($entityId, $lang);
-		if (null == $entity)
+		if (null === $entity)
 		{
 			// TODO: Exception: lazy loading of entity failed
 			return false;

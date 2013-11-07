@@ -10,7 +10,7 @@ use NodePoint\Core\Type\Position2d\Position2d;
 // establish connection to database
 $dbuser = 'root';
 $dbpass = '';
-$conn = new \PDO('mysql:host=localhost;dbname=nodepoint', $dbuser, $dbpass);
+$conn = new \PDO('mysql:host=localhost;dbname=nodepoint;charset=utf8', $dbuser, $dbpass);
 
 // construct parameters
 $params = array();

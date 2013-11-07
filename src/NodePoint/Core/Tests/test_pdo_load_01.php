@@ -24,7 +24,7 @@ $typeFactory->registerTypeClass('NodePointCore/Position2d', "\\NodePoint\\Core\\
 // establish connection to database
 $dbuser = 'root';
 $dbpass = '';
-$conn = new PDO('mysql:host=localhost;dbname=nodepoint', $dbuser, $dbpass);
+$conn = new PDO('mysql:host=localhost;dbname=nodepoint;charset=utf8', $dbuser, $dbpass);
 $em = new \NodePoint\Core\Storage\PDO\Library\EntityManager($conn, $typeFactory);
 
 // repository class names
@@ -76,7 +76,7 @@ $objects = array();
 
 $object = $em->find('NodePointCore/Document', 4);
 $object->setName($langA, 'Julian Brabsche');
-$object->setName($langB, 'Julien Brabsche');
+$object->setName($langB, 'Juliene Brabsché');
 $objects[] = $object;
 
 $object = $em->find('NodePointCore/Document', 5);

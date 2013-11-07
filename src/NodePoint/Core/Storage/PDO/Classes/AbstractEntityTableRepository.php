@@ -616,13 +616,13 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			if (!empty($fieldRow['id']))
 			{
 				$commaStr = '';
-				$sql = "UPDATE np_entity_fields SET ";
+				$sqlUpdate = '';
 				foreach ($columns as $column)
 				{
-					$sql .= "{$commaStr}{$column}=:{$column}";
+					$sqlUpdate .= "{$commaStr}{$column}=:{$column}";
 					$commaStr = ',';
 				}
-				$sql .= " WHERE id=:id";
+				$sql = "UPDATE np_entity_fields SET {$sqlUpdate} WHERE id=:id";
 				$stmt = $this->conn->prepare($sql);
 				foreach ($columns as $column)
 				{

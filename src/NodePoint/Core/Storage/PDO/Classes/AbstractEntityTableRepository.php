@@ -123,7 +123,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $entity NodePoint\Core\Library\EntityInterface
 	 * @param $entityId string
 	 */
-	protected function _setEntityId($entity, $entityId)
+	protected function _setEntityId(EntityInterface $entity, $entityId)
 	{
 		$entityType = $entity->_type();
 		$idFieldName = $entityType->getFieldNameByAlias('_id');
@@ -135,34 +135,12 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $fieldValue mixed NodePoint\Core\Library\EntityInterface or string
 	 * @return string
 	 */
-	protected function _getEntityId($fieldValue)
+	protected function _getEntityId(EntityInterface $entity)
 	{
-		if (is_object($fieldValue))
-		{
-			$entity = $fieldValue;
-			$entityType = $entity->_type();
-			$idFieldName = $entityType->getFieldNameByAlias('_id');
-			$magicCallGetId = $entityType->getFieldInfo($idFieldName)->getMagicCallName('get');
-			return $entity->{$magicCallGetId}();
-		}
-		return $fieldValue;
-	}
-
-	/*
-	 * @param $fieldValue mixed NodePoint\Core\Library\EntityInterface or string
-	 * @param $field NodePoint\Core\Library\EntityFieldInterface
-	 * @return string
-	 */
-	protected function _getEntityTypeName($fieldValue, EntityFieldInterface $field)
-	{
-		if (is_object($fieldValue))
-		{
-			return $fieldValue->_type()->getTypeName();
-		}
-		else
-		{
-			return $field->getTypeName();
-		}
+		$entityType = $entity->_type();
+		$idFieldName = $entityType->getFieldNameByAlias('_id');
+		$magicCallGetId = $entityType->getFieldInfo($idFieldName)->getMagicCallName('get');
+		return $entity->{$magicCallGetId}();
 	}
 
 	/*
@@ -185,7 +163,15 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				$value = $field->getValue();
 				if ($fieldType->isEntity())
 				{
-					$value = $this->_getEntityId($value);
+					if ($field->isLazyLoaded())
+					{
+						$lazyLoadInfo = $field->getLazyLoadInfo();
+						$value = $lazyLoadInfo->entityId;
+					}
+					elseif (null !== $value)
+					{
+						$value = $this->_getEntityId($value);
+					}
 				}
 				elseif ($fieldType->isObject())
 				{
@@ -403,8 +389,17 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 						$value = $arrayField->getValue();
 						if ($fieldType->isEntity())
 						{
-							$fieldTypeName = $this->_getEntityTypeName($value, $arrayField);
-							$value = $this->_getEntityId($value);
+							if ($arrayField->isLazyLoaded())
+							{
+								$lazyLoadInfo = $arrayField->getLazyLoadInfo();
+								$fieldTypeName = $lazyLoadInfo->typeName;
+								$value = $lazyLoadInfo->entityId;
+							}
+							elseif (null !== $value)
+							{
+								$fieldTypeName = $value->_type()->getTypeName();
+								$value = $this->_getEntityId($value);
+							}
 						}
 						elseif ($fieldType->isObject())
 						{
@@ -428,8 +423,17 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 					$value = $field->getValue();
 					if ($fieldType->isEntity())
 					{
-						$fieldTypeName = $this->_getEntityTypeName($value, $field);
-						$value = $this->_getEntityId($value);
+						if ($field->isLazyLoaded())
+						{
+							$lazyLoadInfo = $field->getLazyLoadInfo();
+							$fieldTypeName = $lazyLoadInfo->typeName;
+							$value = $lazyLoadInfo->entityId;
+						}
+						elseif (null !== $value)
+						{
+							$fieldTypeName = $value->_type()->getTypeName();
+							$value = $this->_getEntityId($value);
+						}
 					}
 					elseif ($fieldType->isObject())
 					{

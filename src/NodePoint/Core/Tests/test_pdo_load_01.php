@@ -71,11 +71,12 @@ $em->registerRepositoryClass($documentType->getTypeName(), $nodeRepositoryClass)
 
 // language codes
 $langA = "de";
-$langB = "en";
+$langB = "fr";
 $objects = array();
 
 $object = $em->find('NodePointCore/Document', 4);
-//$object->setName($langA, 'Julian Brabsche');
+$object->setName($langA, 'Julian Brabsche');
+$object->setName($langB, 'Julien Brabsche');
 $objects[] = $object;
 
 $object = $em->find('NodePointCore/Document', 5);

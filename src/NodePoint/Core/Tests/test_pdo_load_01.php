@@ -75,9 +75,11 @@ $langB = "en";
 $objects = array();
 
 $object = $em->find('NodePointCore/Document', 4);
+$object->setName($langA, 'Updatename');
 $objects[] = $object;
 
 $object = $em->find('NodePointCore/Document', 5);
+$object->setName($langA, 'Updatename2');
 $objects[] = $object;
 
 $em->flush();

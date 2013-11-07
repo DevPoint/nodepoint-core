@@ -199,6 +199,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		// set standard fields values
 		if (!empty($row))
 		{
+			$row['id'] = $entityId;
 			$row['type'] = $type->getTypeName();
 		}
 		return $row;
@@ -264,6 +265,23 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 */
 	protected function _updateRow(&$row)
 	{
+		$commaStr = '';
+		$columInfos = &$this->tableColumns['entities'];
+		$columns = array('parent_id','field','type');
+		$sql = "UPDATE np_entities SET ";
+		foreach ($columns as $column)
+		{
+			$sql .= "{$commaStr}{$column}=:{$column}";
+			$commaStr = ',';
+		}
+		$sql .= " WHERE id=:id";
+		$stmt = $this->conn->prepare($sql);
+		foreach ($columns as $column)
+		{
+			$stmt->bindParam(':'.$column, $row[$column], $columInfos[$column]->paramType);
+		}
+		$stmt->bindParam(':id', $row['id']);
+		$stmt->execute();
 	}
 
 	/*
@@ -273,7 +291,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _selectRow($entityId)
 	{
 		$columInfos = &$this->tableColumns['entities'];
-		$sql = "SELECT * FROM np_entities WHERE id = :id";
+		$sql = "SELECT * FROM np_entities WHERE id=:id";
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bindParam(':id', $entityId, $columInfos['id']->paramType);
 		$stmt->execute();
@@ -488,6 +506,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			{
 				// create array field item
 				$field = new EntityField(null, null);
+				$field->setId($serializedField['id']);
 				$field->setSortIndex($serializedField['sort']);
 				$field->setValue($value);
 				$field->setLazyLoadInfo($lazyLoadInfo);
@@ -530,6 +549,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			else
 			{
 				$field = new EntityField($fieldName, $fieldLanguage);
+				$field->setId($serializedField['id']);
 				$field->setSortIndex($serializedField['sort']);
 				$field->setValue($value);
 				$field->setLazyLoadInfo($lazyLoadInfo);
@@ -556,7 +576,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _selectFieldRows($entityId, $lang)
 	{
 		$columInfos = &$this->tableColumns['entityFields'];
-		$sql = "SELECT * FROM np_entity_fields WHERE entity_id = :entity_id";
+		$sql = "SELECT * FROM np_entity_fields WHERE entity_id=:entity_id";
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bindParam(':entity_id', $entityId, $columInfos['entity_id']->paramType);
 		$stmt->execute();
@@ -588,21 +608,38 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 */
 	protected function _saveFieldRows(&$fieldRows)
 	{
+		// updating an existing field row
 		$columInfos = &$this->tableColumns['entityFields'];
 		$columns = array('entity_id','field','type','lang','sortIndex','valueInt','valueFloat','valueText','keyInt','keyText');
+		foreach ($fieldRows as &$fieldRow)
+		{
+			if (!empty($fieldRow['id']))
+			{
+				$commaStr = '';
+				$sql = "UPDATE np_entity_fields SET ";
+				foreach ($columns as $column)
+				{
+					$sql .= "{$commaStr}{$column}=:{$column}";
+					$commaStr = ',';
+				}
+				$sql .= " WHERE id=:id";
+				echo $fieldRow['id'] . ':sql:' . $sql . "\n";
+				$stmt = $this->conn->prepare($sql);
+				foreach ($columns as $column)
+				{
+					$stmt->bindParam(':'.$column, $fieldRow[$column], $columInfos[$column]->paramType);
+				}
+				$stmt->bindParam(':id', $fieldRow['id']);
+				$stmt->execute();
+			}
+		}
+
+		// inserting new field rows
 		$columnsNameStr = implode(',', $columns);
 		$columnsVarStr = ':' . implode(',:', $columns);
 		foreach ($fieldRows as &$fieldRow)
 		{
-			// updating an existing field row
-			if (isset($fieldRow['id']) && strlen($fieldRow['id']))
-			{
-				foreach ($columns as $column)
-				{
-				}
-			}
-			// inserting a new field row
-			else
+			if (empty($fieldRow['id']))
 			{
 				$stmt = $this->conn->prepare("INSERT INTO np_entity_fields ({$columnsNameStr}) VALUES ({$columnsVarStr})");
 				foreach ($columns as $column)

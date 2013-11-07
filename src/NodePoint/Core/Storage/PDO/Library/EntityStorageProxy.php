@@ -183,7 +183,7 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 			// TODO: Exception: lazy loading of entity failed
 			return false;
 		}
-		$field->setValue($fieldRepository->find($entityId, $lang));
+		$field->setValue($entity);
 		$field->setLazyLoadInfo(null);
 		return true;
 	}

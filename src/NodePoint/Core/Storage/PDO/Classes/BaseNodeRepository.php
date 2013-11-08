@@ -81,7 +81,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 
 		// filter fields and insert them into the entity fields table
 		$entityFieldRows = $this->_serializeFieldsToFieldRows($type, $fields, $mapFieldNames, $entityId);
-		$this->_insertFieldRows($entityFieldRows);
+		$this->_saveFieldRows($entityFieldRows);
 	}
 
 	/*

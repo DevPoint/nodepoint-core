@@ -266,16 +266,15 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _updateRow(&$row)
 	{
 		$commaStr = '';
+		$sqlUpdate = '';
 		$columInfos = &$this->tableColumns['entities'];
 		$columns = array('parent_id','field','type');
-		$sql = "UPDATE np_entities SET ";
 		foreach ($columns as $column)
 		{
-			$sql .= "{$commaStr}{$column}=:{$column}";
+			$sqlUpdate .= "{$commaStr}{$column}=:{$column}";
 			$commaStr = ',';
 		}
-		$sql .= " WHERE id=:id";
-		$stmt = $this->conn->prepare($sql);
+		$stmt = $this->conn->prepare("UPDATE np_entities SET {$sqlUpdate} WHERE id=:id");
 		foreach ($columns as $column)
 		{
 			$stmt->bindParam(':'.$column, $row[$column], $columInfos[$column]->paramType);
@@ -586,26 +585,6 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	/*
 	 * @param $fieldRows array
 	 */
-	protected function _insertFieldRows(&$fieldRows)
-	{
-		$columInfos = &$this->tableColumns['entityFields'];
-		$columns = array('entity_id','field','type','lang','sortIndex','valueInt','valueFloat','valueText','keyInt','keyText');
-		$columnsNameStr = implode(',', $columns);
-		$columnsVarStr = ':' . implode(',:', $columns);
-		foreach ($fieldRows as &$fieldRow)
-		{
-			$stmt = $this->conn->prepare("INSERT INTO np_entity_fields ({$columnsNameStr}) VALUES ({$columnsVarStr})");
-			foreach ($columns as $column)
-			{
-				$stmt->bindParam(':'.$column, $fieldRow[$column], $columInfos[$column]->paramType);
-			}
-			$stmt->execute();
-		}
-	}
-
-	/*
-	 * @param $fieldRows array
-	 */
 	protected function _saveFieldRows(&$fieldRows)
 	{
 		// updating an existing field row
@@ -622,8 +601,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 					$sqlUpdate .= "{$commaStr}{$column}=:{$column}";
 					$commaStr = ',';
 				}
-				$sql = "UPDATE np_entity_fields SET {$sqlUpdate} WHERE id=:id";
-				$stmt = $this->conn->prepare($sql);
+				$stmt = $this->conn->prepare("UPDATE np_entity_fields SET {$sqlUpdate} WHERE id=:id");
 				foreach ($columns as $column)
 				{
 					$stmt->bindParam(':'.$column, $fieldRow[$column], $columInfos[$column]->paramType);

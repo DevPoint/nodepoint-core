@@ -75,8 +75,9 @@ $langB = "fr";
 $objects = array();
 
 $object = $em->find('NodePointCore/Document', 4);
-$object->setName($langA, 'Julian Brabsche');
+$object->setName($langA, 'J. Brabsche');
 $object->setName($langB, 'Juliene Brabsché');
+$object->validateWeight('17.6');
 $objects[] = $object;
 
 $object = $em->find('NodePointCore/Document', 5);

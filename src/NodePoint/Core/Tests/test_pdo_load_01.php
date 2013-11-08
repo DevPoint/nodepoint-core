@@ -71,12 +71,13 @@ $em->registerRepositoryClass($documentType->getTypeName(), $nodeRepositoryClass)
 
 // language codes
 $langA = "de";
-$langB = "fr";
+$langB = "en";
+$langC = "fr";
 $objects = array();
 
-$object = $em->find('Core/Document', 4);
+$object = $em->find('Core/Document', 4, array($langA,$langB));
 $object->setName($langA, 'Julian Brabsche');
-$object->setName($langB, 'Juliene Brabsché');
+$object->setName($langC, 'Juliene Brabsché');
 $object->validateWeight('17.6');
 $objects[] = $object;
 
@@ -95,7 +96,7 @@ foreach ($objects as $object)
 	printf("Author: %s\n", $object->getAuthor()->getEmail());
 	printf("Alias: %s\n", $object->getAlias($langA));
 	printf("Name: %s\n", $object->getName($langA));
-	printf("Body: %s\n", $object->getBody($langA));
+	printf("Body: %s\n", $object->getBody($langB));
 	$geolocation = $object->getGeolocation();
 	if (null !== $geolocation)
 	{

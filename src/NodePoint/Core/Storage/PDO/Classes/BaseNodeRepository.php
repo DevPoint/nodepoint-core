@@ -151,6 +151,6 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 			return null;
 		}
 		// create entity by reading this repository
-		return $repository->read($typeName, $row, null, null);
+		return $repository->read($typeName, $row, $lang, $mapFieldNames);
 	}
 }

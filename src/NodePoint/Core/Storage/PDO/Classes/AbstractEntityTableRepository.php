@@ -578,10 +578,29 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	{
 		$sqlTable = $this->tables['entityValue'];
 		$columInfos = &$this->tableColumns['entityValue'];
-		$sql = "SELECT * FROM {$sqlTable} WHERE entity_id=:entity_id";
-		$stmt = $this->conn->prepare($sql);
-		$stmt->bindParam(':entity_id', $entityId, $columInfos['entity_id']->paramType);
-		$stmt->execute();
+		$sqlWhere = "entity_id=?";
+		$params = array($entityId);
+		if (!empty($lang))
+		{
+			$params[] = '';	// empty language code
+			if (is_string($lang))
+			{
+				$sqlWhere .= " AND lang IN(?,?)";
+				$params[] = $lang;
+			}
+			else if (is_array($lang))
+			{
+				$langCount = count($lang) + 1;
+				$sqlLang = str_repeat("?,", $langCount - 1) . "?";
+				$sqlWhere .= " AND lang IN({$sqlLang})";
+				foreach ($lang as $langItem)
+				{
+					$params[] = $langItem;
+				}
+			}
+		}
+		$stmt = $this->conn->prepare("SELECT * FROM {$sqlTable} WHERE {$sqlWhere}");
+		$stmt->execute($params);
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
 	}
 

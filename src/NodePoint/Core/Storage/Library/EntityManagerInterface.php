@@ -46,7 +46,9 @@ interface EntityManagerInterface {
 	/*
 	 * @param $typeName string
 	 * @param $entityId string
+	 * @param $lang mixed string or array of string
+	 * @param $mapFieldNames array indexed by fieldName
 	 * @return NodePoint\Core\Library\EntityInterface
 	 */
-	public function find($typeName, $entityId);
+	public function find($typeName, $entityId, $lang=null, $mapFieldNames=null);
 }

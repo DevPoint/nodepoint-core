@@ -396,7 +396,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			if (!empty($mapFieldNames[$fieldName]))
 			{
 				$fieldLanguage = $field->getLanguage();
- 				if (empty($mapLanguages) || !empty($mapLanguages[$fieldLanguage]))
+ 				if (empty($fieldLanguage) || empty($mapLanguages) || !empty($mapLanguages[$fieldLanguage]))
  				{
 					$fieldType = $type->getFieldType($fieldName);
 					$fieldSearchable = $type->getFieldInfo($fieldName)->isSearchable();

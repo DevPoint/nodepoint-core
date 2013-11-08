@@ -11,7 +11,7 @@ class AliasType extends BaseType {
 	 */
 	public function __construct()
 	{
-		$this->typeName = 'NodePointCore/Alias';
+		$this->typeName = 'Core/Alias';
 	}
 
 	/*

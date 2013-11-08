@@ -12,6 +12,6 @@ class ImageRefType extends BaseEntityRefType {
 	 */
 	public function __construct()
 	{
-		parent::__construct('NodePointCore/ImageRef', 'NodePointCore/Image');
+		parent::__construct('Core/ImageRef', 'Core/Image');
 	}
 }

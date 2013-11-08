@@ -16,12 +16,12 @@ class NodeType extends BaseNodeType {
 	{
 		// call parent constructor
 		parent::__construct(
-			'NodePointCore/Node', "\\NodePoint\\Core\\Type\\Node\\Node",
+			'Core/Node', "\\NodePoint\\Core\\Type\\Node\\Node",
 			$typeFactory, null);
 
 		// get primitive types
-		$integerType = $typeFactory->getType('NodePointCore/Integer');
-		$stringType = $typeFactory->getType('NodePointCore/String');
+		$integerType = $typeFactory->getType('Core/Integer');
+		$stringType = $typeFactory->getType('Core/String');
 
 		// add standard fields
 		$this->setFieldInfo('id', $integerType, array('alias'=>'_id'));

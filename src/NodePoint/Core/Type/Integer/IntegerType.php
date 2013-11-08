@@ -11,7 +11,7 @@ class IntegerType extends BaseType {
 	 */
 	public function __construct()
 	{
-		$this->typeName = 'NodePointCore/Integer';
+		$this->typeName = 'Core/Integer';
 	}
 
 	/*

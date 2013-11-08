@@ -11,7 +11,7 @@ class Position2dType extends BaseType {
 	 */
 	public function __construct()
 	{
-		$this->typeName = 'NodePointCore/Position2d';
+		$this->typeName = 'Core/Position2d';
 		$this->className = "\\NodePoint\\Core\\Type\\Position2d\\Position2d";
 	}
 

@@ -11,7 +11,7 @@ class EmailType extends BaseType {
 	 */
 	public function __construct()
 	{
-		$this->typeName = 'NodePointCore/Email';
+		$this->typeName = 'Core/Email';
 	}
 
 	/*

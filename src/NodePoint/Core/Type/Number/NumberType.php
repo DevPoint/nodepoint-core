@@ -11,7 +11,7 @@ class NumberType extends BaseType {
 	 */
 	public function __construct()
 	{
-		$this->typeName = 'NodePointCore/Number';
+		$this->typeName = 'Core/Number';
 	}
 
 	/*

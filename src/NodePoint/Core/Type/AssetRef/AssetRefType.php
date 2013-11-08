@@ -12,6 +12,6 @@ class AssetRefType extends BaseEntityRefType {
 	 */
 	public function __construct()
 	{
-		parent::__construct('NodePointCore/AssetRef', 'NodePointCore/Asset');
+		parent::__construct('Core/AssetRef', 'Core/Asset');
 	}
 }

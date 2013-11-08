@@ -15,13 +15,13 @@ class DocumentType extends BaseNodeType {
 	public function __construct(TypeFactoryInterface $typeFactory, $hasI18n=true)
 	{
 		// call parent constructor
-		$parentType = $typeFactory->getType('NodePointCore/Node');
+		$parentType = $typeFactory->getType('Core/Node');
 		parent::__construct(
-			'NodePointCore/Document', "\\NodePoint\\Core\\Type\\Document\\Document", 
+			'Core/Document', "\\NodePoint\\Core\\Type\\Document\\Document", 
 			$typeFactory, $parentType);
 	
 		// get primitive types
-		$aliasType = $typeFactory->getType('NodePointCore/Alias');
+		$aliasType = $typeFactory->getType('Core/Alias');
 
 		// add standard fields
 		$this->setFieldInfo('alias', $aliasType, array('i18n'=>$hasI18n, 'searchable'=>true, 'alias'=>'_alias'));

@@ -12,6 +12,6 @@ class DocumentRefType extends BaseEntityRefType {
 	 */
 	public function __construct()
 	{
-		parent::__construct('NodePointCore/DocumentRef', 'NodePointCore/Document');
+		parent::__construct('Core/DocumentRef', 'Core/Document');
 	}
 }

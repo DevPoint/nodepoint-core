@@ -8,23 +8,23 @@ use NodePoint\Core\Type\Position2d\Position2d;
 
 // register primitive types
 $typeFactory = new \NodePoint\Core\Library\TypeFactory();
-$typeFactory->registerTypeClass('NodePointCore/Integer', "\\NodePoint\\Core\\Type\\Integer\\IntegerType");
-$typeFactory->registerTypeClass('NodePointCore/Number', "\\NodePoint\\Core\\Type\\Number\\NumberType");
-$typeFactory->registerTypeClass('NodePointCore/Alias', "\\NodePoint\\Core\\Type\\Alias\\AliasType");
-$typeFactory->registerTypeClass('NodePointCore/String', "\\NodePoint\\Core\\Type\\String\\StringType");
-$typeFactory->registerTypeClass('NodePointCore/Text', "\\NodePoint\\Core\\Type\\Text\\TextType");
-$typeFactory->registerTypeClass('NodePointCore/Position2d', "\\NodePoint\\Core\\Type\\Position2d\\Position2dType");
+$typeFactory->registerTypeClass('Core/Integer', "\\NodePoint\\Core\\Type\\Integer\\IntegerType");
+$typeFactory->registerTypeClass('Core/Number', "\\NodePoint\\Core\\Type\\Number\\NumberType");
+$typeFactory->registerTypeClass('Core/Alias', "\\NodePoint\\Core\\Type\\Alias\\AliasType");
+$typeFactory->registerTypeClass('Core/String', "\\NodePoint\\Core\\Type\\String\\StringType");
+$typeFactory->registerTypeClass('Core/Text', "\\NodePoint\\Core\\Type\\Text\\TextType");
+$typeFactory->registerTypeClass('Core/Position2d', "\\NodePoint\\Core\\Type\\Position2d\\Position2dType");
 
 // language codes
 $langA = "de";
 $langB = "en";
 
 // get primitive types
-$integerType = $typeFactory->getType('NodePointCore/Integer');
-$numberType = $typeFactory->getType('NodePointCore/Number');
-$stringType = $typeFactory->getType('NodePointCore/String');
-$position2dType = $typeFactory->getType('NodePointCore/Position2d');
-$aliasType = $typeFactory->getType('NodePointCore/Alias');
+$integerType = $typeFactory->getType('Core/Integer');
+$numberType = $typeFactory->getType('Core/Number');
+$stringType = $typeFactory->getType('Core/String');
+$position2dType = $typeFactory->getType('Core/Position2d');
+$aliasType = $typeFactory->getType('Core/Alias');
 
 // create node type
 $nodeType = new \NodePoint\Core\Type\Node\NodeType($typeFactory, false);

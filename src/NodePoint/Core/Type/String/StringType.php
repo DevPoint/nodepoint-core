@@ -11,7 +11,7 @@ class StringType extends BaseType {
 	 */
 	public function __construct()
 	{
-		$this->typeName = 'NodePointCore/String';
+		$this->typeName = 'Core/String';
 	}
 
 	/*

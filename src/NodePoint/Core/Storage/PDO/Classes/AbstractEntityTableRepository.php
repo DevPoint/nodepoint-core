@@ -56,26 +56,26 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 
 		// name of database tables
 		$this->tables = array(
-			'entities' => 'np_entities',
-			'entityFields' => 'np_entity_fields');
+			'entity' => 'np_entities',
+			'entityValue' => 'np_entity_values');
 
 		// fields contained by entity table columns
 		$this->tableFields = array();
-		$this->tableFields['entities'] = array(
+		$this->tableFields['entity'] = array(
 			'id' => 'id',
 			'parent' => 'parent_id',
 			'parentField' => 'field');
 
 		// columns of entity table
 		$this->tableColumns = array();
-		$this->tableColumns['entities'] = array(
+		$this->tableColumns['entity'] = array(
 			'id' => new ColumnInfo(\PDO::PARAM_INT, 0),
 			'parent_id' => new ColumnInfo(\PDO::PARAM_INT, null),
 			'field' => new ColumnInfo(\PDO::PARAM_STR, ''),
 			'type' => new ColumnInfo(\PDO::PARAM_STR, ''));
 
 		// columns of entity fields table
-		$this->tableColumns['entityFields'] = array(
+		$this->tableColumns['entityValue'] = array(
 			'id' => new ColumnInfo(\PDO::PARAM_INT, 0),
 			'entity_id' => new ColumnInfo(\PDO::PARAM_STR, ''),
 			'field' => new ColumnInfo(\PDO::PARAM_STR, ''),
@@ -152,7 +152,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	{
 		// serialize existing fields
 		$row = array();
-		$entityTableFields = &$this->tableFields['entities'];
+		$entityTableFields = &$this->tableFields['entity'];
 		foreach ($fields as $field)
 		{
 			$fieldName = $field->getName();
@@ -183,7 +183,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 
 		// set undefined columns to its null value
 		// unset field names which have been used
-		$columInfos = &$this->tableColumns['entities'];
+		$columInfos = &$this->tableColumns['entity'];
 		foreach ($entityTableFields as $fieldName => $column)
 		{
 			if (!empty($mapFieldNames[$fieldName]))
@@ -213,8 +213,8 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _unserializeFieldsFromRow(EntityTypeInterface $type, $row)
 	{
 		$fields = array();
-		$invEntityTableFields = &$this->invTableFields['entities'];
-		$columInfos = &$this->tableColumns['entities'];
+		$invEntityTableFields = &$this->invTableFields['entity'];
+		$columInfos = &$this->tableColumns['entity'];
 		foreach ($columInfos as $column => $columnInfo)
 		{
 			if (isset($row[$column]) && isset($invEntityTableFields[$column]))
@@ -225,7 +225,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				$value = $row[$column];
 				if ($fieldType->isEntity())
 				{
-					$lazyLoadInfo = new EntityLazyLoadInfo($value, 'NodePointCore/Node');
+					$lazyLoadInfo = new EntityLazyLoadInfo($value, 'Core/Node');
 					$value = null;
 				}
 				elseif ($fieldType->isObject())
@@ -247,11 +247,12 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 */
 	protected function _insertRow(&$row)
 	{
-		$columInfos = &$this->tableColumns['entities'];
+		$sqlTable = $this->tables['entity'];
+		$columInfos = &$this->tableColumns['entity'];
 		$columns = array('parent_id','field','type');
 		$columnsNameStr = implode(',', $columns);
 		$columnsVarStr = ':' . implode(',:', $columns);
-		$stmt = $this->conn->prepare("INSERT INTO np_entities ({$columnsNameStr}) VALUES ({$columnsVarStr})");
+		$stmt = $this->conn->prepare("INSERT INTO {$sqlTable} ({$columnsNameStr}) VALUES ({$columnsVarStr})");
 		foreach ($columns as $column)
 		{
 			$stmt->bindParam(':'.$column, $row[$column], $columInfos[$column]->paramType);
@@ -267,14 +268,15 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	{
 		$commaStr = '';
 		$sqlUpdate = '';
-		$columInfos = &$this->tableColumns['entities'];
+		$columInfos = &$this->tableColumns['entity'];
 		$columns = array('parent_id','field','type');
 		foreach ($columns as $column)
 		{
 			$sqlUpdate .= "{$commaStr}{$column}=:{$column}";
 			$commaStr = ',';
 		}
-		$stmt = $this->conn->prepare("UPDATE np_entities SET {$sqlUpdate} WHERE id=:id");
+		$sqlTable = $this->tables['entity'];
+		$stmt = $this->conn->prepare("UPDATE {$sqlTable} SET {$sqlUpdate} WHERE id=:id");
 		foreach ($columns as $column)
 		{
 			$stmt->bindParam(':'.$column, $row[$column], $columInfos[$column]->paramType);
@@ -289,8 +291,9 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 */
 	protected function _selectRow($entityId)
 	{
-		$columInfos = &$this->tableColumns['entities'];
-		$sql = "SELECT * FROM np_entities WHERE id=:id";
+		$sqlTable = $this->tables['entity'];
+		$columInfos = &$this->tableColumns['entity'];
+		$sql = "SELECT * FROM {$sqlTable} WHERE id=:id";
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bindParam(':id', $entityId, $columInfos['id']->paramType);
 		$stmt->execute();
@@ -304,12 +307,12 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $entityId int
 	 * @return array
 	 */
-	protected function _serializedFieldToFieldRow(EntityTypeInterface $type, &$serializedField, $entityId)
+	protected function _serializedFieldToValueRow(EntityTypeInterface $type, &$serializedField, $entityId)
 	{
 		$fieldName = $serializedField['name'];
 		$storageType = $type->getFieldInfo($fieldName)->getStorageType();
-		$columInfos = &$this->tableColumns['entityFields'];
-		$fieldRow = array(
+		$columInfos = &$this->tableColumns['entityValue'];
+		$valueRow = array(
 			'entity_id' => $entityId,
 			'field' => $fieldName,
 			'type' => $serializedField['type'],
@@ -322,25 +325,25 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			'valueText' => $columInfos['valueText']->nullValue);
 		if (isset($serializedField['id']))
 		{
-			$fieldRow['id'] = $serializedField['id'];
+			$valueRow['id'] = $serializedField['id'];
 		}
 		switch ($storageType)
 		{
 			case TypeInterface::STORAGE_INT:
 			case TypeInterface::STORAGE_ENTITY:
-				$fieldRow['valueInt'] = intval($serializedField['value']);
-				$fieldRow['keyInt'] = isset($serializedField['key']) ? intval($serializedField['key']) : $columInfos['keyInt']->nullValue;
+				$valueRow['valueInt'] = intval($serializedField['value']);
+				$valueRow['keyInt'] = isset($serializedField['key']) ? intval($serializedField['key']) : $columInfos['keyInt']->nullValue;
 				break;
 			case TypeInterface::STORAGE_FLOAT:
-				$fieldRow['valueFloat'] = $serializedField['value'];
-				$fieldRow['keyInt'] = isset($serializedField['key']) ? $serializedField['key'] : $columInfos['keyInt']->nullValue;
+				$valueRow['valueFloat'] = $serializedField['value'];
+				$valueRow['keyInt'] = isset($serializedField['key']) ? $serializedField['key'] : $columInfos['keyInt']->nullValue;
 				break;
 			default:
-				$fieldRow['valueText'] = $serializedField['value'];
-				$fieldRow['keyText'] = isset($serializedField['key']) ? $serializedField['key'] : $columInfos['keyText']->nullValue;
+				$valueRow['valueText'] = $serializedField['value'];
+				$valueRow['keyText'] = isset($serializedField['key']) ? $serializedField['key'] : $columInfos['keyText']->nullValue;
 				break;
 		}
-		return $fieldRow;
+		return $valueRow;
 	}
 
 	/*
@@ -349,31 +352,31 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $entityId int
 	 * @return array
 	 */
-	protected function _serializedFieldFromFieldRow(EntityTypeInterface $type, &$fieldRow)
+	protected function _serializedFieldFromValueRow(EntityTypeInterface $type, &$valueRow)
 	{
-		$fieldName = $fieldRow['field'];
+		$fieldName = $valueRow['field'];
 		$storageType = $type->getFieldInfo($fieldName)->getStorageType();
-		$columInfos = &$this->tableColumns['entityFields'];
+		$columInfos = &$this->tableColumns['entityValue'];
 		$serializedField = array(
-			'id' => $fieldRow['id'],
+			'id' => $valueRow['id'],
 			'name' => $fieldName,
-			'type' => $fieldRow['type'],
-			'lang' => ($fieldRow['lang'] != $columInfos['lang']->nullValue) ? $fieldRow['lang'] : null,
-			'sort' => ($fieldRow['sortIndex'] != $columInfos['sortIndex']->nullValue) ? $fieldRow['sortIndex'] : null);
+			'type' => $valueRow['type'],
+			'lang' => ($valueRow['lang'] != $columInfos['lang']->nullValue) ? $valueRow['lang'] : null,
+			'sort' => ($valueRow['sortIndex'] != $columInfos['sortIndex']->nullValue) ? $valueRow['sortIndex'] : null);
 		switch ($storageType)
 		{
 			case TypeInterface::STORAGE_INT:
 			case TypeInterface::STORAGE_ENTITY:
-				$serializedField['value'] = $fieldRow['valueInt'];
-				$serializedField['key'] = ($fieldRow['keyInt'] != $columInfos['keyInt']->nullValue) ? $fieldRow['keyInt'] : null;
+				$serializedField['value'] = $valueRow['valueInt'];
+				$serializedField['key'] = ($valueRow['keyInt'] != $columInfos['keyInt']->nullValue) ? $valueRow['keyInt'] : null;
 				break;
 			case TypeInterface::STORAGE_FLOAT:
-				$serializedField['value'] = $fieldRow['valueFloat'];
-				$serializedField['key'] = ($fieldRow['keyInt'] != $columInfos['keyInt']->nullValue) ? $fieldRow['keyInt'] : null;
+				$serializedField['value'] = $valueRow['valueFloat'];
+				$serializedField['key'] = ($valueRow['keyInt'] != $columInfos['keyInt']->nullValue) ? $valueRow['keyInt'] : null;
 				break;
 			default:
-				$serializedField['value'] = $fieldRow['valueText'];
-				$serializedField['key'] = ($fieldRow['keyText'] != $columInfos['keyText']->nullValue) ? $fieldRow['keyText'] : null;
+				$serializedField['value'] = $valueRow['valueText'];
+				$serializedField['key'] = ($valueRow['keyText'] != $columInfos['keyText']->nullValue) ? $valueRow['keyText'] : null;
 				break;
 		}
 		return $serializedField;
@@ -386,10 +389,9 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $entityId string
 	 * @return array
 	 */
-	protected function _serializeFieldsToFieldRows(EntityTypeInterface $type, &$fields, $mapFieldNames, $entityId)
+	protected function _serializeFieldsToValueRows(EntityTypeInterface $type, &$fields, $mapFieldNames, $entityId)
 	{
-		$entityFieldRows = array();
-		$entityTableFields = &$this->tableFields['entities'];
+		$valueRows = array();
 		foreach ($fields as $field)
 		{
 			$fieldName = $field->getName();
@@ -431,7 +433,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 							'sort' => $arrayField->getSortIndex(),
 							'value' => $value,
 							'key' => $searchKey);
-						$entityFieldRows[] = $this->_serializedFieldToFieldRow($type, $serializedField, $entityId);
+						$valueRows[] = $this->_serializedFieldToValueRow($type, $serializedField, $entityId);
 					}				
 				}
 				else
@@ -465,27 +467,27 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 						'sort' => $field->getSortIndex(),
 						'value' => $value,
 						'key' => $searchKey);
-					$entityFieldRows[] = $this->_serializedFieldToFieldRow($type, $serializedField, $entityId);
+					$valueRows[] = $this->_serializedFieldToValueRow($type, $serializedField, $entityId);
 				}
 			}
 		}
-		return $entityFieldRows;
+		return $valueRows;
 	}
 
 	/*
 	 * @param $type NodePoint\Core\Library\EntityTypeInterface
-	 * @param $fieldRows array
+	 * @param $valueRows array
 	 * @return array of NodePoint\Core\Library\EntityFieldInterface
 	 */
-	protected function _unserializeFieldsFromFieldRows(EntityTypeInterface $type, &$fieldRows)
+	protected function _unserializeFieldsFromValueRows(EntityTypeInterface $type, &$valueRows)
 	{
 		$fields = array();
 		$hashFieldArrays = array();
-		foreach ($fieldRows as &$fieldRow)
+		foreach ($valueRows as &$valueRow)
 		{
 			// unserialize value
 			$lazyLoadInfo = null;
-			$serializedField = $this->_serializedFieldFromFieldRow($type, $fieldRow);
+			$serializedField = $this->_serializedFieldFromValueRow($type, $valueRow);
 			$fieldName = $serializedField['name'];
 			$fieldType = $type->getFieldType($fieldName);
 			$value = $serializedField['value'];
@@ -572,10 +574,11 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $lang mixed string or array of strings
 	 * @return array of fieldRows
 	 */
-	protected function _selectFieldRows($entityId, $lang)
+	protected function _selectValueRows($entityId, $lang)
 	{
-		$columInfos = &$this->tableColumns['entityFields'];
-		$sql = "SELECT * FROM np_entity_fields WHERE entity_id=:entity_id";
+		$sqlTable = $this->tables['entityValue'];
+		$columInfos = &$this->tableColumns['entityValue'];
+		$sql = "SELECT * FROM {$sqlTable} WHERE entity_id=:entity_id";
 		$stmt = $this->conn->prepare($sql);
 		$stmt->bindParam(':entity_id', $entityId, $columInfos['entity_id']->paramType);
 		$stmt->execute();
@@ -583,16 +586,17 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	}
 
 	/*
-	 * @param $fieldRows array
+	 * @param $valueRows array
 	 */
-	protected function _saveFieldRows(&$fieldRows)
+	protected function _saveValueRows(&$valueRows)
 	{
 		// updating an existing field row
-		$columInfos = &$this->tableColumns['entityFields'];
+		$sqlTable = $this->tables['entityValue'];
+		$columInfos = &$this->tableColumns['entityValue'];
 		$columns = array('entity_id','field','type','lang','sortIndex','valueInt','valueFloat','valueText','keyInt','keyText');
-		foreach ($fieldRows as &$fieldRow)
+		foreach ($valueRows as &$valueRow)
 		{
-			if (!empty($fieldRow['id']))
+			if (!empty($valueRow['id']))
 			{
 				$commaStr = '';
 				$sqlUpdate = '';
@@ -601,12 +605,12 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 					$sqlUpdate .= "{$commaStr}{$column}=:{$column}";
 					$commaStr = ',';
 				}
-				$stmt = $this->conn->prepare("UPDATE np_entity_fields SET {$sqlUpdate} WHERE id=:id");
+				$stmt = $this->conn->prepare("UPDATE {$sqlTable} SET {$sqlUpdate} WHERE id=:id");
 				foreach ($columns as $column)
 				{
-					$stmt->bindParam(':'.$column, $fieldRow[$column], $columInfos[$column]->paramType);
+					$stmt->bindParam(':'.$column, $valueRow[$column], $columInfos[$column]->paramType);
 				}
-				$stmt->bindParam(':id', $fieldRow['id']);
+				$stmt->bindParam(':id', $valueRow['id']);
 				$stmt->execute();
 			}
 		}
@@ -614,14 +618,14 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		// inserting new field rows
 		$columnsNameStr = implode(',', $columns);
 		$columnsVarStr = ':' . implode(',:', $columns);
-		foreach ($fieldRows as &$fieldRow)
+		foreach ($valueRows as &$valueRow)
 		{
-			if (empty($fieldRow['id']))
+			if (empty($valueRow['id']))
 			{
-				$stmt = $this->conn->prepare("INSERT INTO np_entity_fields ({$columnsNameStr}) VALUES ({$columnsVarStr})");
+				$stmt = $this->conn->prepare("INSERT INTO {$sqlTable} ({$columnsNameStr}) VALUES ({$columnsVarStr})");
 				foreach ($columns as $column)
 				{
-					$stmt->bindParam(':'.$column, $fieldRow[$column], $columInfos[$column]->paramType);
+					$stmt->bindParam(':'.$column, $valueRow[$column], $columInfos[$column]->paramType);
 				}
 				$stmt->execute();
 			}

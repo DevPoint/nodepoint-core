@@ -59,8 +59,8 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		}
 
 		// filter fields and update them in the entity fields table
-		$entityFieldRows = $this->_serializeFieldsToFieldRows($type, $fields, $mapFieldNames, $entityId);
-		$this->_saveFieldRows($entityFieldRows);
+		$entityValueRows = $this->_serializeFieldsToValueRows($type, $fields, $mapFieldNames, $entityId);
+		$this->_saveValueRows($entityValueRows);
 	}
 
 	/*
@@ -80,8 +80,8 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$this->_setEntityId($entity, $entityId);
 
 		// filter fields and insert them into the entity fields table
-		$entityFieldRows = $this->_serializeFieldsToFieldRows($type, $fields, $mapFieldNames, $entityId);
-		$this->_saveFieldRows($entityFieldRows);
+		$entityValueRows = $this->_serializeFieldsToValueRows($type, $fields, $mapFieldNames, $entityId);
+		$this->_saveValueRows($entityValueRows);
 	}
 
 	/*
@@ -114,8 +114,8 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$type = $this->em->getTypeFactory()->getType($typeName);
 		$fields = $this->_unserializeFieldsFromRow($type, $row);
 
-		$fieldRows = $this->_selectFieldRows($entityId, $lang);
-		$fields = array_merge($fields, $this->_unserializeFieldsFromFieldRows($type, $fieldRows));
+		$valueRows = $this->_selectValueRows($entityId, $lang);
+		$fields = array_merge($fields, $this->_unserializeFieldsFromValueRows($type, $valueRows));
 
 		$entityClass = $type->getClassName();
 		$entity = new $entityClass($type, $fields);

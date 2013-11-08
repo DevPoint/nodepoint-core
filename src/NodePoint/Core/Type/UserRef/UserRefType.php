@@ -12,6 +12,6 @@ class UserRefType extends BaseEntityRefType {
 	 */
 	public function __construct()
 	{
-		parent::__construct('NodePointCore/UserRef', 'NodePointCore/User');
+		parent::__construct('Core/UserRef', 'Core/User');
 	}
 }

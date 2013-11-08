@@ -16,7 +16,7 @@ class EntityType extends BaseEntityType {
 	{
 		// call parent constructor
 		parent::__construct(
-			'NodePointCore/Entity', "\\NodePoint\\Core\\Type\\Entity\\Entity",
+			'Core/Entity', "\\NodePoint\\Core\\Type\\Entity\\Entity",
 			$typeFactory, null);
 
 		// configure field name aliase
@@ -25,8 +25,8 @@ class EntityType extends BaseEntityType {
 		$this->fieldNameAliases['_parentField'] = 'parentField';
 
 		// add standard fields
-		$this->setFieldType('id', $typeFactory->getType('NodePointCore/Integer'));
-		$this->setFieldType('parentField', $typeFactory->getType('NodePointCore/String'));
+		$this->setFieldType('id', $typeFactory->getType('Core/Integer'));
+		$this->setFieldType('parentField', $typeFactory->getType('Core/String'));
 		$this->setFieldType('parent', $this);
 	}
 }

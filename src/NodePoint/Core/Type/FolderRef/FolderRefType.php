@@ -13,6 +13,6 @@ class FolderRefType extends BaseEntityRefType {
 	 */
 	public function __construct()
 	{
-		parent::__construct('NodePointCore/FolderRef', 'NodePointCore/Folder');
+		parent::__construct('Core/FolderRef', 'Core/Folder');
 	}
 }

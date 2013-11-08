@@ -15,14 +15,14 @@ class UserType extends BaseNodeType {
 	public function __construct(TypeFactoryInterface $typeFactory)
 	{
 		// call parent constructor
-		$parentType = $typeFactory->getType('NodePointCore/Node');
+		$parentType = $typeFactory->getType('Core/Node');
 		parent::__construct(
-			'NodePointCore/User', "\\NodePoint\\Core\\Type\\User\\User",
+			'Core/User', "\\NodePoint\\Core\\Type\\User\\User",
 			$typeFactory, $parentType);
 
 		// get primitive types
-		$aliasType = $typeFactory->getType('NodePointCore/Alias');
-		$emailType = $typeFactory->getType('NodePointCore/Email');
+		$aliasType = $typeFactory->getType('Core/Alias');
+		$emailType = $typeFactory->getType('Core/Email');
 
 		// add standard fields
 		$this->setFieldInfo('alias', $aliasType, array('searchable'=>true, 'alias'=>'_alias'));

@@ -17,7 +17,7 @@ $params = array();
 $ids = array(1,2,3);
 $idsStrIin = str_repeat('?,', count($ids) - 1) . '?';
 $params = array_merge($params, $ids);// add array of id
-//$params[] = 'NodePointCore/User'; // add type
+//$params[] = 'Core/User'; // add type
 
 // execute query
 $sql = "SELECT * FROM np_entities WHERE id IN({$idsStrIin})";

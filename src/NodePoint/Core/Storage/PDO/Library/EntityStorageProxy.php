@@ -158,6 +158,14 @@ class EntityStorageProxy implements EntityStorageProxyInterface {
 	}
 
 	/*
+	 * @return boolean
+	 */
+	public function hasLoadedLanguages()
+	{
+		return (null !== $this->loadedLanguages);
+	}
+
+	/*
 	 * @param $field NodePoint\Core\Library\EntityFieldInterface
 	 * @return boolean
 	 */

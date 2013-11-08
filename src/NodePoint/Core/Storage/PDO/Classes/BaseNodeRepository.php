@@ -59,7 +59,13 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		}
 
 		// filter fields and update them in the entity fields table
-		$entityValueRows = $this->_serializeFieldsToValueRows($type, $fields, $mapFieldNames, $entityId);
+		// it is only possible to update languages loaded before
+		$mapLanguages = null;
+		if ($storageProxy->hasLoadedLanguages())
+		{
+			$mapLanguages = array_fill_keys($storageProxy->getLoadedLanguages(), true);
+		}
+		$entityValueRows = $this->_serializeFieldsToValueRows($type, $fields, $mapLanguages, $mapFieldNames, $entityId);
 		$this->_saveValueRows($entityValueRows);
 	}
 
@@ -80,7 +86,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		$this->_setEntityId($entity, $entityId);
 
 		// filter fields and insert them into the entity fields table
-		$entityValueRows = $this->_serializeFieldsToValueRows($type, $fields, $mapFieldNames, $entityId);
+		$entityValueRows = $this->_serializeFieldsToValueRows($type, $fields, null, $mapFieldNames, $entityId);
 		$this->_saveValueRows($entityValueRows);
 	}
 

@@ -387,7 +387,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $entityId string
 	 * @return array
 	 */
-	protected function _serializeFieldsToValueRows(EntityTypeInterface $type, &$fields, $mapFieldNames, $entityId)
+	protected function _serializeFieldsToValueRows(EntityTypeInterface $type, &$fields, $mapLanguages, $mapFieldNames, $entityId)
 	{
 		$valueRows = array();
 		foreach ($fields as $field)
@@ -395,20 +395,56 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			$fieldName = $field->getName();
 			if (!empty($mapFieldNames[$fieldName]))
 			{
-				$fieldType = $type->getFieldType($fieldName);
-				$fieldSearchable = $type->getFieldInfo($fieldName)->isSearchable();
 				$fieldLanguage = $field->getLanguage();
-				if ($field->isArray())
-				{
-					foreach ($field->getArrayItems() as $arrayField)
+ 				if (empty($mapLanguages) || !empty($mapLanguages[$fieldLanguage]))
+ 				{
+					$fieldType = $type->getFieldType($fieldName);
+					$fieldSearchable = $type->getFieldInfo($fieldName)->isSearchable();
+					if ($field->isArray())
+					{
+						foreach ($field->getArrayItems() as $arrayField)
+						{
+							$fieldTypeName = $fieldType->getTypeName();
+							$value = $arrayField->getValue();
+							if ($fieldType->isEntity())
+							{
+								if ($arrayField->isLazyLoaded())
+								{
+									$lazyLoadInfo = $arrayField->getLazyLoadInfo();
+									$fieldTypeName = $lazyLoadInfo->typeName;
+									$value = $lazyLoadInfo->entityId;
+								}
+								elseif (null !== $value)
+								{
+									$fieldTypeName = $value->_type()->getTypeName();
+									$value = $this->_getEntityId($value);
+								}
+							}
+							elseif ($fieldType->isObject())
+							{
+								$value = $fieldType->objectToSerialized($value);
+							}
+							$searchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($arrayField->getValue()) : null;
+							$serializedField = array(
+								'id' => $arrayField->getId(),
+								'type' => $fieldTypeName,
+								'name' => $fieldName,
+								'lang' => $fieldLanguage,
+								'sort' => $arrayField->getSortIndex(),
+								'value' => $value,
+								'key' => $searchKey);
+							$valueRows[] = $this->_serializedFieldToValueRow($type, $serializedField, $entityId);
+						}				
+					}
+					else
 					{
 						$fieldTypeName = $fieldType->getTypeName();
-						$value = $arrayField->getValue();
+						$value = $field->getValue();
 						if ($fieldType->isEntity())
 						{
-							if ($arrayField->isLazyLoaded())
+							if ($field->isLazyLoaded())
 							{
-								$lazyLoadInfo = $arrayField->getLazyLoadInfo();
+								$lazyLoadInfo = $field->getLazyLoadInfo();
 								$fieldTypeName = $lazyLoadInfo->typeName;
 								$value = $lazyLoadInfo->entityId;
 							}
@@ -422,50 +458,17 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 						{
 							$value = $fieldType->objectToSerialized($value);
 						}
-						$searchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($arrayField->getValue()) : null;
+						$searchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($field->getValue()) : null;
 						$serializedField = array(
-							'id' => $arrayField->getId(),
+							'id' => $field->getId(),
 							'type' => $fieldTypeName,
 							'name' => $fieldName,
 							'lang' => $fieldLanguage,
-							'sort' => $arrayField->getSortIndex(),
+							'sort' => $field->getSortIndex(),
 							'value' => $value,
 							'key' => $searchKey);
 						$valueRows[] = $this->_serializedFieldToValueRow($type, $serializedField, $entityId);
-					}				
-				}
-				else
-				{
-					$fieldTypeName = $fieldType->getTypeName();
-					$value = $field->getValue();
-					if ($fieldType->isEntity())
-					{
-						if ($field->isLazyLoaded())
-						{
-							$lazyLoadInfo = $field->getLazyLoadInfo();
-							$fieldTypeName = $lazyLoadInfo->typeName;
-							$value = $lazyLoadInfo->entityId;
-						}
-						elseif (null !== $value)
-						{
-							$fieldTypeName = $value->_type()->getTypeName();
-							$value = $this->_getEntityId($value);
-						}
 					}
-					elseif ($fieldType->isObject())
-					{
-						$value = $fieldType->objectToSerialized($value);
-					}
-					$searchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($field->getValue()) : null;
-					$serializedField = array(
-						'id' => $field->getId(),
-						'type' => $fieldTypeName,
-						'name' => $fieldName,
-						'lang' => $fieldLanguage,
-						'sort' => $field->getSortIndex(),
-						'value' => $value,
-						'key' => $searchKey);
-					$valueRows[] = $this->_serializedFieldToValueRow($type, $serializedField, $entityId);
 				}
 			}
 		}

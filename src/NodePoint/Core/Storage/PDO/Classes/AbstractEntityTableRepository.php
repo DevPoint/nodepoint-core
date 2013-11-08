@@ -293,12 +293,10 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	{
 		$sqlTable = $this->tables['entity'];
 		$columInfos = &$this->tableColumns['entity'];
-		$sql = "SELECT * FROM {$sqlTable} WHERE id=:id";
-		$stmt = $this->conn->prepare($sql);
+		$stmt = $this->conn->prepare("SELECT * FROM {$sqlTable} WHERE id=:id");
 		$stmt->bindParam(':id', $entityId, $columInfos['id']->paramType);
 		$stmt->execute();
-		$row = $stmt->fetch(\PDO::FETCH_ASSOC);
-		return $row;
+		return $stmt->fetch(\PDO::FETCH_ASSOC);
 	}
 
 	/*

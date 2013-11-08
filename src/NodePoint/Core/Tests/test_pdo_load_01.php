@@ -75,7 +75,7 @@ $langB = "en";
 $langC = "fr";
 $objects = array();
 
-$object = $em->find('Core/Document', 4, array($langA,$langB));
+$object = $em->find('Core/Document', 4, array($langA,$langB,$langC));
 $object->setName($langA, 'Julian Brabsche');
 $object->setName($langC, 'Juliene Brabsché');
 $object->validateWeight('17.6');

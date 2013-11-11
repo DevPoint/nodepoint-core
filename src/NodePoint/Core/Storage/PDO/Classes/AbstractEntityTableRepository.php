@@ -110,16 +110,6 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	}
 
 	/*
-	 * @param $fieldType NodePoint\Core\Library\TypeInterface
-	 * @param $entityId string
-	 * @return NodePoint\Core\Library\EntityInterface
-	 */
-	protected function _createEntity($type, $entityId)
-	{
-
-	}
-
-	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
 	 * @param $entityId string
 	 */
@@ -589,7 +579,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				$sqlWhere .= " AND lang IN(?,?)";
 				$params[] = $lang;
 			}
-			else if (is_array($lang))
+			elseif (is_array($lang))
 			{
 				$langCount = count($lang) + 1;
 				$sqlLang = str_repeat("?,", $langCount - 1) . "?";

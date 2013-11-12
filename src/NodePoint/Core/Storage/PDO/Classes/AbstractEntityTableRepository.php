@@ -295,17 +295,50 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $searchKey mixed string or int
 	 * @return array
 	 */
-	protected function _selectRowsBySearchKey($typeName, $fieldName, $searchKey, $seachKeyType)
+	protected function _selectRowsByValueSearchKey($typeName, $fieldName, $searchKey, $seachKeyType)
 	{
 		$sqlEntityTable = $this->tables['entity'];
 		$sqlValueTable = $this->tables['entityValue'];
-		$keyColumn = ($seachKeyType == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
-		$sqlWhere = "v.field = :field AND v.{$keyColumn} = :key AND e.type = :type";
+		$columnKey = ($seachKeyType == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
+		$sqlWhere = "v.field = :field AND v.{$columnKey} = :key AND e.type = :type";
 		$stmt = $this->conn->prepare("SELECT e.* FROM {$sqlValueTable} AS v
 						INNER JOIN {$sqlEntityTable} AS e ON e.id = v.entity_id
 						WHERE {$sqlWhere}");
 		$stmt->bindParam(':field', $fieldName, $this->tableColumns['entityValue']['field']->paramType);
-		$stmt->bindParam(':key', $searchKey, $this->tableColumns['entityValue'][$keyColumn]->paramType);
+		$stmt->bindParam(':key', $searchKey, $this->tableColumns['entityValue'][$columnKey]->paramType);
+		$stmt->bindParam(':type', $typeName, $this->tableColumns['entity']['type']->paramType);
+		$stmt->execute();
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+
+	/*
+	 * @param $typeName mixed string or array of strings
+	 * @param $fieldName string
+	 * @param $searchKey mixed string or int
+	 * @return array
+	 */
+	protected function _selectRowsByValueSearchKeys($typeName, $searchFields)
+	{
+		$sqlJoins = "";
+		$searchCount = count($searchFields);
+		$sqlEntityTable = $this->tables['entity'];
+		$sqlValueTable = $this->tables['entityValue'];
+		for ($si = 0; $si < $searchCount; $si++)
+		{
+			$v = "v" . $si;
+			$field = &$searchFields[$si];
+			$columnKey = ($field['keytype'] == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
+			$sqlJoins .= "INNER JOIN {$sqlValueTable} AS {$v} ON {$v}.field=:field{$si} AND {$v}.{$columnKey}=:key{$si} AND e.id={$v}.entity_id ";
+		}
+		$stmt = $this->conn->prepare("SELECT e.* FROM {$sqlEntityTable} AS e {$sqlJoins}WHERE e.type = :type");
+		$columnInfos = &$this->tableColumns['entityValue'];
+		for ($si = 0; $si < $searchCount; $si++)
+		{
+			$field = &$searchFields[$si];
+			$columnKey = ($field['keytype'] == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
+			$stmt->bindParam(":field{$si}", $field['name'], $columnInfos['field']->paramType);
+			$stmt->bindParam(":key{$si}", $field['key'], $columnInfos[$columnKey]->paramType);
+		}
 		$stmt->bindParam(':type', $typeName, $this->tableColumns['entity']['type']->paramType);
 		$stmt->execute();
 		return $stmt->fetchAll(\PDO::FETCH_ASSOC);

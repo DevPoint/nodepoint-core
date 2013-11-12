@@ -183,7 +183,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 			return null;
 		}
 		$storageType = $type->getFieldInfo($fieldName)->getStorageType();
-		$rows = $this->_selectRowsBySearchKey($typeName, $fieldName, $alias, $storageType);
+		$rows = $this->_selectRowsByValueSearchKey($typeName, $fieldName, $alias, $storageType);
 		if (null === $rows || empty($rows))
 		{
 			return null;

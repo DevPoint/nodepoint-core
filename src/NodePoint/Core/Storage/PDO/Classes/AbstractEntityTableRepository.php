@@ -165,7 +165,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				}
 				elseif ($fieldType->isObject())
 				{
-					$value = $fieldType->objectToSerialized($value);
+					$value = $fieldType->objectToStorage($value);
 				}
 				$row[$column] = $value;
 			}
@@ -220,7 +220,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 				}
 				elseif ($fieldType->isObject())
 				{
-					$value = $fieldType->objectFromSerialized($value);
+					$value = $fieldType->objectFromStorage($value);
 				}
 				$field = new EntityField($fieldName, null);
 				$field->setValue($value);
@@ -412,7 +412,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 							}
 							elseif ($fieldType->isObject())
 							{
-								$value = $fieldType->objectToSerialized($value);
+								$value = $fieldType->objectToStorage($value);
 							}
 							$searchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($arrayField->getValue()) : null;
 							$serializedField = array(
@@ -446,7 +446,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 						}
 						elseif ($fieldType->isObject())
 						{
-							$value = $fieldType->objectToSerialized($value);
+							$value = $fieldType->objectToStorage($value);
 						}
 						$searchKey = ($fieldSearchable) ? $fieldType->searchKeyFromValue($field->getValue()) : null;
 						$serializedField = array(
@@ -489,7 +489,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			}
 			elseif ($fieldType->isObject())
 			{
-				$value = $fieldType->objectFromSerialized($value);
+				$value = $fieldType->objectFromStorage($value);
 			}
 
 			// unserialize array fields

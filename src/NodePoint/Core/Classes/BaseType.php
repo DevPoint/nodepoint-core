@@ -67,14 +67,6 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
-	 * @return boolean true for object types
-	 */
-	public function isObject()
-	{
-		return (!empty($this->className));
-	}
-
-	/*
 	 * @return boolean true for entity types
 	 */
 	public function isEntity()
@@ -107,15 +99,6 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
-	 * @param $fieldName string
-	 * @return int - Int, Float, Text, Entity
-	 */
-	public function getStorageType()
-	{
-		return self::STORAGE_TEXT;
-	}
-
-	/*
 	 * @param $value mixed
 	 * @param $rules array indexed by rule type
 	 * @return mixed boolean true or array with errors
@@ -126,12 +109,11 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
-	 * @param $value mixed
-	 * @return mixed string or int
+	 * @return boolean true for object types
 	 */
-	public function searchKeyFromValue($value)
+	public function isObject()
 	{
-		return null;
+		return (!empty($this->className));
 	}
 
 	/*
@@ -153,10 +135,37 @@ abstract class BaseType implements TypeInterface {
 	}
 
 	/*
+	 * @param $fieldName string
+	 * @return int - Int, Text
+	 */
+	public function getSearchKeyType()
+	{
+		return self::STORAGE_NONE;
+	}
+
+	/*
+	 * @param $value mixed
+	 * @return mixed string or int
+	 */
+	public function searchKeyFromValue($value)
+	{
+		return null;
+	}
+
+	/*
+	 * @param $fieldName string
+	 * @return int - Int, Float, Text, Entity
+	 */
+	public function getStorageType()
+	{
+		return self::STORAGE_TEXT;
+	}
+
+	/*
 	 * @param $object object
 	 * @return string
 	 */
-	public function objectToSerialized($object)
+	public function objectToStorage($object)
 	{
 		$arrValue = $this->objectToArray($object);
 		if (null === $arrValue)
@@ -170,9 +179,9 @@ abstract class BaseType implements TypeInterface {
 	 * @param $value string
 	 * @return object
 	 */
-	public function objectFromSerialized(&$serializedValue)
+	public function objectFromStorage(&$storageValue)
 	{
-		$arrValue = unserialize($serializedValue);
+		$arrValue = unserialize($storageValue);
 		if (null === $arrValue)
 		{
 			return null;

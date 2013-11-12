@@ -15,6 +15,15 @@ class AliasType extends BaseType {
 	}
 
 	/*
+	 * @param $fieldName string
+	 * @return int - Int, Text
+	 */
+	public function getSearchKeyType()
+	{
+		return self::STORAGE_TEXT;
+	}
+
+	/*
 	 * @param $value mixed
 	 * @return mixed string or int
 	 */

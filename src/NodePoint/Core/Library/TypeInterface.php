@@ -71,23 +71,11 @@ interface TypeInterface {
 	public function getReferenceTypeName();
 
 	/*
-	 * @param $fieldName string
-	 * @return int - Int, Float, Text, Entity
-	 */
-	public function getStorageType();
-
-	/*
 	 * @param $value mixed
 	 * @param $rules array indexed by rule type
 	 * @return mixed boolean true or array with errors
 	 */
 	public function validate(&$value, &$rules=null);
-
-	/*
-	 * @param $value mixed
-	 * @return mixed string or int
-	 */
-	public function searchKeyFromValue($value);
 
 	/*
 	 * @param $object mixed
@@ -102,16 +90,34 @@ interface TypeInterface {
 	public function objectFromArray(&$value);
 
 	/*
+	 * @param $fieldName string
+	 * @return int - Int, Text
+	 */
+	public function getSearchKeyType();
+
+	/*
+	 * @param $value mixed
+	 * @return mixed string or int
+	 */
+	public function searchKeyFromValue($value);
+
+	/*
+	 * @param $fieldName string
+	 * @return int - Int, Float, Text, Entity
+	 */
+	public function getStorageType();
+
+	/*
 	 * @param $object object
 	 * @return string
 	 */
-	public function objectToSerialized($object);
+	public function objectToStorage($object);
 
 	/*
 	 * @param $value string
 	 * @return object
 	 */
-	public function objectFromSerialized(&$serializedValue);
+	public function objectFromStorage(&$storageValue);
 	
 	/*
 	 * Calculate further values from the given properties

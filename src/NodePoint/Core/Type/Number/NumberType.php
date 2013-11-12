@@ -41,6 +41,15 @@ class NumberType extends BaseType {
 	}
 
 	/*
+	 * @param $fieldName string
+	 * @return int - Int, Text
+	 */
+	public function getSearchKeyType()
+	{
+		return self::STORAGE_INT;
+	}
+
+	/*
 	 * @param $value mixed
 	 * @return mixed string or int
 	 */

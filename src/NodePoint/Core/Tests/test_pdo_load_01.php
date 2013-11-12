@@ -75,14 +75,20 @@ $langB = "en";
 $langC = "fr";
 $objects = array();
 
-$object = $em->find('Core/Document', 4, array($langA,$langB,$langC));
-$object->setName($langA, 'Julian Brabsche');
-$object->setName($langC, 'Juliene Brabsché');
-$object->validateWeight('17.6');
-$objects[] = $object;
+$object = $em->findByAlias('Core/Document', 'julian-brabsche', array($langA,$langB,$langC));
+if (null !== $object)
+{
+	$object->setName($langA, 'Julian Brabsche');
+	$object->setName($langC, 'Juliene Brabsché');
+	$object->validateWeight('17.6');
+	$objects[] = $object;
+}
 
-$object = $em->find('Core/Document', 5);
-$objects[] = $object;
+$object = $em->findByAlias('Core/Document', 'david-brabsche');
+if (null !== $object)
+{
+	$objects[] = $object;
+}
 
 $em->flush();
 

@@ -290,6 +290,28 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	}
 
 	/*
+	 * @param $typeName mixed string or array of strings
+	 * @param $fieldName string
+	 * @param $searchKey mixed string or int
+	 * @return array
+	 */
+	protected function _selectRowsBySearchKey($typeName, $fieldName, $searchKey, $seachKeyType)
+	{
+		$sqlEntityTable = $this->tables['entity'];
+		$sqlValueTable = $this->tables['entityValue'];
+		$keyColumn = ($seachKeyType == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
+		$sqlWhere = "v.field = :field AND v.{$keyColumn} = :key AND e.type = :type";
+		$stmt = $this->conn->prepare("SELECT e.* FROM {$sqlValueTable} AS v
+						INNER JOIN {$sqlEntityTable} AS e ON e.id = v.entity_id
+						WHERE {$sqlWhere}");
+		$stmt->bindParam(':field', $fieldName, $this->tableColumns['entityValue']['field']->paramType);
+		$stmt->bindParam(':key', $searchKey, $this->tableColumns['entityValue'][$keyColumn]->paramType);
+		$stmt->bindParam(':type', $typeName, $this->tableColumns['entity']['type']->paramType);
+		$stmt->execute();
+		return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+	}
+
+	/*
 	 * @param $type NodePoint\Core\Library\EntityTypeInterface
 	 * @param $serializedField array
 	 * @param $entityId int

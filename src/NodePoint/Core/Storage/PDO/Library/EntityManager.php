@@ -229,4 +229,21 @@ class EntityManager implements EntityManagerInterface {
 		}
 		return $repository->find($entityId, $lang, $mapFieldNames);
 	}
+
+	/*
+	 * @param $typeName string with entity type name
+	 * @param $alias string
+	 * @param $lang mixed string or array of string
+	 * @param $mapFieldNames array indexed by fieldName
+	 * @return NodePoint\Core\Library\EntityInterface
+	 */
+	public function findByAlias($typeName, $alias, $lang=null, $mapFieldNames=null)
+	{
+		$repository = $this->getRepository($typeName);
+		if (null === $repository)
+		{
+			return null;
+		}
+		return $repository->findByAlias($typeName, $alias, $lang, $mapFieldNames);
+	}
 }

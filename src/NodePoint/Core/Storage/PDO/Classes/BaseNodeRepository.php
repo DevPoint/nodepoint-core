@@ -159,4 +159,47 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		// create entity by reading this repository
 		return $repository->read($typeName, $row, $lang, $mapFieldNames);
 	}
+
+	/*
+	 * @param $typeName string with entity type name
+	 * @param $alias string 
+	 * @param $lang mixed string or array of string
+	 * @param $mapFieldNames array indexed by fieldName
+	 * @return NodePoint\Core\Library\EntityInterface
+	 */
+	public function findByAlias($typeName, $alias, $lang=null, $mapFieldNames=null)
+	{
+		// read entity table row
+		$type = $this->em->getTypeFactory()->getType($typeName);
+		if (null === $type)
+		{
+			// TODO: Exception: unknown type
+			return null;
+		}
+		$fieldName = $type->getFieldNameByAlias('_alias');
+		if (null === $fieldName)
+		{
+			// TODO: Exception: no alias field available
+			return null;
+		}
+		$storageType = $type->getFieldInfo($fieldName)->getStorageType();
+		$rows = $this->_selectRowsBySearchKey($typeName, $fieldName, $alias, $storageType);
+		if (null === $rows || empty($rows))
+		{
+			return null;
+		}
+
+		// select repository assigned to that type
+		$firstRow = $rows[0];
+		$typeName = $firstRow['type'];
+		$repository = $this->em->getRepository($typeName);
+		if (null === $repository)
+		{
+			// TODO: Exception: no repository for this type available
+			return null;
+		}
+		
+		// create entity by reading this repository
+		return $repository->read($typeName, $firstRow, $lang, $mapFieldNames);
+	}
 }

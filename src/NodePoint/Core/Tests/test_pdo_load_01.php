@@ -80,7 +80,7 @@ if (null !== $object)
 {
 	$object->setName($langA, 'Julian Brabsche');
 	$object->setName($langC, 'Juliene Brabsché');
-	$object->validateWeight('17.6');
+	//$object->validateWeight('17.6');
 	$objects[] = $object;
 }
 

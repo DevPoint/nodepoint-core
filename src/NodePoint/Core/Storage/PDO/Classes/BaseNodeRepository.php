@@ -182,8 +182,13 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 			// TODO: Exception: no alias field available
 			return null;
 		}
-		$storageType = $type->getFieldInfo($fieldName)->getStorageType();
-		$rows = $this->_selectRowsByValueSearchKey($typeName, $fieldName, $alias, $storageType);
+		$fieldInfo = $type->getFieldInfo($fieldName);
+		$searchKeyType = $fieldInfo->getType()->getSearchKeyType();
+		$searchFields = array(
+			array('name'=>$fieldName, 'keyType'=>$searchKeyType, 'key'=>$alias),
+			array('name'=>'weight', 'keyType'=>TypeInterface::STORAGE_INT, 'key'=>19));
+		$rows = $this->_selectRowsByValueSearchKeys($typeName, $searchFields);
+		//$rows = $this->_selectRowsByValueSearchKey($typeName, $fieldName, $alias, $searchKeyType);
 		if (null === $rows || empty($rows))
 		{
 			return null;
@@ -198,7 +203,7 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 			// TODO: Exception: no repository for this type available
 			return null;
 		}
-		
+
 		// create entity by reading this repository
 		return $repository->read($typeName, $firstRow, $lang, $mapFieldNames);
 	}

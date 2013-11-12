@@ -327,7 +327,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		{
 			$v = "v" . $si;
 			$field = &$searchFields[$si];
-			$columnKey = ($field['keytype'] == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
+			$columnKey = ($field['keyType'] == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
 			$sqlJoins .= "INNER JOIN {$sqlValueTable} AS {$v} ON {$v}.field=:field{$si} AND {$v}.{$columnKey}=:key{$si} AND e.id={$v}.entity_id ";
 		}
 		$stmt = $this->conn->prepare("SELECT e.* FROM {$sqlEntityTable} AS e {$sqlJoins}WHERE e.type = :type");
@@ -335,7 +335,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		for ($si = 0; $si < $searchCount; $si++)
 		{
 			$field = &$searchFields[$si];
-			$columnKey = ($field['keytype'] == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
+			$columnKey = ($field['keyType'] == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
 			$stmt->bindParam(":field{$si}", $field['name'], $columnInfos['field']->paramType);
 			$stmt->bindParam(":key{$si}", $field['key'], $columnInfos[$columnKey]->paramType);
 		}

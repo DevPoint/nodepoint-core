@@ -36,7 +36,7 @@ class StringType extends BaseType {
 
 	/*
 	 * @param $fieldName string
-	 * @return int - Int, Text
+	 * @return int - None, Int, Text
 	 */
 	public function getSearchKeyType()
 	{

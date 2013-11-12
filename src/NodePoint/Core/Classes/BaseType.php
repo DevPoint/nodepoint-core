@@ -136,7 +136,7 @@ abstract class BaseType implements TypeInterface {
 
 	/*
 	 * @param $fieldName string
-	 * @return int - Int, Text
+	 * @return int - None, Int, Text
 	 */
 	public function getSearchKeyType()
 	{

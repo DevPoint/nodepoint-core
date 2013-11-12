@@ -298,7 +298,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _serializedFieldToValueRow(EntityTypeInterface $type, &$serializedField, $entityId)
 	{
 		$fieldName = $serializedField['name'];
-		$storageType = $type->getFieldInfo($fieldName)->getStorageType();
+		$fieldInfo = $type->getFieldInfo($fieldName);
 		$columInfos = &$this->tableColumns['entityValue'];
 		$valueRow = array(
 			'entity_id' => $entityId,
@@ -315,19 +315,25 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		{
 			$valueRow['id'] = $serializedField['id'];
 		}
-		switch ($storageType)
+		switch ($fieldInfo->getStorageType())
 		{
 			case TypeInterface::STORAGE_INT:
 			case TypeInterface::STORAGE_ENTITY:
 				$valueRow['valueInt'] = intval($serializedField['value']);
-				$valueRow['keyInt'] = isset($serializedField['key']) ? intval($serializedField['key']) : $columInfos['keyInt']->nullValue;
 				break;
 			case TypeInterface::STORAGE_FLOAT:
 				$valueRow['valueFloat'] = $serializedField['value'];
-				$valueRow['keyInt'] = isset($serializedField['key']) ? $serializedField['key'] : $columInfos['keyInt']->nullValue;
 				break;
 			default:
 				$valueRow['valueText'] = $serializedField['value'];
+				break;
+		}
+		switch ($fieldInfo->getType()->getSearchKeyType())
+		{
+			case TypeInterface::STORAGE_INT:
+				$valueRow['keyInt'] = isset($serializedField['key']) ? intval($serializedField['key']) : $columInfos['keyInt']->nullValue;
+				break;
+			case TypeInterface::STORAGE_TEXT:
 				$valueRow['keyText'] = isset($serializedField['key']) ? $serializedField['key'] : $columInfos['keyText']->nullValue;
 				break;
 		}
@@ -343,7 +349,7 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected function _serializedFieldFromValueRow(EntityTypeInterface $type, &$valueRow)
 	{
 		$fieldName = $valueRow['field'];
-		$storageType = $type->getFieldInfo($fieldName)->getStorageType();
+		$fieldInfo = $type->getFieldInfo($fieldName);
 		$columInfos = &$this->tableColumns['entityValue'];
 		$serializedField = array(
 			'id' => $valueRow['id'],
@@ -351,19 +357,25 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 			'type' => $valueRow['type'],
 			'lang' => ($valueRow['lang'] != $columInfos['lang']->nullValue) ? $valueRow['lang'] : null,
 			'sort' => ($valueRow['sortIndex'] != $columInfos['sortIndex']->nullValue) ? $valueRow['sortIndex'] : null);
-		switch ($storageType)
+		switch ($fieldInfo->getStorageType())
 		{
 			case TypeInterface::STORAGE_INT:
 			case TypeInterface::STORAGE_ENTITY:
 				$serializedField['value'] = $valueRow['valueInt'];
-				$serializedField['key'] = ($valueRow['keyInt'] != $columInfos['keyInt']->nullValue) ? $valueRow['keyInt'] : null;
 				break;
 			case TypeInterface::STORAGE_FLOAT:
 				$serializedField['value'] = $valueRow['valueFloat'];
-				$serializedField['key'] = ($valueRow['keyInt'] != $columInfos['keyInt']->nullValue) ? $valueRow['keyInt'] : null;
 				break;
 			default:
 				$serializedField['value'] = $valueRow['valueText'];
+				break;
+		}
+		switch ($fieldInfo->getType()->getSearchKeyType())
+		{
+			case TypeInterface::STORAGE_INT:
+				$serializedField['key'] = ($valueRow['keyInt'] != $columInfos['keyInt']->nullValue) ? $valueRow['keyInt'] : null;
+				break;
+			case TypeInterface::STORAGE_TEXT:
 				$serializedField['key'] = ($valueRow['keyText'] != $columInfos['keyText']->nullValue) ? $valueRow['keyText'] : null;
 				break;
 		}

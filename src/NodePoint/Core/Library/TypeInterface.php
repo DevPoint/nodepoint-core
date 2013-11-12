@@ -14,11 +14,6 @@ interface TypeInterface {
 	const STORAGE_ENTITY = 	4;
 
 	/*
-	 * @param $type string
-	 */
-	public function setTypeName($typeName);
-
-	/*
 	 * @return string
 	 */
 	public function getTypeName();
@@ -35,11 +30,6 @@ interface TypeInterface {
 	 */
 	public function isTypeNameExact($typeName);
 	
-	/*
-	 * @param $className string
-	 */
-	public function setClassName($className);
-
 	/*
 	 * @return string
 	 */

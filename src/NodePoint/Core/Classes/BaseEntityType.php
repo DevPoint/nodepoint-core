@@ -47,13 +47,6 @@ abstract class BaseEntityType extends BaseType implements EntityTypeInterface {
 		'getitem' => '_getMagicFieldItemCall%s');
 
 	/*
-	 * @var array of boolean
-	 */
-	static protected $magicSetterTypes = array(
-		'set' => true, 
-		'setitem' => true);
-
-	/*
 	 * Constructor
 	 *
 	 * @param $typeName string

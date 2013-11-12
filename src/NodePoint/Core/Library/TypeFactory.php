@@ -7,7 +7,7 @@ use NodePoint\Core\Classes\TypeInfo;
 class TypeFactory implements TypeFactoryInterface {
 
 	/*
-	 * @var array of NodePoint\Core\Classes\TypeIfno
+	 * @var array of NodePoint\Core\Classes\TypeInfo
 	 */
 	protected $types;
 

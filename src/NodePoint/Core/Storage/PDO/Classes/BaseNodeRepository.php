@@ -13,10 +13,11 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	/*
 	 * @param $conn \PDO
 	 * @param $em NodePoint\Core\Storage\Library\EntityManagerInterface
+	 * @param $type NodePoint\Core\Library\EntityTypeInterface
 	 */
-	public function __construct(\PDO $conn, EntityManagerInterface $em)
+	public function __construct(\PDO $conn, EntityManagerInterface $em, EntityTypeInterface $type)
 	{
-		parent::__construct($conn, $em);
+		parent::__construct($conn, $em, $type);
 	}
 
 	/*
@@ -114,10 +115,10 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 	 * @param $mapFieldNames array indexed by fieldName
 	 * @return NodePoint\Core\Library\EntityInterface
 	 */
-	public function read($typeName, $row, $lang=null, $mapFieldNames=null)
+	public function read($row, $lang=null, $mapFieldNames=null)
 	{
 		$entityId = $row['id'];
-		$type = $this->em->getTypeFactory()->getType($typeName);
+		$type = $this->getType();
 		$fields = $this->_unserializeFieldsFromRow($type, $row);
 
 		$valueRows = $this->_selectValueRows($entityId, $lang);
@@ -157,38 +158,29 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 			return null;
 		}
 		// create entity by reading this repository
-		return $repository->read($typeName, $row, $lang, $mapFieldNames);
+		return $repository->read($row, $lang, $mapFieldNames);
 	}
 
 	/*
-	 * @param $typeName string with entity type name
 	 * @param $alias string 
 	 * @param $lang mixed string or array of string
 	 * @param $mapFieldNames array indexed by fieldName
 	 * @return NodePoint\Core\Library\EntityInterface
 	 */
-	public function findByAlias($typeName, $alias, $lang=null, $mapFieldNames=null)
+	public function findByAlias($alias, $lang=null, $mapFieldNames=null)
 	{
 		// read entity table row
-		$type = $this->em->getTypeFactory()->getType($typeName);
-		if (null === $type)
-		{
-			// TODO: Exception: unknown type
-			return null;
-		}
+		$type = $this->getType();
 		$fieldName = $type->getFieldNameByAlias('_alias');
 		if (null === $fieldName)
 		{
 			// TODO: Exception: no alias field available
 			return null;
 		}
-		$fieldInfo = $type->getFieldInfo($fieldName);
-		$searchKeyType = $fieldInfo->getType()->getSearchKeyType();
-		$searchFields = array(
-			array('name'=>$fieldName, 'keyType'=>$searchKeyType, 'key'=>$alias),
-			array('name'=>'weight', 'keyType'=>TypeInterface::STORAGE_INT, 'key'=>19));
-		$rows = $this->_selectRowsByValueSearchKeys($typeName, $searchFields);
-		//$rows = $this->_selectRowsByValueSearchKey($typeName, $fieldName, $alias, $searchKeyType);
+		$typeName = $type->getTypeName();
+		$fieldType = $type->getFieldType($fieldName);
+		$searchKeyType = $fieldType->getSearchKeyType();
+		$rows = $this->_selectRowsByValueSearchKey($typeName, $fieldName, $alias, $searchKeyType);
 		if (null === $rows || empty($rows))
 		{
 			return null;
@@ -205,6 +197,17 @@ class BaseNodeRepository extends AbstractEntityTableRepository {
 		}
 
 		// create entity by reading this repository
-		return $repository->read($typeName, $firstRow, $lang, $mapFieldNames);
+		return $repository->read($firstRow, $lang, $mapFieldNames);
 	}
+
+	/*
+	 * @param $searchKeys array indexed by fieldName 
+	 * @param $lang mixed string or array of string
+	 * @param $mapFieldNames array indexed by fieldName
+	 * @return NodePoint\Core\Library\EntityInterface
+	 */
+	public function findBySearchKeys($searchKeys, $lang=null, $mapFieldNames=null)
+	{
+	}
+
 }

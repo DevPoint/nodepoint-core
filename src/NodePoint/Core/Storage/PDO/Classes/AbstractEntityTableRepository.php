@@ -25,6 +25,11 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	protected $em;
 
 	/*
+	 * @var NodePoint\Core\Library\EntityTypeInterface
+	 */
+	protected $type;
+
+	/*
 	 * @var array of string with database table names
 	 */
 	protected $tables;
@@ -47,12 +52,14 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	/*
 	 * @param $conn \PDO
 	 * @param $em NodePoint\Core\Storage\Library\EntityManagerInterface
+	 * @param $type NodePoint\Core\Library\EntityTypeInterface
 	 */
-	public function __construct(\PDO $conn, EntityManagerInterface $em)
+	protected function __construct(\PDO $conn, EntityManagerInterface $em, EntityTypeInterface $type)
 	{
 		// store parameters
 		$this->em = $em;
 		$this->conn = $conn;
+		$this->type = $type;
 
 		// name of database tables
 		$this->tables = array(
@@ -109,6 +116,14 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		return $this->em;
 	}
 
+	/*
+	 * @return NodePoint\Core\Library\EntityTypeInterface
+	 */
+	public function getType()
+	{
+		return $this->type;
+	}
+	
 	/*
 	 * @param $entity NodePoint\Core\Library\EntityInterface
 	 * @param $entityId string
@@ -295,12 +310,12 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 	 * @param $searchKey mixed string or int
 	 * @return array
 	 */
-	protected function _selectRowsByValueSearchKey($typeName, $fieldName, $searchKey, $seachKeyType)
+	protected function _selectRowsByValueSearchKey($typeName, $fieldName, $searchKey, $searchKeyType)
 	{
 		$sqlEntityTable = $this->tables['entity'];
 		$sqlValueTable = $this->tables['entityValue'];
-		$columnKey = ($seachKeyType == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
-		$sqlWhere = "v.field = :field AND v.{$columnKey} = :key AND e.type = :type";
+		$columnKey = ($searchKeyType == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
+		$sqlWhere = "v.field=:field AND v.{$columnKey}=:key AND e.type=:type";
 		$stmt = $this->conn->prepare("SELECT e.* FROM {$sqlValueTable} AS v
 						INNER JOIN {$sqlEntityTable} AS e ON e.id = v.entity_id
 						WHERE {$sqlWhere}");
@@ -326,18 +341,18 @@ abstract class AbstractEntityTableRepository implements EntityRepositoryInterfac
 		for ($si = 0; $si < $searchCount; $si++)
 		{
 			$v = "v" . $si;
-			$field = &$searchFields[$si];
-			$columnKey = ($field['keyType'] == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
+			$searchField = &$searchFields[$si];
+			$columnKey = ($searchField['keyType'] == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
 			$sqlJoins .= "INNER JOIN {$sqlValueTable} AS {$v} ON {$v}.field=:field{$si} AND {$v}.{$columnKey}=:key{$si} AND e.id={$v}.entity_id ";
 		}
-		$stmt = $this->conn->prepare("SELECT e.* FROM {$sqlEntityTable} AS e {$sqlJoins}WHERE e.type = :type");
+		$stmt = $this->conn->prepare("SELECT e.* FROM {$sqlEntityTable} AS e {$sqlJoins} WHERE e.type = :type");
 		$columnInfos = &$this->tableColumns['entityValue'];
 		for ($si = 0; $si < $searchCount; $si++)
 		{
-			$field = &$searchFields[$si];
-			$columnKey = ($field['keyType'] == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
-			$stmt->bindParam(":field{$si}", $field['name'], $columnInfos['field']->paramType);
-			$stmt->bindParam(":key{$si}", $field['key'], $columnInfos[$columnKey]->paramType);
+			$searchField = &$searchFields[$si];
+			$columnKey = ($searchField['keyType'] == TypeInterface::STORAGE_INT) ? 'keyInt' : 'keyText';
+			$stmt->bindParam(":field{$si}", $searchField['name'], $columnInfos['field']->paramType);
+			$stmt->bindParam(":key{$si}", $searchField['key'], $columnInfos[$columnKey]->paramType);
 		}
 		$stmt->bindParam(':type', $typeName, $this->tableColumns['entity']['type']->paramType);
 		$stmt->execute();

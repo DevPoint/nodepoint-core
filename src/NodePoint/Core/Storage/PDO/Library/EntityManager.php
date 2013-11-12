@@ -83,8 +83,9 @@ class EntityManager implements EntityManagerInterface {
 		$repositoryInfo = $this->repositories[$typeName];
 		if (null === $repositoryInfo->object)
 		{
+			$type = $this->typeFactory->getType($typeName);
 			$repositoryClass = $repositoryInfo->className;
-			$repositoryInfo->object = new $repositoryClass($this->conn, $this);
+			$repositoryInfo->object = new $repositoryClass($this->conn, $this, $type);
 		}
 		return $repositoryInfo->object;
 	}
@@ -244,6 +245,6 @@ class EntityManager implements EntityManagerInterface {
 		{
 			return null;
 		}
-		return $repository->findByAlias($typeName, $alias, $lang, $mapFieldNames);
+		return $repository->findByAlias($alias, $lang, $mapFieldNames);
 	}
 }

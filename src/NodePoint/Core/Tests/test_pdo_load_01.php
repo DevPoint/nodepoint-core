@@ -83,6 +83,10 @@ if (null !== $object)
 	//$object->validateWeight('17.6');
 	$objects[] = $object;
 }
+else
+{
+	echo 'julian-brabsche not found\n';
+}
 
 $object = $em->findByAlias('Core/Document', 'david-brabsche');
 if (null !== $object)
